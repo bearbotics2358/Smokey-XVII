@@ -2,7 +2,6 @@
 
 #include "SwerveModule.h"
 #include "misc.h"
-#include <math.h>
 #include <stdio.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/phoenix/sensors/CANCoder.h>
@@ -89,16 +88,13 @@ void SwerveModule::resetDriveEncoder() {
 }
 
 double SwerveModule::getRelativeAngle() {
-    //float temp = steerEncFalcon.GetIntegratedSensorPosition() * -1;
     double angle = (m_CANCoder.GetAbsolutePosition() - CANCODER_OFFSETS[_CANCoderID]) * m_inversionFactor;
-    //printf("%f\n",temp);
-    //float angle = (fmod(angle, 44000) / 44000) * 360; // convert to angle in degrees -- we were getting 44000 ticks per revolution
-    //if (_steerID == 8){ printf("Raw Angle: %f\n",angle); } //TODO: Delete this
+
     float adjusted = angle;
     if (angle < 0) {
         adjusted += 360; // bounds to 0-360
     }
-    //printf("%f\n",adjusted);
+
     frc::SmartDashboard::PutNumber("Position Error", steerPID.GetPositionError());
     frc::SmartDashboard::PutNumber("Velocity Error", steerPID.GetVelocityError());
     return adjusted;
@@ -132,10 +128,6 @@ void SwerveModule::goToPosition(float meters) {
 void SwerveModule::steerToAng(float degrees) {
     float speed = std::clamp(steerPID.Calculate(getAngle(), degrees) / 270.0, -0.5, 0.5);
     steerMotor.Set(TalonFXControlMode::PercentOutput, speed);
-    // if(_CANCoderID == misc::GetBLCANCoder()) {
-    //     int position = m_CANCoder.GetAbsolutePosition();
-    //     printf("position: %6.2f \n", position);
-    // }
 }
 
 void SwerveModule::setDrivePercent(float percent) {
@@ -201,14 +193,6 @@ bool SwerveModule::adjustAngle(float targetAngle) {
     steerToAng(tempTarget);
 
     return changeMade;
-}
-
-void SwerveModule::driveDirection(Vec2 direction) {
-    if (adjustAngle(direction.angle())) {
-        setDriveSpeed(-direction.magnitude());
-    } else {
-        setDriveSpeed(direction.magnitude());
-    }
 }
 
 double SwerveModule::wheelSpeedToRpm(double speed) {

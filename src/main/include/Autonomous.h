@@ -28,7 +28,7 @@ const std::string RedChargeStationMiddle = "Red Charge Station Middle";
 const std::string RedDropAndGoRight = "Red Drop and Go Right";
 const std::string RedChargeStationRight = "Red Charge Station Right";
 const std::string RobotDoNothing = "Sit Still";
-const std::string LeftTwoPiece = "Left 2 Piece"; 
+const std::string LeftTwoPiece = "Left 2 Piece";
 const std::string RightTwoPiece = "Right 2 Piece";
 const std::string kAutoModeDefault = RobotDoNothing;
 
@@ -188,8 +188,8 @@ class Autonomous {
     Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Claw *Claw, TOF *tof);
 
    // const char *GetCurrentPath();
-    
-  
+
+
 
     void StartAuto();
     void PeriodicAuto();
@@ -262,7 +262,7 @@ private:
     SwerveDrive *a_SwerveDrive;
 
     TOF *a_TOF;
-    
+
 
     AutoState0 a_AutoState0;
     AutoState1 a_AutoState1;
@@ -281,7 +281,7 @@ private:
     AutoState14 a_AutoState14;
 
 
-   
+
     std::string a_AutoSelected;
     std::string a_PeriodicAutoSelected;
     float drivestart{0.0};
@@ -290,7 +290,7 @@ private:
 
     // Used to measure time duration in Autonomous states
     double state_time = 0.0;
- 
+
     // used for waitForTime method
     double waitTimeStart{0.0};
 
@@ -301,8 +301,4 @@ private:
 
     bool startedClimb{false};
     float startTime{0.0};
-
-    // start position of robot during 5 ball auto relative to near left corner of field
-    // FIXME: this is a very innacurate guess, more so than the other measurements
-    constexpr static Vec2 AUTO35_START_POS{5.52, 7.69};
 };
