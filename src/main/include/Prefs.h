@@ -7,9 +7,6 @@
 
 // Declare constants such as CAN IDs here
 
-// uncomment to enable the new swerve
-//#define NEW_SWERVE
-
 // For the competition bot, this line *MUST* be enabled. For the practice bot, comment out this line.
 #define COMP_BOT
 
@@ -113,13 +110,13 @@ m = number engraved on module
 #define CANCODER_ID_ARM 25
 
 static double CANCODER_OFFSETS[] = {
-    CANCODER_OFFSET_1, 
-    CANCODER_OFFSET_2, 
-    CANCODER_OFFSET_3, 
-    CANCODER_OFFSET_4, 
-    CANCODER_OFFSET_5, 
-    CANCODER_OFFSET_6, 
-    CANCODER_OFFSET_7, 
+    CANCODER_OFFSET_1,
+    CANCODER_OFFSET_2,
+    CANCODER_OFFSET_3,
+    CANCODER_OFFSET_4,
+    CANCODER_OFFSET_5,
+    CANCODER_OFFSET_6,
+    CANCODER_OFFSET_7,
     CANCODER_OFFSET_8,
     CANCODER_OFFSET_ARM
     };
@@ -183,13 +180,12 @@ constexpr units::angle::radian_t TARGET_PITCH = units::angle::radian_t(0.0);
 
 // mdns name of camera
 #define SHOOTER_CAMERA_NAME "photonvision"
-#define BALL_CAMERA_NAME "temp" 
+#define BALL_CAMERA_NAME "temp"
 
 /* ============= Arduino ============= */
 
 #define BAUD_RATE_TOF 115200
 #define USB_PORT_TOF frc::SerialPort::kUSB1
-//#define USB_PORT_TOF frc::SerialPort::kUSB1 (seeing TOF print statements and roborio then rebooting)
 #define DATA_BITS_TOF 8
 #define PARITY_TOF frc::SerialPort::kParity_None
 #define STOP_BITS_TOF frc::SerialPort::kStopBits_One
