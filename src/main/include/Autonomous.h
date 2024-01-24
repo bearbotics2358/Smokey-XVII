@@ -15,11 +15,11 @@
 
 
 
-const std::string BlueDropAndGoLeft = "Blue Drop and Go Left";
-const std::string BlueChargeStationLeft = "Blue Charge Station Left";
-const std::string BlueDropAndGoMiddle = "Blue Drop and Go Middle";
-const std::string BlueChargeStationMiddle = "Blue Charge Station Middle";
-const std::string BlueDropAndGoRight = "Blue Drop and Go Right";
+const std::string onePieceAMP = "One Amp";
+const std::string twoPieceAMP = "Two Amp";
+const std::string BlueMiddleOneNote = "Blue Middle One Note";
+const std::string BlueMiddleTwoNote = "Blue Middle Two Note";
+const std::string BlueRightOneNote = "Blue Right One Note";
 const std::string BlueChargeStationRight = "Blue Charge Station Right";
 const std::string RedDropAndGoLeft = "Red Drop and Go Left";
 const std::string RedChargeStationLeft = "Red Charge Station Left";
@@ -34,60 +34,63 @@ const std::string kAutoModeDefault = RobotDoNothing;
 
 enum AutoState0 { // Encoders
     kBlueAutoIdle0 = 0,
-    kBlueExtend0,
-    kBlueDrop0,
-    kBlueRetract0,
+    kBlueGo0,
+    kBlueStartShooter0,
+    kBlueShoot0,
     kBlueDriveAway0
 
 };
 
 enum AutoState1 { // Encoders
     kBlueAutoIdle1,
-    kBlueExtend1,
-    kBlueDrop1,
-    kBlueRetract1,
-    kBlueDriveAway1,
-    kBlueGoToStation1,
-    kBlueBalance1,
-    kBlueWait1
+    kBlueGo1,
+    kBlueStartShooter1,
+    kBlueShoot1,
+    kBlueTurn1,
+    kBlueGetPiece1,
+    kBlueRotateBack1,
+    kBlueGoToAmp1,
+    kBlueRestartShooter1,
+    kBlueShootAgain1
 };
 
 enum AutoState2 { // T.O.F and Encoders
     kBlueAutoIdle2,
-    kBlueExtend2,
-    kBlueDrop2,
-    kBlueRetract2,
-    kBlueDriveAway2
+    kBlueStartShooter2,
+    kBlueShoot2,
+    kBlueDriveBack2,
 };
 
 // states for 3 ball auto
 enum AutoState3 {
     kBlueAutoIdle3,
-    kBlueExtend3,
-    kBlueDrop3,
-    kBlueRetract3,
-    kBlueDriveAway3,
-    kBlueGoToStation3,
-    kBlueBalance3
+    kBlueStartShooter3,
+    kBlueShoot3,
+    kBlueGetNote3,
+    kBlueGoToSpeaker3,
+    kBlueRestartShooter3,
+    kBlueShootAgain3
 };
 
 enum AutoState4 {
     kBlueAutoIdle4,
-    kBlueExtend4,
-    kBlueDrop4,
-    kBlueRetract4,
+    kBlueStartShooter4,
+    kBlueShoot4,
+    kBlueRotate4,
     kBlueDriveAway4
 };
 
 // states for 5 ball auto
 enum AutoState5 {
     kBlueAutoIdle5,
-    kBlueExtend5,
-    kBlueDrop5,
-    kBlueRetract5,
-    kBlueDriveAway5,
-    kBlueGoToStation5,
-    kBlueBalance5
+    kBlueStartShooter5,
+    kBlueShoot5,
+    kBlueRotate5,
+    kBlueGetPiece5,
+    kBlueGoToSpeaker5,
+    kBlueTurnBack5,
+    kRestartShooter5,
+    kShootAgain5
 };
 
 enum AutoState6 {
@@ -194,20 +197,20 @@ class Autonomous {
     void StartAuto();
     void PeriodicAuto();
 
-    void BDGL();         // Blue Drop and Go Left AutoState0
-    void PeriodicBDGL(); // Periodic Blue Drop and Go Left AutoState0
+    void oneAMP();         // Blue Drop and Go Left AutoState0
+    void PeriodiconeAMP(); // Periodic Blue Drop and Go Left AutoState0
 
-    void BCSL();         // Blue Charge Station Left AutoState1
-    void PeriodicBCSL(); // Periodic Blue Charge Station Left AutoState1
+    void twoAMP();         // Blue Charge Station Left AutoState1
+    void PeriodictwoAMP(); // Periodic Blue Charge Station Left AutoState1
 
-    void BDGM();         // Blue Drop and Go Middle AutoState2
-    void PeriodicBDGM(); // Periodic Blue Drop and Go Middle AutoState2
+    void BMOneNote();         // Blue Drop and Go Middle AutoState2
+    void PeriodicBMOneNote(); // Periodic Blue Drop and Go Middle AutoState2
 
-    void BCSM();         // Blue Charge Station Middle AutoState3
-    void PeriodicBCSM(); // Periodic Blue Charge Station Middle AutoState3
+    void BMTwoNote();         // Blue Charge Station Middle AutoState3
+    void PeriodicBMTwoNote(); // Periodic Blue Charge Station Middle AutoState3
 
-    void BDGR();         // Blue Drop and Go Right AutoState4
-    void PeriodicBDGR(); // Periodic Blue Drop and Go Right AutoState4
+    void BROneNote();         // Blue Drop and Go Right AutoState4
+    void PeriodicBROneNote(); // Periodic Blue Drop and Go Right AutoState4
 
     void BCSR();         // Blue Charge Station Right AutoState5
     void PeriodicBCSR(); // Periodic Blue Charge Station Right AutoState5
@@ -253,7 +256,7 @@ class Autonomous {
     // Drives in direction at speed for distance. If going straight backwards, set angle to 180, not dist as a negative
     bool DriveDirection(double dist, double angle, double speed, bool fieldOriented);
 
-    bool TurnToAngle(float angle); // turns to a specific angle
+    bool TurnToAngle(float angle, bool positive); // turns to a specific angle
     bool Balance(float direction);
 
 private:
@@ -287,6 +290,7 @@ private:
     float drivestart{0.0};
 
     double distance = 0;
+    double speed = .15;
 
     // Used to measure time duration in Autonomous states
     double state_time = 0.0;

@@ -67,11 +67,11 @@ void Robot::RobotInit() {
     a_Gyro.Zero();
 
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
-    m_AutoModeSelector.AddOption(BlueDropAndGoLeft, BlueDropAndGoLeft);
-    m_AutoModeSelector.AddOption(BlueChargeStationLeft, BlueChargeStationLeft);
-    m_AutoModeSelector.AddOption(BlueDropAndGoMiddle, BlueDropAndGoMiddle);
-    m_AutoModeSelector.AddOption(BlueChargeStationMiddle, BlueChargeStationMiddle);
-    m_AutoModeSelector.AddOption(BlueDropAndGoRight, BlueDropAndGoRight);
+    m_AutoModeSelector.AddOption(onePieceAMP, onePieceAMP);
+    m_AutoModeSelector.AddOption(twoPieceAMP, twoPieceAMP);
+    m_AutoModeSelector.AddOption(BlueMiddleOneNote, BlueMiddleOneNote);
+    m_AutoModeSelector.AddOption( BlueMiddleTwoNote,  BlueMiddleTwoNote);
+    m_AutoModeSelector.AddOption(BlueRightOneNote, BlueRightOneNote);
     m_AutoModeSelector.AddOption(BlueChargeStationRight, BlueChargeStationRight);
     m_AutoModeSelector.AddOption(RedDropAndGoLeft, RedDropAndGoLeft);
     m_AutoModeSelector.AddOption(RedChargeStationLeft, RedChargeStationLeft);
@@ -110,6 +110,7 @@ void Robot::RobotPeriodic() {
     //     a_BRModule.steerToAng(150);
     //     a_BLModule.steerToAng(150);
     // }
+    frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
 }
 
 void Robot::DisabledInit() {
@@ -149,7 +150,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     SetTargetType(target_type_enum::CONE);
 
-    a_Gyro.setYaw(180 + a_Gyro.getYaw());
+    //a_Gyro.setYaw(180 + a_Gyro.getYaw());
 
     if (a_doEnabledInit) {
         EnabledInit();
@@ -189,7 +190,7 @@ void Robot::TeleopPeriodic() {
     // frc::SmartDashboard::PutNumber("P value", 0.6 + pChange);
     // frc::SmartDashboard::PutNumber("I value", 1.0 + iChange);
     // frc::SmartDashboard::PutNumber("D value", 0.06 + dChange);
-
+    
     /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
     if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
         a_Claw.ClawClose();
