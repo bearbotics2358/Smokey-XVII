@@ -1,18 +1,14 @@
 #pragma once
 
 #include "Prefs.h"
-#include "math/LinAlg.h"
 #include <ctre/Phoenix.h>
-#include <frc/AnalogEncoder.h>
-#include <frc/AnalogInput.h>
 #include <frc/controller/PIDController.h>
-#include <math.h>
-#include <ctre/phoenix/sensors/WPI_CANCoder.h>
+
 class SwerveModule // Handles steering and driving of each Swerve Module
 {
     public:
         SwerveModule(int driveID, int steerID, int CANCoderID); // CAN IDs, analog port for steer encoder
-    
+
         // Returns position of the distance encoder in meters
         float getDistance();
         // sets the drive encoder to 0 ticks
@@ -45,10 +41,6 @@ class SwerveModule // Handles steering and driving of each Swerve Module
         // this means the wheel may end up facing backwards
         // if that is the case, this returns true to indicate that the wheel speed should be opposite of what it would normally be
         bool adjustAngle(float targetAngle);
-
-        // drives in the direction of the vector
-        // the magnitude of the vector is the speed in meters per second
-        void driveDirection(Vec2 direction);
 
         void debugSteer(float angle);
 
