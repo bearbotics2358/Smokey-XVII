@@ -23,7 +23,7 @@ void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
         holdAngle = gyroDegrees;
         crab = true;
     }
-
+//crabCalcZ(holdAngle, gyroDegrees)
     swerveUpdateInner(x, y, crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
 }
 
@@ -92,6 +92,29 @@ void SwerveDrive::driveDistance(float distMeters, float directionDegrees) {
 }
 
 void SwerveDrive::driveDirection(float percent, float directionDegrees) {
+    // if (flModule.adjustAngle(directionDegrees)) {
+    //     flModule.setDrivePercent(-percent);
+    // } else {
+    //     flModule.setDrivePercent(percent);
+    // }
+
+    // if (frModule.adjustAngle(directionDegrees)) {
+    //     frModule.setDrivePercent(-percent);
+    // } else {
+    //     frModule.setDrivePercent(percent);
+    // }
+
+    // if (blModule.adjustAngle(directionDegrees)) {
+    //     blModule.setDrivePercent(-percent);
+    // } else {
+    //     blModule.setDrivePercent(percent);
+    // }
+
+    // if (brModule.adjustAngle(directionDegrees)) {
+    //     brModule.setDrivePercent(-percent);
+    // } else {
+    //     brModule.setDrivePercent(percent);
+    // }
     flModule.steerToAng(directionDegrees);
     frModule.steerToAng(directionDegrees);
     blModule.steerToAng(directionDegrees);
@@ -116,24 +139,42 @@ void SwerveDrive::driveDirectionVelocity(float speed, float directionDegrees) {
 }
 
 float SwerveDrive::getAvgDistance() {
-    return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
 
-void SwerveDrive::turnToAngle(float angle) {
+void SwerveDrive::turnToAngle(float angle, bool positive_speed) {
     float gyroDegrees = a_gyro.getAngleClamped();
     // calculates a speed we need to go based off our current sensor and target position
-    float speed = turnCalcZ(angle, gyroDegrees);
+    //float speed = 5.0; //turnCalcZ(angle, gyroDegrees);
 
-    flModule.steerToAng(135);
-    frModule.steerToAng(45);
-    blModule.steerToAng(225);
-    brModule.steerToAng(315);
 
-    flModule.setDrivePercent(speed);
-    frModule.setDrivePercent(speed);
-    blModule.setDrivePercent(speed);
-    brModule.setDrivePercent(speed);
+    if(positive_speed){
+         flModule.steerToAng(135);
+         frModule.steerToAng(45);
+         blModule.steerToAng(225);
+         brModule.steerToAng(315);
+
+         flModule.setDrivePercent(.15);
+         frModule.setDrivePercent(.15);
+         blModule.setDrivePercent(.15);
+         brModule.setDrivePercent(.15);
+    }
+    else{
+        flModule.steerToAng(135);
+        frModule.steerToAng(45);
+        blModule.steerToAng(225);
+        brModule.steerToAng(315);
+
+        flModule.setDrivePercent(-.15);
+        frModule.setDrivePercent(-.15);
+        blModule.setDrivePercent(-.15);
+        brModule.setDrivePercent(-.15);
+    }
+    
+
 }
+
 
 void SwerveDrive::goToTheDon(float speed, float direction, float distance, bool fieldOriented, bool stop_on_completion) {
     if (getAvgDistance() <= distance) {

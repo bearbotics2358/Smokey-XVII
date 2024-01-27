@@ -21,12 +21,23 @@ double misc::radToDeg(double radians) {
 }
 
 double misc::clampDegrees(double degrees) {
-    double out = fmod(degrees, 360);
-    if (out < 360) {
-        return 1 + out;
-    } else {
-        return out;
+    while (degrees > 360 || degrees < 0)
+    {
+     double out = 360 - degrees;
+    if(out<0){
+        degrees = degrees - 360;
     }
+    if(out>360){
+        degrees = degrees + 360;
+    } 
+    }
+    // double out = fmod(degrees, 360);//.903
+    // if (out < 360) {
+    //     return 1 + out;
+    // } else {
+    //     return out;
+    // }
+    return degrees;
 }
 
 double misc::clampRotations(double rotations) {
