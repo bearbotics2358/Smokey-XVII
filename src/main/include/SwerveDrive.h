@@ -58,7 +58,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // TODO: use meters/second vector for crabUpdate and swerveUpdate, instead of x and y going from 0 to 1
         // for crab drive update and swerve drive update, +y is forward, -y is backward, x is left, and -x is right
         // crab drive is like swerve drive update, except it maintains a constant turn angle
-        void crabUpdate(float x, float y, bool fieldOriented = true);
+        void crabUpdate(float x, float y, double anglerot, bool fieldOriented = true);
         void swerveUpdate(float x, float y, float z, bool fieldOriented);
         /*
             x = x axis on joystick
@@ -100,14 +100,15 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         // returns the average of the total distance of the drive encoders in all 4 modules in meters
         float getAvgDistance();
-
+        float getAvgXDistance();
+        float getAvgYDistance();
         // angle is in degrees
         bool turnToAngle(float angle, bool positive_speed);
 
         // drives at a given speed (units uknown), in a given direction in degrees, for a given distance in meters
         // if another call to goToTheDon() will follow this call, suggest setting stop_on_completion false so that
         // the 'bot will not slam on the brakes once the first run is successful
-        void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
+        void goToTheDon(float speed, float direction, float directionrotate, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
         // goes to the specified position in meters and the specified angle in degrees at the specified percent speed
         // returns true when it has reached the position and angle

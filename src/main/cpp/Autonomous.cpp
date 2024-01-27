@@ -141,10 +141,10 @@ void Autonomous::PeriodiconeAMP() {
             StopSwerves();
             break;
          case kBlueGo0:
-            if (DriveDirection(.45, 180, .25, true)) {
-                nextState = kBlueStartShooter0;
-            }  
-            break;
+            // if (DriveDirection(.45, 180, .25, true)) {
+                 nextState = kBlueStartShooter0;
+            // }  
+            // break;
         case kBlueStartShooter0:
             nextState = kBlueShoot0;
             break;
@@ -153,9 +153,9 @@ void Autonomous::PeriodiconeAMP() {
 
             break;
         case kBlueDriveAway0:
-            if (DriveDirection(3, 160, .25, true)) {
+           // if (DriveDirection(3, 160, .25, true)) {
                 nextState = kBlueAutoIdle0;
-            }
+            //}
             break;
     }
     a_AutoState0 = nextState;
@@ -179,9 +179,9 @@ void Autonomous::PeriodictwoAMP() {
             StopSwerves();
             break;
         case kBlueGo1:
-             if (DriveDirection(.45, 180, .25, true)) {
+        //     if (DriveDirection(.45, 180, .25, true)) {
                 nextState = kBlueStartShooter1;
-            }  
+        //    }  
             break;
         case kBlueStartShooter1:
             nextState = kBlueShoot1;
@@ -195,14 +195,14 @@ void Autonomous::PeriodictwoAMP() {
             }
             break;
         case kBlueGetPiece1:
-            if (DriveDirection(1.78, 0, 0.25, true)) {
+           // if (DriveDirection(1.78, 0, 0.25, true)) {
                 nextState = kBlueRotateBack1;
-            }
+           // }
             break;
         case kBlueRotateBack1:
-             if(DriveDirection(1.78, 180, 0.25, true)){
+        //     if(DriveDirection(1.78, 180, 0.25, true)){
                 nextState = kBlueGoToAmp1;
-            }
+          //  }
             break;
         case kBlueGoToAmp1:
             if (TurnToAngle(270, true)) {
@@ -242,9 +242,9 @@ void Autonomous::PeriodicBMOneNote() {
             nextState = kBlueDriveBack2;
             break;
         case kBlueDriveBack2:
-            if (DriveDirection(1.94, 0, 0.25, true)) {
+         //   if (DriveDirection(1.94, 0, 0.25, true)) {
                 nextState = kBlueAutoIdle2;
-            }
+        //    }
             break;        
     }
     a_AutoState2 = nextState;
@@ -277,15 +277,15 @@ void Autonomous::PeriodicBMTwoNote() {
             break;
         case kBlueGetNote3:
         frc::SmartDashboard::PutNumber("DriveStart", drivestart);
-            if (DriveDirection(1.94, 0, 0.25, true)) {
+          //  if (DriveDirection(1.94, 0, 0.25, true)) {
             nextState = kBlueGoToSpeaker3;
-            }
+          //  }
             break;
         case kBlueGoToSpeaker3:
             frc::SmartDashboard::PutNumber("DriveStart", drivestart);
-            if (DriveDirection(1.94, 180, 0.25, true)) {
+        //    if (DriveDirection(1.94, 180, 0.25, true)) {
                 nextState = kBlueRestartShooter3;
-            }
+        //    }
             break;
         case kBlueRestartShooter3:
             frc::SmartDashboard::PutNumber("DriveStart", drivestart);
@@ -326,9 +326,9 @@ void Autonomous::PeriodicBROneNote() {
             }
             break;
         case kBlueDriveAway4:
-            if (DriveDirection(2.0, 0, 0.25, true)) {
+        //    if (DriveDirection(2.0, 0, 0.25, true)) {
                 nextState = kBlueAutoIdle4;
-            }
+        //    }
             break;
     }
     a_AutoState4 = nextState;
@@ -363,15 +363,15 @@ void Autonomous::PeriodicBRTwoNote() {
             break;
 
         case kBlueGetPiece5:
-            if (DriveDirection(2.0, 0, 0.25, true)) {
+         //   if (DriveDirection(2.0, 0, 0.25, true)) {
                 nextState = kBlueGoToSpeaker5;
-            }
+         //   }
             break;
 
         case kBlueGoToSpeaker5:
-             if (DriveDirection(2.0, 180, 0.25, true)) {
+           //  if (DriveDirection(2.0, 180, 0.25, true)) {
                 nextState = kBlueTurnBack5;
-            }
+          //  }
             break;
         case kBlueTurnBack5:
             if (TurnToAngle(300, true)) {
@@ -409,14 +409,14 @@ void Autonomous::PeriodicRDGL() {
             nextState = kBlueGetNote6;
             break;
         case kBlueGetNote6:
-            if (DriveDirection(1.94, 0, 0.25, true)) {
+       //     if (DriveDirection(1.94, 0, 0.25, true)) {
             nextState = kBlueGoToSpeaker6;
-            }
+        //    }
             break;
         case kBlueGoToSpeaker6:
-            if (DriveDirection(1.94, 180, 0.25, true)) {
+     //       if (DriveDirection(1.94, 180, 0.25, true)) {
                 nextState = kBlueRestartShooter6;
-            }
+      //      }
             break;
         case kBlueRestartShooter6:
             nextState = kBlueShootAgain6;
@@ -430,14 +430,14 @@ void Autonomous::PeriodicRDGL() {
             }
             break;
         case kBlueGetThirdNote6:
-            if(DriveDirection(2.42, 0, .25, true)) { 
+     //       if(DriveDirection(2.42, 0, .25, true)) { 
                 nextState = kBlueGoBackToSpeaker6;
-            }
+    //        }
             break;
         case kBlueGoBackToSpeaker6:
-            if(DriveDirection(2.42, 180, .25, true)) { 
+     //       if(DriveDirection(2.42, 180, .25, true)) { 
                 nextState = kBlueTurnBack6;
-            }
+      //      }
             break;
         case kBlueTurnBack6:
             if (TurnToAngle(0, true)) {
@@ -468,10 +468,9 @@ void Autonomous::PeriodicRCSL() {
             StopSwerves();
             break;
         case kRedExtend7:
-              if(DriveDirection(4, 0, .25, true)) { 
+              if(DriveDirection(3, 0.0, 135.0, .25, true)) { 
                  nextState = kRedAutoIdle7;
             }
-           
             break;
         case kRedDrop7:
             a_Claw->ClawOpen();
@@ -488,14 +487,14 @@ void Autonomous::PeriodicRCSL() {
             }
             break;
         case kRedDriveAway7:
-            if (DriveDirection(3.5052, 0, 0.3, true)) {
+        //    if (DriveDirection(3.5052, 0, 0.3, true)) {
                 nextState = kRedGoToStation7;
-            }
+         //   }
             break;
         case kRedGoToStation7:
-            if (DriveDirection(1.9812, 90, 0.25, true)) {
+         //   if (DriveDirection(1.9812, 90, 0.25, true)) {
                 nextState = kRedBalance7;
-            }
+         //   }
             break; 
         case kRedBalance7:
             if(Balance(180)){
@@ -520,10 +519,8 @@ void Autonomous::PeriodicRDGM(){
             StopSwerves();
             break;
         case kRedExtend8:
-            a_Claw->TransformClaw(170, 510, true);
-            if(gettime_d() > state_time + EXTEND_PISTON_TIME){
-            state_time = gettime_d();
-            nextState = kRedDrop8;
+           if (TurnToAngle(180, false)) {
+                nextState = kRedAutoIdle8;
             }
             break;
         case kRedDrop8:
@@ -541,9 +538,9 @@ void Autonomous::PeriodicRDGM(){
              }
             break;
         case kRedDriveAway8:
-         if (DriveDirection(4.8768, 0, 0.4, true)) {
+     //    if (DriveDirection(4.8768, 0, 0.4, true)) {
                 nextState = kRedAutoIdle8;
-            }
+      //      }
             break;
     }
     a_AutoState8 = nextState;
@@ -586,9 +583,9 @@ void Autonomous::PeriodicRCSM() {
             break;
 
         case kRedDriveAway9:
-            if(DriveDirection(3.5052, 0, .4, true)) { 
+          //  if(DriveDirection(3.5052, 0, .4, true)) { 
                 nextState = kRedGoToStation9;
-            }
+          //  }
             break;
             
         case kRedGoToStation9:
@@ -640,9 +637,9 @@ void Autonomous::PeriodicRDGR() {
              }
             break;
         case kRedDriveAway10:
-            if (DriveDirection(4.8768, 0, 0.25, true)) {
+         //   if (DriveDirection(4.8768, 0, 0.25, true)) {
                 nextState = kRedAutoIdle10;
-            }
+         //   }
             break;
     }
     a_AutoState10 = nextState;
@@ -682,14 +679,14 @@ void Autonomous::PeriodicRCSR() {
              }
             break;
         case kRedDriveAway11:
-            if(DriveDirection(3.5052, 0, .25, true)) { 
+       //     if(DriveDirection(3.5052, 0, .25, true)) { 
                 nextState = kRedGoToStation11;
-            }
+       //     }
             break;
         case kRedGoToStation11:
-            if(DriveDirection(1.9812, -90, .25,true)) { 
+        //    if(DriveDirection(1.9812, -90, .25,true)) { 
                 nextState = kRedBalance11;
-            }
+         //   }
             break;
         case kRedBalance11:
         if(Balance(180)){
@@ -750,9 +747,9 @@ void Autonomous::LeftPeriodicPiece2(){
              }
             break;
         case kDriveAway13:
-            if(DriveDirection(5.69, 0, .25, true)) { 
+         //   if(DriveDirection(5.69, 0, .25, true)) { 
                 nextState = kTurn13;
-            }
+         //   }
             break;
         case kTurn13:
             if(TurnToAngle(-90, false)){
@@ -760,17 +757,17 @@ void Autonomous::LeftPeriodicPiece2(){
             }
             break;
         case kPickUp13:
-            if(DriveDirection(3, 90, .25, true)||a_TOF->GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE){
+        //    if(DriveDirection(3, 90, .25, true)||a_TOF->GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE){
                 distance = a_SwerveDrive->getAvgDistance();
                 a_Claw->ClawClose();
                 nextState = kGoBack13;
-            }
+        //    }
             break;
         case kGoBack13:
         //TODO subtract the distance we need to get to the cube platform
-            if(DriveDirection(distance-.47, -90, .25, true)){
+        //    if(DriveDirection(distance-.47, -90, .25, true)){
                 nextState = kTurnBack13;
-            }
+        //    }
             break;
         case kTurnBack13:
             if(TurnToAngle(90, false)){
@@ -778,9 +775,9 @@ void Autonomous::LeftPeriodicPiece2(){
             }
             break;
         case kGoToGrid13:
-            if(DriveDirection(5.69, 180, .25, true)){
+        //    if(DriveDirection(5.69, 180, .25, true)){
                 nextState = kAutoIdle13;
-                }
+         //       }
             
         case kExtendAgain13:
             a_Claw->TransformClaw(170, 510, true);
@@ -832,9 +829,9 @@ AutoState14 nextState = a_AutoState14;
              }
             break;
         case kBlueDriveAway14:
-            if(DriveDirection(5.69, 0, .25, true)) { 
+        //    if(DriveDirection(5.69, 0, .25, true)) { 
                 nextState = kTurn14;
-            }
+        //    }
             break;
         case kTurn14:
             if(TurnToAngle(90, false)){
@@ -842,17 +839,17 @@ AutoState14 nextState = a_AutoState14;
             }
             break;
         case kBluePickUp14:
-            if(DriveDirection(3, -90, .25, true)||a_TOF->GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE){
+        //    if(DriveDirection(3, -90, .25, true)||a_TOF->GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE){
                 distance = a_SwerveDrive->getAvgDistance();
                 a_Claw->ClawClose();
                 nextState = kGoBack14;
-            }
+         //   }
             break;
         case kGoBack14:
         //TODO subtract the distance we need to get to the cube platform
-            if(DriveDirection(distance-.47, 90, .25, true)){
+       //     if(DriveDirection(distance-.47, 90, .25, true)){
                 nextState = kTurnBack14;
-            }
+       //     }
             break;
         case kTurnBack14:
             if(TurnToAngle(-90, false)){
@@ -860,9 +857,9 @@ AutoState14 nextState = a_AutoState14;
             }
             break;
         case kGoToGrid14:
-            if(DriveDirection(5.69, 180, .25, true)){
+       //     if(DriveDirection(5.69, 180, .25, true)){
                 nextState = kBlueAutoIdle14;
-                }
+         //       }
             
         case kExtendAgain14:
             a_Claw->TransformClaw(170, 510, true);
@@ -929,19 +926,19 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
     // }
 
 
-bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
+bool Autonomous::DriveDirection(double dist, double angleface, double anglerotate, double speed, bool fieldOriented) { // true is done, false is not done
     
     if (fabs(a_SwerveDrive->getAvgDistance()) < (dist + drivestart)) {
 
         if (a_SwerveDrive->getAvgDistance() > (0.80 * (dist + drivestart))) {
             // for the second part of the move, drive slower
             // after the second part of the move, allow goToTheDon() to slam on the brakes
-            a_SwerveDrive->driveDirection(speed / 2, angle);
+            a_SwerveDrive->goToTheDon(speed / 2, angleface, anglerotate, dist, fieldOriented);
 
         } else {
             // first part of the move, at the user specified speed
             // after the first part of the move, do not slam on the brakes
-            a_SwerveDrive->driveDirection(speed, angle);
+            a_SwerveDrive->goToTheDon(speed, angleface, anglerotate, dist, fieldOriented);
         }
         return false;
 

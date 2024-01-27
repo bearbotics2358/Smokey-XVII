@@ -144,8 +144,8 @@ static double CANCODER_OFFSETS[] = {
 #define INVERTED_MOTOR (-1.0) //used to allow for the inversion of motors in MK4i modules
 
 // wheel diameter in meters
-#define WHEEL_DIAMETER 0.1016
-
+#define WHEEL_DIAMETER .095
+//0.1016
 
 /* ============= MqttClient ============= */
 

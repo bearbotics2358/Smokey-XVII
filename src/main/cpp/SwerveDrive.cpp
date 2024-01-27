@@ -66,7 +66,7 @@ crabAnglePid(1.5, 0.0, 0.01) {
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
 }
 
-void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
+void SwerveDrive::crabUpdate(float x, float y, double anglerot, bool fieldOriented) {
     float gyroDegrees = a_gyro.getAngleClamped();
 
     if (!crab) {
@@ -74,7 +74,8 @@ void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
         crab = true;
     }
 //crabCalcZ(holdAngle, gyroDegrees)
-    swerveUpdateInner(x, y, crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
+//crabCalcZ(anglerot, gyroDegrees)
+    swerveUpdateInner(x, y, -crabCalcZ(anglerot, gyroDegrees), gyroDegrees, fieldOriented);
 }
 
 void SwerveDrive::swerveUpdate(float x, float y, float z, bool fieldOriented) {
@@ -192,6 +193,13 @@ float SwerveDrive::getAvgDistance() {
   //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
   return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
+float SwerveDrive::getAvgXDistance(){
+    return (fabs(getAvgDistance())*(cos(a_gyro.getAngleClamped() * M_PI / 180)));
+}
+float SwerveDrive::getAvgYDistance(){
+    return (fabs(getAvgDistance())*(sin(a_gyro.getAngleClamped() * M_PI / 180)));
+}
+
 
 bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
         float gyroDegrees = a_gyro.getAngleClamped();
@@ -244,14 +252,14 @@ bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
 }
 
 
-void SwerveDrive::goToTheDon(float speed, float direction, float distance, bool fieldOriented, bool stop_on_completion) {
+void SwerveDrive::goToTheDon(float speed, float direction, float directionrotate, float distance, bool fieldOriented, bool stop_on_completion) {
     if (getAvgDistance() <= distance) {
         float radians = direction * M_PI / 180.0;
 
         float x = speed * sin(radians);
         float y = speed * cos(radians);
 
-        crabUpdate(x, y, fieldOriented);
+        crabUpdate(x, y, directionrotate, fieldOriented);
     } else {
         if(stop_on_completion) {
             stop();

@@ -262,7 +262,7 @@ class Autonomous {
     static double gettime_d();
 
     // Drives in direction at speed for distance. If going straight backwards, set angle to 180, not dist as a negative
-    bool DriveDirection(double dist, double angle, double speed, bool fieldOriented);
+    bool DriveDirection(double dist, double angle, double anglerotate, double speed, bool fieldOriented);
 
     bool TurnToAngle(float angle, bool positive); // turns to a specific angle
     bool Balance(float direction);
