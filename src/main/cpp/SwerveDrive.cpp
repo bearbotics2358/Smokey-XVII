@@ -143,34 +143,52 @@ float SwerveDrive::getAvgDistance() {
   return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
 
-void SwerveDrive::turnToAngle(float angle, bool positive_speed) {
-    float gyroDegrees = a_gyro.getAngleClamped();
+bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
+        float gyroDegrees = a_gyro.getAngleClamped();
     // calculates a speed we need to go based off our current sensor and target position
-    //float speed = 5.0; //turnCalcZ(angle, gyroDegrees);
+            turnAnglePid.SetSetpoint(angle);
+            float speed = turnCalcZ(angle, gyroDegrees);
+            flModule.steerToAng(135);
+            frModule.steerToAng(45);
+            blModule.steerToAng(225);
+            brModule.steerToAng(315);
 
+            // - speed works, and speed does not because pid has clockwise as going up from zero, while the gyro thinks going clockwise as down from 360, so we need the opposite of one of them
+            flModule.setDrivePercent(-speed);
+            frModule.setDrivePercent(-speed);
+            blModule.setDrivePercent(-speed);
+            brModule.setDrivePercent(-speed);
+        if((turnAnglePid.AtSetpoint())){
+            return true;
+        }
+        else{
+           
+            return false;
+        }
+       
 
-    if(positive_speed){
-         flModule.steerToAng(135);
-         frModule.steerToAng(45);
-         blModule.steerToAng(225);
-         brModule.steerToAng(315);
+    // if(positive_speed){
+    //      flModule.steerToAng(135);
+    //      frModule.steerToAng(45);
+    //      blModule.steerToAng(225);
+    //      brModule.steerToAng(315);
 
-         flModule.setDrivePercent(.15);
-         frModule.setDrivePercent(.15);
-         blModule.setDrivePercent(.15);
-         brModule.setDrivePercent(.15);
-    }
-    else{
-        flModule.steerToAng(135);
-        frModule.steerToAng(45);
-        blModule.steerToAng(225);
-        brModule.steerToAng(315);
+    //      flModule.setDrivePercent(.15);
+    //      frModule.setDrivePercent(.15);
+    //      blModule.setDrivePercent(.15);
+    //      brModule.setDrivePercent(.15);
+    // }
+    // else{
+    //     flModule.steerToAng(135);
+    //     frModule.steerToAng(45);
+    //     blModule.steerToAng(225);
+    //     brModule.steerToAng(315);
 
-        flModule.setDrivePercent(-.15);
-        frModule.setDrivePercent(-.15);
-        blModule.setDrivePercent(-.15);
-        brModule.setDrivePercent(-.15);
-    }
+    //     flModule.setDrivePercent(-.15);
+    //     frModule.setDrivePercent(-.15);
+    //     blModule.setDrivePercent(-.15);
+    //     brModule.setDrivePercent(-.15);
+    // }
     
 
 }
