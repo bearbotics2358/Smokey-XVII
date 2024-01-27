@@ -39,18 +39,20 @@ a_LED(ARDUINO_DIO_PIN)
     armStage = 1;
     clawClosed = false;
 
+    pvalue = 2.2;
     a_FLModule.setDrivePID(0.001, 0, 0);
-    a_FLModule.setSteerPID(2.2, 0, 0.1);
+    a_FLModule.setSteerPID(pvalue, 0, 0.1);
+    
 
     a_FRModule.setDrivePID(0.001, 0, 0);
 
-    a_FRModule.setSteerPID(2.2, 0, 0.1);
+   a_FRModule.setSteerPID(pvalue, 0, 0.1);
 
     a_BLModule.setDrivePID(0.001, 0, 0);
-    a_BLModule.setSteerPID(2.2, 0, 0.1);
+    a_BLModule.setSteerPID(pvalue, 0, 0.1);
 
     a_BRModule.setDrivePID(0.001, 0, 0);
-    a_BRModule.setSteerPID(2.2, 0, 0.1);
+    a_BRModule.setSteerPID(pvalue, 0, 0.1);
 
     a_SwerveDrive.brakeOnStop();
 }
@@ -72,7 +74,7 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(BlueMiddleOneNote, BlueMiddleOneNote);
     m_AutoModeSelector.AddOption( BlueMiddleTwoNote,  BlueMiddleTwoNote);
     m_AutoModeSelector.AddOption(BlueRightOneNote, BlueRightOneNote);
-    m_AutoModeSelector.AddOption(BlueChargeStationRight, BlueChargeStationRight);
+    m_AutoModeSelector.AddOption(BlueRightTwoNote, BlueRightTwoNote);
     m_AutoModeSelector.AddOption(RedDropAndGoLeft, RedDropAndGoLeft);
     m_AutoModeSelector.AddOption(RedChargeStationLeft, RedChargeStationLeft);
     m_AutoModeSelector.AddOption(RedDropAndGoMiddle, RedDropAndGoMiddle);
@@ -111,6 +113,7 @@ void Robot::RobotPeriodic() {
     //     a_BLModule.steerToAng(150);
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
+   
 }
 
 void Robot::DisabledInit() {
@@ -166,30 +169,45 @@ void Robot::TeleopInit() {
 // main loop
 void Robot::TeleopPeriodic() {
     EnabledPeriodic();
+    // pChange = 0;
+    // iChange = 0;
+    // dChange = 0;
 
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button12)) {
+    // if (a_DriverXboxController.GetYButtonReleased()) {
     //     pChange += 0.1;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button11)) {
+    // } else if (a_DriverXboxController.GetBButtonReleased()) {
     //     pChange -= 0.1;
     // }
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button8)) {
+    // if (a_DriverXboxController.GetLeftBumperPressed()) {
     //     iChange += 0.1;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button7)) {
+    // } else if (a_DriverXboxController.GetRightBumperPressed()) {
     //     iChange -= 0.1;
     // }
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button10)) {
+    // if (a_DriverXboxController.GetAButtonPressed()) {
     //     dChange += 0.01;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button9)) {
+    // } else if (a_DriverXboxController.GetXButtonPressed()) {
     //     dChange -= 0.01;
     // }
+    // if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
+    //     a_FRModule.steerToAng(0);
+    //     a_FLModule.steerToAng(0);
+    //     a_BRModule.steerToAng(0);
+    //     a_BLModule.steerToAng(0);
+    // } 
+    // else {
+    //     a_FRModule.steerToAng(165);
+    //     a_FLModule.steerToAng(165);
+    //     a_BRModule.steerToAng(165);
+    //     a_BLModule.steerToAng(165);
+    // }
     
-    // a_FRModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_FLModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BRModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BLModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange); //P 0.6, I 1.0 D 0.06
-    // frc::SmartDashboard::PutNumber("P value", 0.6 + pChange);
-    // frc::SmartDashboard::PutNumber("I value", 1.0 + iChange);
-    // frc::SmartDashboard::PutNumber("D value", 0.06 + dChange);
+    // a_FRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_FLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_BRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_BLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange); //P 0.6, I 1.0 D 0.06
+    // frc::SmartDashboard::PutNumber("P value", pChange);
+    // frc::SmartDashboard::PutNumber("I value", iChange);
+    // frc::SmartDashboard::PutNumber("D value", dChange);
     
     /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
     if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {

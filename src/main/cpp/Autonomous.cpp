@@ -33,8 +33,8 @@ void Autonomous::StartAuto(const std::string autoMode) {
     else if (autoMode == BlueRightOneNote){
         BROneNote();
     }
-    else if (autoMode == BlueChargeStationRight){
-        BCSR();
+    else if (autoMode == BlueRightTwoNote){
+        BRTwoNote();
     }
     else if (autoMode == RedDropAndGoLeft){
         RDGL();
@@ -83,8 +83,8 @@ void Autonomous::PeriodicAuto(const std::string periodicAutoMode) {
     else if (periodicAutoMode == BlueRightOneNote){
         PeriodicBROneNote();
     }
-    else if (periodicAutoMode == BlueChargeStationRight){
-        PeriodicBCSR();
+    else if (periodicAutoMode == BlueRightTwoNote){
+        PeriodicBRTwoNote();
     }
     else if (periodicAutoMode == RedDropAndGoLeft){
         PeriodicRDGL();
@@ -125,6 +125,8 @@ void Autonomous::PeriodicAuto(const std::string periodicAutoMode) {
 
 void Autonomous::oneAMP() {
     a_AutoState0 = kBlueGo0;
+    drivestart = 0.0;
+
     a_Gyro->setYaw(270);
     // reset state time
     state_time = gettime_d();
@@ -163,6 +165,8 @@ void Autonomous::PeriodiconeAMP() {
 void Autonomous::twoAMP() {
     a_Gyro->setYaw(270);
     a_AutoState1 = kBlueGo1;
+    drivestart = 0.0;
+
     state_time = gettime_d();
 }
 
@@ -219,6 +223,8 @@ void Autonomous::PeriodictwoAMP() {
 void Autonomous::BMOneNote() {
     a_AutoState2 = kBlueStartShooter2;   
     state_time = gettime_d();
+    drivestart = 0.0;
+
 }
 
 void Autonomous::PeriodicBMOneNote() {
@@ -247,7 +253,9 @@ void Autonomous::PeriodicBMOneNote() {
 
 void Autonomous::BMTwoNote() 
 {
+    drivestart = 0.0;
     a_AutoState3 =   kBlueStartShooter3;
+
     state_time = gettime_d();
 }
 
@@ -257,24 +265,30 @@ void Autonomous::PeriodicBMTwoNote() {
     switch (a_AutoState3) {
          case kBlueAutoIdle3:
             StopSwerves();
+            frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             break;
         case kBlueStartShooter3:
             nextState = kBlueShoot3;
+            frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             break;
         case kBlueShoot3:
             nextState = kBlueGetNote3;
+            frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             break;
         case kBlueGetNote3:
+        frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             if (DriveDirection(1.94, 0, 0.25, true)) {
             nextState = kBlueGoToSpeaker3;
             }
             break;
         case kBlueGoToSpeaker3:
+            frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             if (DriveDirection(1.94, 180, 0.25, true)) {
                 nextState = kBlueRestartShooter3;
             }
             break;
         case kBlueRestartShooter3:
+            frc::SmartDashboard::PutNumber("DriveStart", drivestart);
             nextState = kBlueShootAgain3;
             break; 
         case kBlueShootAgain3:
@@ -288,6 +302,8 @@ void Autonomous::BROneNote(){
     a_AutoState4 = kBlueStartShooter4;
     state_time = gettime_d();
     a_Gyro->setYaw(300);
+    drivestart = 0.0;
+
 }
 
 void Autonomous::PeriodicBROneNote() {
@@ -305,7 +321,7 @@ void Autonomous::PeriodicBROneNote() {
             nextState = kBlueRotate4;
             break;
         case kBlueRotate4:
-            if (TurnToAngle(0, false)) {
+            if (TurnToAngle(0.0, false)) {
                 nextState = kBlueDriveAway4;
             }
             break;
@@ -317,13 +333,16 @@ void Autonomous::PeriodicBROneNote() {
     }
     a_AutoState4 = nextState;
  }
- void Autonomous::BCSR() 
+ void Autonomous::BRTwoNote() 
 {
     state_time = gettime_d();
     a_AutoState5 = kBlueStartShooter5;
+    a_Gyro->setYaw(300);
+    drivestart = 0.0;
+
 }
     
-void Autonomous::PeriodicBCSR() {
+void Autonomous::PeriodicBRTwoNote() {
 
     AutoState5 nextState = a_AutoState5;
 
@@ -338,7 +357,7 @@ void Autonomous::PeriodicBCSR() {
             nextState = kBlueRotate5;
             break;
         case kBlueRotate5:
-            if (TurnToAngle(0, false)) {
+            if (TurnToAngle(0.0, false)) {
                 nextState = kBlueGetPiece5;
             }
             break;
@@ -371,41 +390,65 @@ void Autonomous::PeriodicBCSR() {
 
 void Autonomous::RDGL(){
     state_time = gettime_d();
-    a_AutoState6 = kRedExtend6;
+    a_AutoState6 = kBlueStartShooter6;
+    drivestart = 0.0;
+    
 }
 
 void Autonomous::PeriodicRDGL() {
     AutoState6 nextState = a_AutoState6;
-
-    switch(a_AutoState6){
-         case kRedAutoIdle6:
+   
+    switch (a_AutoState6) {
+         case kBlueAutoIdle6:
             StopSwerves();
             break;
-        case kRedExtend6:
-            a_Claw->TransformClaw(170, 510, true);
-            if(gettime_d() > state_time + EXTEND_PISTON_TIME){
-            state_time = gettime_d();
-            nextState = kRedDrop6;
+        case kBlueStartShooter6:
+            nextState = kBlueShoot6;
+            break;
+        case kBlueShoot6:
+            nextState = kBlueGetNote6;
+            break;
+        case kBlueGetNote6:
+            if (DriveDirection(1.94, 0, 0.25, true)) {
+            nextState = kBlueGoToSpeaker6;
             }
             break;
-        case kRedDrop6:
-            a_Claw->ClawOpen();
-            if(gettime_d() > state_time + CLAW_PISTON_TIME){
-            state_time = gettime_d();    
-            nextState = kRedRetract6;
-        }
-            break;
-        case kRedRetract6:
-             a_Claw->TransformClaw(125, -15, false);
-             if(gettime_d() > state_time + EXTEND_PISTON_TIME){
-            state_time = gettime_d();
-            nextState = kRedDriveAway6;
-             }
-            break;
-        case kRedDriveAway6:
-            if(DriveDirection(4.8768, 0, .3, true)) { 
-                nextState = kRedAutoIdle6;
+        case kBlueGoToSpeaker6:
+            if (DriveDirection(1.94, 180, 0.25, true)) {
+                nextState = kBlueRestartShooter6;
             }
+            break;
+        case kBlueRestartShooter6:
+            nextState = kBlueShootAgain6;
+            break; 
+        case kBlueShootAgain6:
+            nextState = kBlueTurn6;
+            break;
+        case kBlueTurn6:
+            if (TurnToAngle(36.77, false)) {
+            nextState = kBlueGetThirdNote6;
+            }
+            break;
+        case kBlueGetThirdNote6:
+            if(DriveDirection(2.42, 0, .25, true)) { 
+                nextState = kBlueGoBackToSpeaker6;
+            }
+            break;
+        case kBlueGoBackToSpeaker6:
+            if(DriveDirection(2.42, 180, .25, true)) { 
+                nextState = kBlueTurnBack6;
+            }
+            break;
+        case kBlueTurnBack6:
+            if (TurnToAngle(0, true)) {
+            nextState = kBluePrepShooter6;
+            }
+            break;
+        case kBluePrepShooter6:
+                nextState = kBlueShootThirdNote6;
+        case kBlueShootThirdNote6:
+                nextState = kBlueAutoIdle6;
+        
     }
     a_AutoState6 = nextState;
 }
@@ -414,6 +457,7 @@ void Autonomous::RCSL()
 {
     state_time = gettime_d();
     a_AutoState7 = kRedExtend7;
+    drivestart = 0.0;
 }
 
 void Autonomous::PeriodicRCSL() {
@@ -870,7 +914,7 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
     }
     //if (fabs(a_Gyro->getAngle() - angle) >= 5) {
     //if((a_Gyro->getAngle() - angle <= 10) || ((a_Gyro->getAngle() - angle - 360) <= 10) || (a_Gyro->getAngle() - (angle + 360) <= 10)){
-      if(fabs(a_Gyro->getAngleClamped() - angle) <= 5){
+       if(fabs(a_Gyro->getAngleClamped() - angle) <= 5){
         a_SwerveDrive->stop();
         return true;
        
@@ -883,7 +927,7 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
 }
 
 bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
-
+    
     if (fabs(a_SwerveDrive->getAvgDistance()) < (dist + drivestart)) {
 
         if (a_SwerveDrive->getAvgDistance() > (0.80 * (dist + drivestart))) {
@@ -902,6 +946,7 @@ bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fi
         drivestart += dist;
         a_SwerveDrive->stop();
         a_SwerveDrive->unsetHoldAngle();
+
         return true;
     }
 }

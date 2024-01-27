@@ -94,7 +94,7 @@ class Robot : public frc::TimedRobot {
         bool catchBegin = false;
 
         // stuff that autonomous needs
-        
+        double pvalue;
         double pChange;
         double iChange;
         double dChange;

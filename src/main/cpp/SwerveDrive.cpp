@@ -73,7 +73,7 @@ void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
         holdAngle = gyroDegrees;
         crab = true;
     }
-
+//crabCalcZ(holdAngle, gyroDegrees)
     swerveUpdateInner(x, y, crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
 }
 
@@ -142,6 +142,29 @@ void SwerveDrive::driveDistance(float distMeters, float directionDegrees) {
 }
 
 void SwerveDrive::driveDirection(float percent, float directionDegrees) {
+    // if (flModule.adjustAngle(directionDegrees)) {
+    //     flModule.setDrivePercent(-percent);
+    // } else {
+    //     flModule.setDrivePercent(percent);
+    // }
+
+    // if (frModule.adjustAngle(directionDegrees)) {
+    //     frModule.setDrivePercent(-percent);
+    // } else {
+    //     frModule.setDrivePercent(percent);
+    // }
+
+    // if (blModule.adjustAngle(directionDegrees)) {
+    //     blModule.setDrivePercent(-percent);
+    // } else {
+    //     blModule.setDrivePercent(percent);
+    // }
+
+    // if (brModule.adjustAngle(directionDegrees)) {
+    //     brModule.setDrivePercent(-percent);
+    // } else {
+    //     brModule.setDrivePercent(percent);
+    // }
     flModule.steerToAng(directionDegrees);
     frModule.steerToAng(directionDegrees);
     blModule.steerToAng(directionDegrees);
@@ -166,7 +189,8 @@ void SwerveDrive::driveDirectionVelocity(float speed, float directionDegrees) {
 }
 
 float SwerveDrive::getAvgDistance() {
-    return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
 
 void SwerveDrive::turnToAngle(float angle, bool positive_speed) {

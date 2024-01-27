@@ -20,7 +20,7 @@ const std::string twoPieceAMP = "Two Amp";
 const std::string BlueMiddleOneNote = "Blue Middle One Note";
 const std::string BlueMiddleTwoNote = "Blue Middle Two Note";
 const std::string BlueRightOneNote = "Blue Right One Note";
-const std::string BlueChargeStationRight = "Blue Charge Station Right";
+const std::string BlueRightTwoNote = "Blue Right Two Note";
 const std::string RedDropAndGoLeft = "Red Drop and Go Left";
 const std::string RedChargeStationLeft = "Red Charge Station Left";
 const std::string RedDropAndGoMiddle = "Red Drop and Go Middle";
@@ -94,11 +94,19 @@ enum AutoState5 {
 };
 
 enum AutoState6 {
-    kRedAutoIdle6,
-    kRedExtend6,
-    kRedDrop6,
-    kRedRetract6,
-    kRedDriveAway6
+    kBlueAutoIdle6,
+    kBlueStartShooter6,
+    kBlueShoot6,
+    kBlueGetNote6,
+    kBlueGoToSpeaker6,
+    kBlueRestartShooter6,
+    kBlueShootAgain6,
+    kBlueTurn6,
+    kBlueGetThirdNote6,
+    kBlueGoBackToSpeaker6,
+    kBlueTurnBack6,
+    kBluePrepShooter6,
+    kBlueShootThirdNote6
 };
  enum AutoState7{
     kRedAutoIdle7,
@@ -212,8 +220,8 @@ class Autonomous {
     void BROneNote();         // Blue Drop and Go Right AutoState4
     void PeriodicBROneNote(); // Periodic Blue Drop and Go Right AutoState4
 
-    void BCSR();         // Blue Charge Station Right AutoState5
-    void PeriodicBCSR(); // Periodic Blue Charge Station Right AutoState5
+    void BRTwoNote();         // Blue Charge Station Right AutoState5
+    void PeriodicBRTwoNote(); // Periodic Blue Charge Station Right AutoState5
 
     void RDGL();         // Red Drop and Go Left AutoState6
     void PeriodicRDGL(); // Periodic Red Drop and Go Left AutoState6
