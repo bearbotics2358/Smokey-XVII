@@ -468,11 +468,10 @@ void Autonomous::PeriodicRCSL() {
             StopSwerves();
             break;
         case kRedExtend7:
-            a_Claw->TransformClaw(170, 510, true);
-            if(gettime_d() > state_time + EXTEND_PISTON_TIME){
-            state_time = gettime_d();
-            nextState = kRedDrop7;
+              if(DriveDirection(4, 0, .25, true)) { 
+                 nextState = kRedAutoIdle7;
             }
+           
             break;
         case kRedDrop7:
             a_Claw->ClawOpen();
@@ -909,22 +908,26 @@ double Autonomous::gettime_d(){
 
 bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in place to specific angle
    
-    if(!positive){
-        speed = -1*speed;
-    }
-    //if (fabs(a_Gyro->getAngle() - angle) >= 5) {
-    //if((a_Gyro->getAngle() - angle <= 10) || ((a_Gyro->getAngle() - angle - 360) <= 10) || (a_Gyro->getAngle() - (angle + 360) <= 10)){
-       if(fabs(a_Gyro->getAngleClamped() - angle) <= 5){
+//     if(!positive){
+//         speed = -1*speed;
+//     }
+    if (a_SwerveDrive->turnToAngle(angle, positive)) {
+//     //if((a_Gyro->getAngle() - angle <= 10) || ((a_Gyro->getAngle() - angle - 360) <= 10) || (a_Gyro->getAngle() - (angle + 360) <= 10)){
+//        if(fabs(a_Gyro->getAngleClamped() - angle) <= 5){
         a_SwerveDrive->stop();
         return true;
+    }
+    else{
+        return false;
+    }
        
 
 }
-    else {
-        a_SwerveDrive->turnToAngle(angle, positive);
-        return false;
-    }
-}
+    // else {
+    //     a_SwerveDrive->turnToAngle(angle, positive);
+    //     return false;
+    // }
+
 
 bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
     
