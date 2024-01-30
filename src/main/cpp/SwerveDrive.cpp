@@ -1,58 +1,8 @@
 #include "SwerveDrive.h"
 
-#include "math/ConstMath.h"
 #include "misc.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <math.h>
-
-#ifdef NEW_SWERVE
-SwerveTransform::SwerveTransform(Vec2 direction, float rotSpeed):
-direction(direction),
-rotSpeed(rotSpeed) {}
-
-
-SwerveDrive::SwerveDrive(SwerveModule& flModule, SwerveModule& frModule, SwerveModule& blModule, SwerveModule& brModule):
-m_fl(flModule),
-m_fr(frModule),
-m_bl(blModule),
-m_br(brModule),
-m_anglePid(0.014, 0.0, 0.0) {}
-
-SwerveDrive::~SwerveDrive() {}
-
-void SwerveDrive::update(const SwerveTransform& transform) {
-    constexpr float halfLength = DRIVE_LENGTH / 2;
-    constexpr float halfWidth = DRIVE_WIDTH / 2;
-    constexpr float driveRadius = constSqrt(halfLength * halfLength + halfWidth * halfWidth);
-
-    constexpr Vec2 frPosVec = Vec2(halfWidth, halfLength);
-    constexpr Vec2 flPosVec = Vec2(-halfWidth, halfLength);
-    constexpr Vec2 brPosVec = Vec2(halfWidth, -halfLength);
-    constexpr Vec2 blPosVec = Vec2(-halfWidth, -halfLength);
-
-    constexpr Vec2 frTurn = frPosVec.right_normal().const_as_normalized();
-    constexpr Vec2 flTurn = flPosVec.right_normal().const_as_normalized();
-    constexpr Vec2 brTurn = brPosVec.right_normal().const_as_normalized();
-    constexpr Vec2 blTurn = blPosVec.right_normal().const_as_normalized();
-
-    float angularVelocity = transform.rotSpeed * driveRadius;
-
-    Vec2 frVec = frTurn * angularVelocity + transform.direction;
-    Vec2 flVec = flTurn * angularVelocity + transform.direction;
-    Vec2 brVec = brTurn * angularVelocity + transform.direction;
-    Vec2 blVec = blTurn * angularVelocity + transform.direction;
-
-    m_fr.driveDirection(frVec);
-    m_fl.driveDirection(flVec);
-    m_br.driveDirection(brVec);
-    m_bl.driveDirection(blVec);
-}
-
-float SwerveDrive::getAvgDistance() const {
-    return (fabs(m_fr.getDistance()) + fabs(m_fl.getDistance()) + fabs(m_br.getDistance()) + fabs(m_bl.getDistance())) / 4.0;
-}
-
-#else
 
 SwerveDrive::SwerveDrive(SwerveModule& flModule, SwerveModule& frModule, SwerveModule& blModule, SwerveModule& brModule, Gyro& gyro):
 flModule(flModule),
@@ -74,7 +24,10 @@ void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
         crab = true;
     }
 
+
     swerveUpdateInner(x, y, -1*crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
+
+
 }
 
 void SwerveDrive::swerveUpdate(float x, float y, float z, bool fieldOriented) {
@@ -142,6 +95,29 @@ void SwerveDrive::driveDistance(float distMeters, float directionDegrees) {
 }
 
 void SwerveDrive::driveDirection(float percent, float directionDegrees) {
+    // if (flModule.adjustAngle(directionDegrees)) {
+    //     flModule.setDrivePercent(-percent);
+    // } else {
+    //     flModule.setDrivePercent(percent);
+    // }
+
+    // if (frModule.adjustAngle(directionDegrees)) {
+    //     frModule.setDrivePercent(-percent);
+    // } else {
+    //     frModule.setDrivePercent(percent);
+    // }
+
+    // if (blModule.adjustAngle(directionDegrees)) {
+    //     blModule.setDrivePercent(-percent);
+    // } else {
+    //     blModule.setDrivePercent(percent);
+    // }
+
+    // if (brModule.adjustAngle(directionDegrees)) {
+    //     brModule.setDrivePercent(-percent);
+    // } else {
+    //     brModule.setDrivePercent(percent);
+    // }
     flModule.steerToAng(directionDegrees);
     frModule.steerToAng(directionDegrees);
     blModule.steerToAng(directionDegrees);
@@ -166,37 +142,56 @@ void SwerveDrive::driveDirectionVelocity(float speed, float directionDegrees) {
 }
 
 float SwerveDrive::getAvgDistance() {
-    return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
 
-void SwerveDrive::turnToAngle(float angle, bool positive_speed) {
-    float gyroDegrees = a_gyro.getAngleClamped();
+bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
+        float gyroDegrees = a_gyro.getAngleClamped();
     // calculates a speed we need to go based off our current sensor and target position
-    //float speed = 5.0; //turnCalcZ(angle, gyroDegrees);
+            turnAnglePid.SetSetpoint(angle);
+            float speed = turnCalcZ(angle, gyroDegrees);
+            flModule.steerToAng(135);
+            frModule.steerToAng(45);
+            blModule.steerToAng(225);
+            brModule.steerToAng(315);
 
+            // - speed works, and speed does not because pid has clockwise as going up from zero, while the gyro thinks going clockwise as down from 360, so we need the opposite of one of them
+            flModule.setDrivePercent(-speed);
+            frModule.setDrivePercent(-speed);
+            blModule.setDrivePercent(-speed);
+            brModule.setDrivePercent(-speed);
+        if((turnAnglePid.AtSetpoint())){
+            return true;
+        }
+        else{
+           
+            return false;
+        }
+       
 
-    if(positive_speed){
-         flModule.steerToAng(135);
-         frModule.steerToAng(45);
-         blModule.steerToAng(225);
-         brModule.steerToAng(315);
+    // if(positive_speed){
+    //      flModule.steerToAng(135);
+    //      frModule.steerToAng(45);
+    //      blModule.steerToAng(225);
+    //      brModule.steerToAng(315);
 
-         flModule.setDrivePercent(.15);
-         frModule.setDrivePercent(.15);
-         blModule.setDrivePercent(.15);
-         brModule.setDrivePercent(.15);
-    }
-    else{
-        flModule.steerToAng(135);
-        frModule.steerToAng(45);
-        blModule.steerToAng(225);
-        brModule.steerToAng(315);
+    //      flModule.setDrivePercent(.15);
+    //      frModule.setDrivePercent(.15);
+    //      blModule.setDrivePercent(.15);
+    //      brModule.setDrivePercent(.15);
+    // }
+    // else{
+    //     flModule.steerToAng(135);
+    //     frModule.steerToAng(45);
+    //     blModule.steerToAng(225);
+    //     brModule.steerToAng(315);
 
-        flModule.setDrivePercent(-.15);
-        frModule.setDrivePercent(-.15);
-        blModule.setDrivePercent(-.15);
-        brModule.setDrivePercent(-.15);
-    }
+    //     flModule.setDrivePercent(-.15);
+    //     frModule.setDrivePercent(-.15);
+    //     blModule.setDrivePercent(-.15);
+    //     brModule.setDrivePercent(-.15);
+    // }
     
 
 }
@@ -215,85 +210,6 @@ void SwerveDrive::goToTheDon(float speed, float direction, float distance, bool 
             stop();
     }
     }
-}
-
-bool SwerveDrive::goToPosition(Vec2 position, float degrees, float maxSpeed) {
-    float gyroDegrees = a_gyro.getAngleClamped();
-    auto relPosVector = position - a_position;
-    float remainingDistance = relPosVector.magnitude();
-
-    // create a unit vector pointing towards the point we want to go to
-    auto directionVector = relPosVector.as_normalized();
-
-    // the desired speed to go at
-    // do it as sqrt of remaining distance since kinetic energy is proportional to velocity squared,
-    // so with sqrt we will stop at the end
-    // tune the constant in front of remainingDistance
-    float speed = sqrt(0.35 * remainingDistance);
-
-    // scale this vector by the requested speed, and slow down as we get closer to the target
-    directionVector *= std::clamp((double) std::min(speed, maxSpeed), 0.0, 1.0);
-
-    frc::SmartDashboard::PutNumber("speed", directionVector.magnitude());
-
-    // flip sign of x because x is inverted for swerveUpdateInner
-    swerveUpdateInner(-directionVector.x(), directionVector.y(), turnCalcZ(degrees, gyroDegrees), gyroDegrees, true);
-
-    return remainingDistance < GO_TO_DIST_DONE && misc::degreesDiff(degrees, gyroDegrees) < GO_TO_ANGLE_DONE;
-}
-
-void SwerveDrive::updatePosition() {
-    // get the change in position of each wheel
-    float flPos = flModule.getDistance();
-    float flPosChange = flPos - flLastPos;
-    flLastPos = flPos;
-
-    float frPos = frModule.getDistance();
-    float frPosChange = frPos - frLastPos;
-    frLastPos = frPos;
-
-    float blPos = blModule.getDistance();
-    float blPosChange = blPos - blLastPos;
-    blLastPos = blPos;
-
-    float brPos = brModule.getDistance();
-    float brPosChange = brPos - brLastPos;
-    brLastPos = brPos;
-
-    // angle does not need to be clamped for creating the vector
-    float gyroDegrees = a_gyro.getAngle();
-    // TODO: figure out if angle for swerve turn motors is clockwise our counterclockwise
-    // these angles are with 0 radians pointing in the direction of positive y, and they go counterclockwise
-    float flAngle = misc::degToRad(flModule.getAngle() + gyroDegrees);
-    float frAngle = misc::degToRad(frModule.getAngle() + gyroDegrees);
-    float blAngle = misc::degToRad(blModule.getAngle() + gyroDegrees);
-    float brAngle = misc::degToRad(brModule.getAngle() + gyroDegrees);
-
-    // create unit vectors pointing in the direction of the wheels
-    Vec2 flVec(-sin(flAngle), cos(flAngle));
-    Vec2 frVec(-sin(frAngle), cos(frAngle));
-    Vec2 blVec(-sin(blAngle), cos(blAngle));
-    Vec2 brVec(-sin(brAngle), cos(brAngle));
-
-    // scale the wheel vector by the position change of each wheel
-    flVec *= flPosChange;
-    frVec *= frPosChange;
-    blVec *= blPosChange;
-    brVec *= brPosChange;
-
-    // get the position change vector
-    // adding all the vectors together will cancel out the turn part, leaving just the movement part * 4, so divide by 4
-    // this doesn't check if the vectors are a valid wheel configuration for swerve to work, but the drive commands ensure this should work
-    // if it isn't a valid configuration, some wheels will be slipping, so we can't predict the position anyways
-    a_position += (flVec + frVec + blVec + brVec) / 4.0;
-}
-
-Vec2 SwerveDrive::getPosition() const {
-    return a_position;
-}
-
-void SwerveDrive::setPosition(Vec2 position) {
-    a_position = position;
 }
 
 void SwerveDrive::swerveUpdateInner(float x, float y, float z, float gyroDegrees, bool fieldOriented) {
@@ -406,5 +322,3 @@ float SwerveDrive::crabCalcZ(float angle, float gyroDegrees) {
 float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
     return std::clamp(turnAnglePid.Calculate(gyroDegrees, angle), -0.2, 0.2);
 }
-
-#endif

@@ -20,7 +20,7 @@ const std::string twoPieceAMP = "Two Amp";
 const std::string BlueMiddleOneNote = "Blue Middle One Note";
 const std::string BlueMiddleTwoNote = "Blue Middle Two Note";
 const std::string BlueRightOneNote = "Blue Right One Note";
-const std::string BlueChargeStationRight = "Blue Charge Station Right";
+const std::string BlueRightTwoNote = "Blue Right Two Note";
 const std::string RedDropAndGoLeft = "Red Drop and Go Left";
 const std::string RedChargeStationLeft = "Red Charge Station Left";
 const std::string RedDropAndGoMiddle = "Red Drop and Go Middle";
@@ -28,7 +28,7 @@ const std::string RedChargeStationMiddle = "Red Charge Station Middle";
 const std::string RedDropAndGoRight = "Red Drop and Go Right";
 const std::string RedChargeStationRight = "Red Charge Station Right";
 const std::string RobotDoNothing = "Sit Still";
-const std::string LeftTwoPiece = "Left 2 Piece"; 
+const std::string LeftTwoPiece = "Left 2 Piece";
 const std::string RightTwoPiece = "Right 2 Piece";
 const std::string kAutoModeDefault = RobotDoNothing;
 
@@ -94,11 +94,19 @@ enum AutoState5 {
 };
 
 enum AutoState6 {
-    kRedAutoIdle6,
-    kRedExtend6,
-    kRedDrop6,
-    kRedRetract6,
-    kRedDriveAway6
+    kBlueAutoIdle6,
+    kBlueStartShooter6,
+    kBlueShoot6,
+    kBlueGetNote6,
+    kBlueGoToSpeaker6,
+    kBlueRestartShooter6,
+    kBlueShootAgain6,
+    kBlueTurn6,
+    kBlueGetThirdNote6,
+    kBlueGoBackToSpeaker6,
+    kBlueTurnBack6,
+    kBluePrepShooter6,
+    kBlueShootThirdNote6
 };
  enum AutoState7{
     kRedAutoIdle7,
@@ -191,8 +199,8 @@ class Autonomous {
     Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Claw *Claw, TOF *tof);
 
    // const char *GetCurrentPath();
-    
-  
+
+
 
     void StartAuto();
     void PeriodicAuto();
@@ -212,8 +220,8 @@ class Autonomous {
     void BROneNote();         // Blue Drop and Go Right AutoState4
     void PeriodicBROneNote(); // Periodic Blue Drop and Go Right AutoState4
 
-    void BCSR();         // Blue Charge Station Right AutoState5
-    void PeriodicBCSR(); // Periodic Blue Charge Station Right AutoState5
+    void BRTwoNote();         // Blue Charge Station Right AutoState5
+    void PeriodicBRTwoNote(); // Periodic Blue Charge Station Right AutoState5
 
     void RDGL();         // Red Drop and Go Left AutoState6
     void PeriodicRDGL(); // Periodic Red Drop and Go Left AutoState6
@@ -265,7 +273,7 @@ private:
     SwerveDrive *a_SwerveDrive;
 
     TOF *a_TOF;
-    
+
 
     AutoState0 a_AutoState0;
     AutoState1 a_AutoState1;
@@ -284,7 +292,7 @@ private:
     AutoState14 a_AutoState14;
 
 
-   
+
     std::string a_AutoSelected;
     std::string a_PeriodicAutoSelected;
     float drivestart{0.0};
@@ -294,7 +302,7 @@ private:
 
     // Used to measure time duration in Autonomous states
     double state_time = 0.0;
- 
+
     // used for waitForTime method
     double waitTimeStart{0.0};
 
@@ -305,8 +313,4 @@ private:
 
     bool startedClimb{false};
     float startTime{0.0};
-
-    // start position of robot during 5 ball auto relative to near left corner of field
-    // FIXME: this is a very innacurate guess, more so than the other measurements
-    constexpr static Vec2 AUTO35_START_POS{5.52, 7.69};
 };

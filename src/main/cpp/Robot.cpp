@@ -39,18 +39,20 @@ a_LED(ARDUINO_DIO_PIN)
     armStage = 1;
     clawClosed = false;
 
+    pvalue = 2.2;
     a_FLModule.setDrivePID(0.001, 0, 0);
-    a_FLModule.setSteerPID(2.2, 0, 0.1);
+    a_FLModule.setSteerPID(pvalue, 0, 0.1);
+    
 
     a_FRModule.setDrivePID(0.001, 0, 0);
 
-    a_FRModule.setSteerPID(2.2, 0, 0.1);
+   a_FRModule.setSteerPID(pvalue, 0, 0.1);
 
     a_BLModule.setDrivePID(0.001, 0, 0);
-    a_BLModule.setSteerPID(2.2, 0, 0.1);
+    a_BLModule.setSteerPID(pvalue, 0, 0.1);
 
     a_BRModule.setDrivePID(0.001, 0, 0);
-    a_BRModule.setSteerPID(2.2, 0, 0.1);
+    a_BRModule.setSteerPID(pvalue, 0, 0.1);
 
     a_SwerveDrive.brakeOnStop();
 }
@@ -72,7 +74,7 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(BlueMiddleOneNote, BlueMiddleOneNote);
     m_AutoModeSelector.AddOption( BlueMiddleTwoNote,  BlueMiddleTwoNote);
     m_AutoModeSelector.AddOption(BlueRightOneNote, BlueRightOneNote);
-    m_AutoModeSelector.AddOption(BlueChargeStationRight, BlueChargeStationRight);
+    m_AutoModeSelector.AddOption(BlueRightTwoNote, BlueRightTwoNote);
     m_AutoModeSelector.AddOption(RedDropAndGoLeft, RedDropAndGoLeft);
     m_AutoModeSelector.AddOption(RedChargeStationLeft, RedChargeStationLeft);
     m_AutoModeSelector.AddOption(RedDropAndGoMiddle, RedDropAndGoMiddle);
@@ -81,7 +83,7 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(RedChargeStationRight, RedChargeStationRight);
     m_AutoModeSelector.AddOption(LeftTwoPiece, LeftTwoPiece);
     m_AutoModeSelector.AddOption(RightTwoPiece, RightTwoPiece);
-    frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector); 
+    frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
     a_LED.Init();
 
@@ -94,7 +96,6 @@ void Robot::RobotPeriodic() {
     a_LED.Update();
     a_TOF.Update();
     a_Claw.UpdateShuttleEncoder(); //automatically sets the shuttle's encoder to 0 if hitting the limit switch
-    //a_SwerveDrive.updatePosition();
 
 //testing code block for PID tuning
 
@@ -103,7 +104,7 @@ void Robot::RobotPeriodic() {
     //     a_FLModule.steerToAng(120);
     //     a_BRModule.steerToAng(120);
     //     a_BLModule.steerToAng(120);
-    // } 
+    // }
     // else {
     //     a_FRModule.steerToAng(150);
     //     a_FLModule.steerToAng(150);
@@ -111,6 +112,7 @@ void Robot::RobotPeriodic() {
     //     a_BLModule.steerToAng(150);
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
+   
 }
 
 void Robot::DisabledInit() {
@@ -136,9 +138,9 @@ void Robot::AutonomousInit() {
     a_SwerveDrive.unsetHoldAngle();
     a_Gyro.Zero();
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
-  
+
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-    
+
 }
 
 void Robot::AutonomousPeriodic() {
@@ -166,30 +168,46 @@ void Robot::TeleopInit() {
 // main loop
 void Robot::TeleopPeriodic() {
     EnabledPeriodic();
+    // pChange = 0;
+    // iChange = 0;
+    // dChange = 0;
 
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button12)) {
+    // if (a_DriverXboxController.GetYButtonReleased()) {
     //     pChange += 0.1;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button11)) {
+    // } else if (a_DriverXboxController.GetBButtonReleased()) {
     //     pChange -= 0.1;
     // }
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button8)) {
+    // if (a_DriverXboxController.GetLeftBumperPressed()) {
     //     iChange += 0.1;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button7)) {
+    // } else if (a_DriverXboxController.GetRightBumperPressed()) {
     //     iChange -= 0.1;
     // }
-    // if (joystickOne.GetRawButtonReleased(DriverButton::Button10)) {
+    // if (a_DriverXboxController.GetAButtonPressed()) {
     //     dChange += 0.01;
-    // } else if (joystickOne.GetRawButtonReleased(DriverButton::Button9)) {
+    // } else if (a_DriverXboxController.GetXButtonPressed()) {
     //     dChange -= 0.01;
     // }
+
+    // if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
+    //     a_FRModule.steerToAng(0);
+    //     a_FLModule.steerToAng(0);
+    //     a_BRModule.steerToAng(0);
+    //     a_BLModule.steerToAng(0);
+    // } 
+    // else {
+    //     a_FRModule.steerToAng(165);
+    //     a_FLModule.steerToAng(165);
+    //     a_BRModule.steerToAng(165);
+    //     a_BLModule.steerToAng(165);
+    // }
     
-    // a_FRModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_FLModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BRModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BLModule.setSteerPID(0.6 + pChange, 1.0 + iChange, 0.06 + dChange); //P 0.6, I 1.0 D 0.06
-    // frc::SmartDashboard::PutNumber("P value", 0.6 + pChange);
-    // frc::SmartDashboard::PutNumber("I value", 1.0 + iChange);
-    // frc::SmartDashboard::PutNumber("D value", 0.06 + dChange);
+    // a_FRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_FLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_BRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
+    // a_BLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange); //P 0.6, I 1.0 D 0.06
+    // frc::SmartDashboard::PutNumber("P value", pChange);
+    // frc::SmartDashboard::PutNumber("I value", iChange);
+    // frc::SmartDashboard::PutNumber("D value", dChange);
     
     /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
     if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
@@ -203,7 +221,7 @@ void Robot::TeleopPeriodic() {
             clawClosed = true;
             catchBegin = false;
         }
-    } 
+    }
 
     if (a_DriverXboxController.GetYButton()){
         armStage = 1;
@@ -218,7 +236,7 @@ void Robot::TeleopPeriodic() {
     }
 
     switch (armStage) {
-        case 1: 
+        case 1:
             a_Claw.TransformClaw(125, -15, false); // transport
             break;
         case 2:
@@ -264,28 +282,6 @@ void Robot::TeleopPeriodic() {
         clawClosed = true;
     }
 
-    /* =-=-=-=-=-=-=-=-=-=-= Alignment Controls =-=-=-=-=-=-=-=-=-=-= */
-
-    //  if((a_DriverXboxController.GetPOV() == 270) || (a_DriverXboxController.GetPOV() == 0) || (a_DriverXboxController.GetPOV() == 90)) {
-    //      photonlib::PhotonPipelineResult result = a_camera.GetLatestResult();
-    //      double angle = a_Gyro.getAngle();
-    //      if(result.HasTargets()){
-    //          units::meter_t range = photonlib::PhotonUtils::CalculateDistanceToTarget(TARGET_CAMERA_HEIGHT, TARGET_HEIGHT, TARGET_CAMERA_PITCH, units::degree_t{result.GetBestTarget().GetPitch()});
-    //          units::meter_t xComponent = range * sin(angle);
-    //          units::meter_t yComponent = (range * cos(angle)) - units::meter_t(0.36195);
-    //          if(a_DriverXboxController.GetPOV() == 270){ // go to cone spot to left of target
-    //              newXComponent = xComponent - units::meter_t(.5588);
-    //          }
-    //             else if(a_DriverXboxController.GetPOV() == 0){ // go to cube spot in line with target
-    //              newXComponent = xComponent;
-    //          }
-    //              else if(a_DriverXboxController.GetPOV() == 90){ // go to cone spot to right of target
-    //              newXComponent = xComponent + units::meter_t(.5588);
-    //          }
-    //          a_SwerveDrive.goToPosition(Vec2(double(newXComponent), double(yComponent)), 0, 0.2);
-    //      }
-    //  }
-
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // dpad up for full speed,
@@ -298,7 +294,7 @@ void Robot::TeleopPeriodic() {
     if(a_DriverXboxController.GetPOV() == 270){
         a_FLModule.steerToAng(90);
         a_FRModule.steerToAng(90);
-        a_BLModule.steerToAng(90); 
+        a_BLModule.steerToAng(90);
         a_BRModule.steerToAng(90);
 
     }
@@ -307,7 +303,7 @@ void Robot::TeleopPeriodic() {
     if (a_slowSpeed) {
         multiplier = 0.2;
     }
- 
+
     float x = a_DriverXboxController.GetLeftX();
     float y = a_DriverXboxController.GetLeftY();
     float z = a_DriverXboxController.GetRightX();
@@ -330,7 +326,7 @@ void Robot::TeleopPeriodic() {
     z *= multiplier;
 
     // turn field oriented mode off if the trigger is pressed for more than 0.25 (GetRightTriggerAxis ranges from 0 to 1)
-    
+
     bool fieldOreo = true;
     if(a_DriverXboxController.GetPOV() == 0 && fieldOreo == true)
     {
@@ -366,7 +362,6 @@ void Robot::TeleopPeriodic() {
 
 void Robot::TestInit() {
     TeleopInit();
-    a_SwerveDrive.setPosition(Vec2(0.0, 0.0));
 }
 
 
