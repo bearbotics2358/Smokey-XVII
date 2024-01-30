@@ -23,8 +23,11 @@ void SwerveDrive::crabUpdate(float x, float y, bool fieldOriented) {
         holdAngle = gyroDegrees;
         crab = true;
     }
-//crabCalcZ(holdAngle, gyroDegrees)
-    swerveUpdateInner(x, y, crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
+
+
+    swerveUpdateInner(x, y, -1*crabCalcZ(holdAngle, gyroDegrees), gyroDegrees, fieldOriented);
+
+
 }
 
 void SwerveDrive::swerveUpdate(float x, float y, float z, bool fieldOriented) {
@@ -203,9 +206,9 @@ void SwerveDrive::goToTheDon(float speed, float direction, float distance, bool 
 
         crabUpdate(x, y, fieldOriented);
     } else {
-        if(stop_on_completion) {
+      if(stop_on_completion) {
             stop();
-        }
+    }
     }
 }
 
