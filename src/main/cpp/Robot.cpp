@@ -351,7 +351,7 @@ void Robot::TeleopPeriodic() {
     if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     } else {
-        a_SwerveDrive.swerveUpdate(0, 0, 0, fieldOreo);
+        a_SwerveDrive.stop();
     }
 
     /* =-=-=-=-=-=-=-=-=-=-= Change Cone/ Cube Mode =-=-=-=-=-=-=-=-=-=-= */
