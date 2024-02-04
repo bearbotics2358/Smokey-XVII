@@ -57,7 +57,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         // returns the average of the total distance of the drive encoders in all 4 modules in meters
         float getAvgDistance();
-
+    
         // angle is in degrees
         bool turnToAngle(float angle, bool positive_speed);
 

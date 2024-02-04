@@ -78,6 +78,16 @@ class Robot : public frc::TimedRobot {
 
         // speed multiplier for driver controls for the swerve
         bool a_slowSpeed { false };
+        double xlast = 0.0;
+        double ylast = 0.0;
+        double zlast = 0.0;
+        double a = .4;
+        double xnew = 0;
+        double ynew = 0;
+        double znew = 0;
+        double pvaluesteer = 2.7;
+        double ivaluesteer = 0.3;
+        double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
 
@@ -94,7 +104,8 @@ class Robot : public frc::TimedRobot {
         bool catchBegin = false;
 
         // stuff that autonomous needs
-        double pvalue;
+        
+        double pvaluedrive;
         double pChange;
         double iChange;
         double dChange;
