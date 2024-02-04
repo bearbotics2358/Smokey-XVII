@@ -11,7 +11,9 @@ Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Claw *Claw, TOF *to
 a_Gyro(Gyro),
 a_SwerveDrive(SwerveDrive),
 a_Claw(Claw),
-a_TOF(tof){}
+a_TOF(tof),
+autoDrivePID(.4, .1, 0) 
+{}
 
 
 
@@ -468,7 +470,7 @@ void Autonomous::PeriodicRCSL() {
             StopSwerves();
             break;
         case kRedExtend7:
-              if(DriveDirection(4, 0, .25, true)) { 
+              if(DriveDirection(1, 0, .25, true)) { 
                  nextState = kRedAutoIdle7;
             }
            
@@ -930,28 +932,18 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
 
 
 bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
-    
-    if (fabs(a_SwerveDrive->getAvgDistance()) < (dist + drivestart)) {
-
-        if (a_SwerveDrive->getAvgDistance() > (0.80 * (dist + drivestart))) {
-            // for the second part of the move, drive slower
-            // after the second part of the move, allow goToTheDon() to slam on the brakes
-            a_SwerveDrive->driveDirection(speed / 2, angle);
-
-        } else {
-            // first part of the move, at the user specified speed
-            // after the first part of the move, do not slam on the brakes
-            a_SwerveDrive->driveDirection(speed, angle);
+        autoDrivePID.SetSetpoint(dist);
+        double calcspeed = autoDrivePID.Calculate(a_SwerveDrive->getAvgDistance(), dist);
+        frc::SmartDashboard::PutNumber("calcspeed", calcspeed);
+        calcspeed = std::clamp(speed, -.25, .25);
+        a_SwerveDrive->driveDirection(calcspeed, angle);    
+        if(autoDrivePID.AtSetpoint()){
+            // a_SwerveDrive->stop();
+            return true;
         }
-        return false;
-
-    } else {
-        drivestart += dist;
-        a_SwerveDrive->stop();
-        a_SwerveDrive->unsetHoldAngle();
-
-        return true;
-    }
+        else{
+            return false;
+ }
 }
 
 

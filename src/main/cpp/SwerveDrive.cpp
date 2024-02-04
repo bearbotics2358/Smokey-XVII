@@ -198,16 +198,16 @@ bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
 
 
 void SwerveDrive::goToTheDon(float speed, float direction, float distance, bool fieldOriented, bool stop_on_completion) {
-    if (getAvgDistance() <= distance) {
+   if (getAvgDistance() <= distance) {
         float radians = direction * M_PI / 180.0;
 
         float x = speed * sin(radians);
         float y = speed * cos(radians);
 
         crabUpdate(x, y, fieldOriented);
-    } else {
-      if(stop_on_completion) {
-            stop();
+   } else {
+     if(stop_on_completion) {
+           stop();
     }
     }
 }

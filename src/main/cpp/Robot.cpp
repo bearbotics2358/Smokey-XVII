@@ -11,6 +11,8 @@
 #include <frc/interfaces/Gyro.h>
 #include "Claw.h"
 #include <frc/XboxController.h>
+#include "Collector.h"
+#include "BeamBreak.h"
 
 /*~~ hi :) ~~ */
 Robot::Robot():
@@ -39,20 +41,21 @@ a_LED(ARDUINO_DIO_PIN)
     armStage = 1;
     clawClosed = false;
 
-    pvalue = 2.2;
-    a_FLModule.setDrivePID(0.001, 0, 0);
-    a_FLModule.setSteerPID(pvalue, 0, 0.1);
+    
+    pvaluedrive = .037;
+    a_FLModule.setDrivePID(pvaluedrive, 0, 0);
+    a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
     
 
-    a_FRModule.setDrivePID(0.001, 0, 0);
+    a_FRModule.setDrivePID(pvaluedrive, 0, 0);
 
-   a_FRModule.setSteerPID(pvalue, 0, 0.1);
+   a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
-    a_BLModule.setDrivePID(0.001, 0, 0);
-    a_BLModule.setSteerPID(pvalue, 0, 0.1);
+    a_BLModule.setDrivePID(pvaluedrive, 0, 0);
+    a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
-    a_BRModule.setDrivePID(0.001, 0, 0);
-    a_BRModule.setSteerPID(pvalue, 0, 0.1);
+    a_BRModule.setDrivePID(pvaluedrive, 0, 0);
+    a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     a_SwerveDrive.brakeOnStop();
 }
@@ -112,7 +115,6 @@ void Robot::RobotPeriodic() {
     //     a_BLModule.steerToAng(150);
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
-   
 }
 
 void Robot::DisabledInit() {
@@ -167,120 +169,84 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-    EnabledPeriodic();
-    // pChange = 0;
-    // iChange = 0;
-    // dChange = 0;
+   
+    // EnabledPeriodic();
 
-    // if (a_DriverXboxController.GetYButtonReleased()) {
-    //     pChange += 0.1;
-    // } else if (a_DriverXboxController.GetBButtonReleased()) {
-    //     pChange -= 0.1;
-    // }
-    // if (a_DriverXboxController.GetLeftBumperPressed()) {
-    //     iChange += 0.1;
-    // } else if (a_DriverXboxController.GetRightBumperPressed()) {
-    //     iChange -= 0.1;
-    // }
-    // if (a_DriverXboxController.GetAButtonPressed()) {
-    //     dChange += 0.01;
-    // } else if (a_DriverXboxController.GetXButtonPressed()) {
-    //     dChange -= 0.01;
-    // }
-
-    // if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
-    //     a_FRModule.steerToAng(0);
-    //     a_FLModule.steerToAng(0);
-    //     a_BRModule.steerToAng(0);
-    //     a_BLModule.steerToAng(0);
-    // } 
-    // else {
-    //     a_FRModule.steerToAng(165);
-    //     a_FLModule.steerToAng(165);
-    //     a_BRModule.steerToAng(165);
-    //     a_BLModule.steerToAng(165);
-    // }
+   
     
-    // a_FRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_FLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BRModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange);
-    // a_BLModule.setSteerPID(2.2 + pChange, 1.0 + iChange, 0.06 + dChange); //P 0.6, I 1.0 D 0.06
-    // frc::SmartDashboard::PutNumber("P value", pChange);
-    // frc::SmartDashboard::PutNumber("I value", iChange);
-    // frc::SmartDashboard::PutNumber("D value", dChange);
     
     /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
-    if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
-        a_Claw.ClawClose();
-        if(!catchBegin) {
-            state_time = Autonomous::gettime_d();
-            catchBegin = true;
-        }
-        if(Autonomous::gettime_d() > state_time + 0.5) {
-            armStage = 1;
-            clawClosed = true;
-            catchBegin = false;
-        }
-    }
+    // if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
+    //     a_Claw.ClawClose();
+    //     if(!catchBegin) {
+    //         state_time = Autonomous::gettime_d();
+    //         catchBegin = true;
+    //     }
+    //     if(Autonomous::gettime_d() > state_time + 0.5) {
+    //         armStage = 1;
+    //         clawClosed = true;
+    //         catchBegin = false;
+    //     }
+    // }
 
-    if (a_DriverXboxController.GetYButton()){
-        armStage = 1;
-    } else if (a_DriverXboxController.GetBButton()) {
-        armStage = 2;
-    } else if (a_OperatorXboxController.GetLeftBumperPressed()) {
-        armStage = 3;
-    } else if (a_OperatorXboxController.GetRightBumperPressed()) {
-        armStage = 4;
-    } else if (a_DriverXboxController.GetAButton()) {
-        armStage = 6;
-    }
+    // if (a_DriverXboxController.GetYButton()){
+    //     armStage = 1;
+    // } else if (a_DriverXboxController.GetBButton()) {
+    //     armStage = 2;
+    // } else if (a_OperatorXboxController.GetLeftBumperPressed()) {
+    //     armStage = 3;
+    // } else if (a_OperatorXboxController.GetRightBumperPressed()) {
+    //     armStage = 4;
+    // } else if (a_DriverXboxController.GetAButton()) {
+    //     armStage = 6;
+    // }
 
-    switch (armStage) {
-        case 1:
-            a_Claw.TransformClaw(125, -15, false); // transport
-            break;
-        case 2:
-            a_Claw.TransformClaw(10, -15, false); // arm down pointing downwards from the back
-            break;
-        case 3:
-            a_Claw.TransformClaw(190, 500, false); // arm at the top, piston off
-            break;
-        case 4:
-            isHighPistonDone = false;
-            piston_time = Autonomous::gettime_d();
-            armStage = 5;
-            break;
-        case 5:
-            if (!isHighPistonDone){
-                bool pistonDone = a_Claw.TransformClaw(160, 500, true);
-                isHighPistonDone = pistonDone && (Autonomous::gettime_d() > piston_time + 3);
-            } else {
-                a_Claw.TransformClaw(185, 500, true); // arm at the top, piston on
-            }
-            break;
-        case 6: {
-            bool transformDone = a_Claw.TransformClaw(160, 640, false);
-            if (transformDone){
-                armStage = 7;
-            }
-            break;
-        }
-        case 7:
-            a_Claw.TransformClaw(300, 640, false); //set point 290 640
-            break;
-        default:
-            a_Claw.TransformClaw(130, -15, false); // transport as default state
-            break;
-    }
+    // switch (armStage) {
+    //     case 1:
+    //         a_Claw.TransformClaw(125, -15, false); // transport
+    //         break;
+    //     case 2:
+    //         a_Claw.TransformClaw(10, -15, false); // arm down pointing downwards from the back
+    //         break;
+    //     case 3:
+    //         a_Claw.TransformClaw(190, 500, false); // arm at the top, piston off
+    //         break;
+    //     case 4:
+    //         isHighPistonDone = false;
+    //         piston_time = Autonomous::gettime_d();
+    //         armStage = 5;
+    //         break;
+    //     case 5:
+    //         if (!isHighPistonDone){
+    //             bool pistonDone = a_Claw.TransformClaw(160, 500, true);
+    //             isHighPistonDone = pistonDone && (Autonomous::gettime_d() > piston_time + 3);
+    //         } else {
+    //             a_Claw.TransformClaw(185, 500, true); // arm at the top, piston on
+    //         }
+    //         break;
+    //     case 6: {
+    //         bool transformDone = a_Claw.TransformClaw(160, 640, false);
+    //         if (transformDone){
+    //             armStage = 7;
+    //         }
+    //         break;
+    //     }
+    //     case 7:
+    //         a_Claw.TransformClaw(300, 640, false); //set point 290 640
+    //         break;
+    //     default:
+    //         a_Claw.TransformClaw(130, -15, false); // transport as default state
+    //         break;
+    // }
 
     // claw open/close controls
-    if(a_DriverXboxController.GetRightBumper()) {
-        a_Claw.ClawOpen();
-        clawClosed = false;
-    } else if (a_DriverXboxController.GetLeftBumper()) {
-        a_Claw.ClawClose();
-        clawClosed = true;
-    }
+    // if(a_DriverXboxController.GetRightBumper()) {
+    //     a_Claw.ClawOpen();
+    //     clawClosed = false;
+    // } else if (a_DriverXboxController.GetLeftBumper()) {
+    //     a_Claw.ClawClose();
+    //     clawClosed = true;
+    // }
 
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
@@ -290,13 +256,6 @@ void Robot::TeleopPeriodic() {
         a_slowSpeed = true;
     } else  {
         a_slowSpeed = false;
-    }
-    if(a_DriverXboxController.GetPOV() == 270){
-        a_FLModule.steerToAng(90);
-        a_FRModule.steerToAng(90);
-        a_BLModule.steerToAng(90);
-        a_BRModule.steerToAng(90);
-
     }
 
     float multiplier = 1.0;
@@ -319,7 +278,17 @@ void Robot::TeleopPeriodic() {
     }
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
-
+    
+    if(a_DriverXboxController.GetLeftBumperPressed()){
+        a+=.1;
+    }
+    else if(a_DriverXboxController.GetRightBumperPressed()){
+        a-=.1;
+    }
+    frc::SmartDashboard::PutNumber("a", a);
+    x = (1-a)*xlast + a*x;
+    y = (1-a)*ylast + a*y;
+    z = (1-a)*zlast + a*z;
     // scale by multiplier for slow mode, do this after deadzone check
     x *= multiplier;
     y *= multiplier;
@@ -344,6 +313,12 @@ void Robot::TeleopPeriodic() {
         a_Gyro.Zero();
     }
 
+    xlast = x;
+    ylast = y;
+    zlast = z;
+    frc::SmartDashboard::PutNumber("x", x);
+    frc::SmartDashboard::PutNumber("y", y);
+    frc::SmartDashboard::PutNumber("z", z);
     if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     } else {
@@ -352,12 +327,12 @@ void Robot::TeleopPeriodic() {
 
     /* =-=-=-=-=-=-=-=-=-=-= Change Cone/ Cube Mode =-=-=-=-=-=-=-=-=-=-= */
 
-    if(a_OperatorXboxController.GetXButtonPressed()) { //can change button later
-        SetTargetType(target_type_enum::CONE);  //270 is left, 90 is right
-    }                                           //0 is up, 180 is down
-    else if(a_OperatorXboxController.GetBButtonPressed()) { //can change button later
-        SetTargetType(target_type_enum::CUBE);
-    }
+    // if(a_OperatorXboxController.GetXButtonPressed()) { //can change button later
+    //     SetTargetType(target_type_enum::CONE);  //270 is left, 90 is right
+    // }                                           //0 is up, 180 is down
+    // else if(a_OperatorXboxController.GetBButtonPressed()) { //can change button later
+    //     SetTargetType(target_type_enum::CUBE);
+    // }
 }
 
 void Robot::TestInit() {
@@ -366,7 +341,48 @@ void Robot::TestInit() {
 
 
 void Robot::TestPeriodic() {
-    TeleopPeriodic();
+    // if(a_DriverXboxController.GetLeftBumperPressed()){
+    //     pvaluesteer+=.1;
+    // }
+    // else if(a_DriverXboxController.GetRightBumperPressed()){
+    //     pvaluesteer-=.1;
+    // }
+    // else if(a_DriverXboxController.GetAButtonPressed()){
+    //     ivaluesteer+=.1;
+    // }
+    // else if(a_DriverXboxController.GetBButtonPressed()){
+    //     ivaluesteer-=.1;
+    // }
+    // else if(a_DriverXboxController.GetXButtonPressed()){
+    //     dvaluesteer+=.1;
+    // }
+    // else if(a_DriverXboxController.GetYButtonPressed()){
+    //     dvaluesteer-=.1;
+    // }
+    // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
+    
+    // a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
+
+    // a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
+
+    // a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
+
+    // frc::SmartDashboard::PutNumber("pvaluesteer", pvaluesteer);
+    // frc::SmartDashboard::PutNumber("ivaluesteer", ivaluesteer);
+    // frc::SmartDashboard::PutNumber("dvaluesteer", dvaluesteer);
+
+     // if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
+    //     a_FRModule.steerToAng(0);
+    //     a_FLModule.steerToAng(0);
+    //     a_BRModule.steerToAng(0);
+    //     a_BLModule.steerToAng(0);
+    // } 
+    // else {
+    //     a_FRModule.steerToAng(45);
+    //     a_FLModule.steerToAng(45);
+    //     a_BRModule.steerToAng(45);
+    //     a_BLModule.steerToAng(45);
+    // }
 }
 
 void Robot::SetTargetType(target_type_enum target) {

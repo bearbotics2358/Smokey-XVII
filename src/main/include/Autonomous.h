@@ -313,4 +313,6 @@ private:
 
     bool startedClimb{false};
     float startTime{0.0};
+
+    frc2::PIDController autoDrivePID;
 };
