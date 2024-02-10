@@ -31,13 +31,12 @@ steerMotor(steerID),
 driveEnc(driveMotor),
 steerEncFalcon(steerMotor),
 m_CANCoder(CANCoderID),
-steerPID(0, 0, 0) {
+steerPID(0, 0, 0){
     _steerID = steerID;
     _CANCoderID = CANCoderID - 17;
 
 #ifdef COMP_BOT  // Only needs to be inverted on the comp bot
     steerMotor.SetInverted(true);
-
     // For the comp bot, angle values don't need to be changed
     m_inversionFactor = 1.0;
 #else
@@ -121,7 +120,7 @@ float SwerveModule::getAngle() {
 }
 
 void SwerveModule::goToPosition(float meters) {
-    float ticks = SwerveModule::metersToMotorTicks(-meters);
+    float ticks = SwerveModule::metersToMotorTicks(meters);
     driveMotor.Set(TalonFXControlMode::Position, ticks);
 }
 
@@ -221,5 +220,5 @@ double SwerveModule::motorTicksToMeters(double motorTicks) {
     double rotations = (scaledTicks / FALCON_UNITS_PER_REV);
     // angular position in radians
     double angularPosition = rotations * 2 * M_PI;
-    return DISTANCE_ADJUSTMANT_FACTOR * angularPosition * 0.5 * WHEEL_DIAMETER;
+    return angularPosition * 0.5 * WHEEL_DIAMETER;
 }
