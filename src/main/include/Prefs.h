@@ -143,6 +143,14 @@ static double CANCODER_OFFSETS[] = {
 // wheel diameter in meters
 #define WHEEL_DIAMETER 0.1016
 
+//PValue for steering
+#define STEERING_PVALUE 2.7
+
+// Shooting Stuff
+#define RADIUS_OF_MOTOR .0254 
+#define SPEAKER_HEIGHT_CENTER 1.47
+#define ACCELERATION_DUE_TO_GRAVITY 9.8 
+#define VELOCITY_CONSTANT 1.0
 
 /* ============= MqttClient ============= */
 

@@ -56,6 +56,12 @@ class Robot : public frc::TimedRobot {
         void TestPeriodic();
 
         void SetTargetType(target_type_enum target);
+
+        // Shooting Stuff
+        double half_of_range(double X, double Y);
+        double calculate_shooting_angle(double R);
+        double velocity_needed_to_reach_height(double range);
+        double velocity_to_rpm(double velocity);
         
 
     private:
@@ -94,13 +100,13 @@ class Robot : public frc::TimedRobot {
         bool catchBegin = false;
 
         // stuff that autonomous needs
-        double pvalue;
         double pChange;
         double iChange;
         double dChange;
 
         units::meter_t newXComponent;
 
+        
         //--------------photonvision-------------//
         const units::meter_t CAMERA_HEIGHT = 24_in;
         const units::meter_t TARGET_HEIGHT = 5_ft;
@@ -119,7 +125,9 @@ class Robot : public frc::TimedRobot {
         const double ANGULAR_D = 0.0;
         frc2::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-        photonlib::PhotonCamera a_camera{"OV5647"}; //name of camera
+        photonlib::PhotonCamera a_camera{"limelight1"}; //name of camera
 
         enum target_type_enum target_type = target_type_enum::CONE;
+
+        frc2::PIDController rotPid;
 };

@@ -10,7 +10,8 @@ frModule(frModule),
 blModule(blModule),
 brModule(brModule),
 a_gyro(gyro),
-turnAnglePid(0.014, 0.0, 0.0),
+// 0.006, 0.0, 0.0
+turnAnglePid(0.006, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01) {
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
@@ -150,18 +151,21 @@ bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
         float gyroDegrees = a_gyro.getAngleClamped();
     // calculates a speed we need to go based off our current sensor and target position
             turnAnglePid.SetSetpoint(angle);
+            turnAnglePid.SetTolerance(2.0);
+            //turnAnglePid.SetTolerance(1);
             float speed = turnCalcZ(angle, gyroDegrees);
             flModule.steerToAng(135);
             frModule.steerToAng(45);
             blModule.steerToAng(225);
             brModule.steerToAng(315);
-
             // - speed works, and speed does not because pid has clockwise as going up from zero, while the gyro thinks going clockwise as down from 360, so we need the opposite of one of them
-            flModule.setDrivePercent(-speed);
-            frModule.setDrivePercent(-speed);
-            blModule.setDrivePercent(-speed);
-            brModule.setDrivePercent(-speed);
+            flModule.setDrivePercent(speed);
+            frModule.setDrivePercent(speed);
+            blModule.setDrivePercent(speed);
+            brModule.setDrivePercent(speed);
+            frc::SmartDashboard::PutNumber("Speed: ", speed);
         if((turnAnglePid.AtSetpoint())){
+            stop();
             return true;
         }
         else{
