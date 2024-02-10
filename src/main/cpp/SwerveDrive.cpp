@@ -11,7 +11,7 @@ blModule(blModule),
 brModule(brModule),
 a_gyro(gyro),
 // 0.006, 0.0, 0.0
-turnAnglePid(0.006, 0.0, 0.0),
+turnAnglePid(0.0128, 0.0, -0.001),
 crabAnglePid(1.5, 0.0, 0.01) {
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
