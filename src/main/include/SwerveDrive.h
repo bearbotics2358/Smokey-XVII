@@ -6,6 +6,7 @@
 #include "Prefs.h"
 #include "SwerveModule.h"
 
+
 class SwerveDrive // Class to handle the kinematics of Swerve Drive
 {
     public:
@@ -57,7 +58,8 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         // returns the average of the total distance of the drive encoders in all 4 modules in meters
         float getAvgDistance();
-    
+        float getAvgVelocity();
+       
         // angle is in degrees
         bool turnToAngle(float angle, bool positive_speed);
 
@@ -65,6 +67,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // if another call to goToTheDon() will follow this call, suggest setting stop_on_completion false so that
         // the 'bot will not slam on the brakes once the first run is successful
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
+
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -108,4 +111,8 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         constexpr static float GO_TO_DIST_DONE = 0.2;
         // for goToPosition, when the angle difference from the target angle is within this amount, say that we are done (assuming distance is also close enough)
         constexpr static float GO_TO_ANGLE_DONE = 5.0;
+
+       
+
+        
 };

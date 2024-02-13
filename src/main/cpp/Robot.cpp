@@ -13,6 +13,8 @@
 #include <frc/XboxController.h>
 #include "Collector.h"
 #include "BeamBreak.h"
+#include "SwerveDrive.h"
+#include <frc2/command/SwerveControllerCommand.h>
 
 /*~~ hi :) ~~ */
 Robot::Robot():
@@ -28,7 +30,10 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Claw, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
-a_LED(ARDUINO_DIO_PIN)
+a_LED(ARDUINO_DIO_PIN),
+xPid(.1, 0, 0),
+yPid(.1, 0, 0),
+rotPid(.1, 0, 0)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -100,6 +105,29 @@ void Robot::RobotPeriodic() {
     a_TOF.Update();
     a_Claw.UpdateShuttleEncoder(); //automatically sets the shuttle's encoder to 0 if hitting the limit switch
 
+    
+    a_odometry.Update(frc::Rotation2d(units::degree_t(a_Gyro.getAngleClamped())), 
+        {a_FLModule.GetPosition(), a_FRModule.GetPosition(), a_BLModule.GetPosition(), a_BRModule.GetPosition()});
+
+    frc::SmartDashboard::PutNumber("xPose", (a_odometry.GetPose().X().value()));
+    frc::SmartDashboard::PutNumber("yPose", (a_odometry.GetPose().Y().value()));
+    frc::SmartDashboard::PutNumber("degreePose", ( a_odometry.GetPose().Rotation().Degrees().value()));
+
+    frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
+    frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
+    frc::SmartDashboard::PutNumber("BL Radians", a_BLModule.getAngle());
+    frc::SmartDashboard::PutNumber("BR Radians", a_BRModule.getAngle());
+
+    frc::SmartDashboard::PutNumber("FL Distance", a_FLModule.getDistance());
+    frc::SmartDashboard::PutNumber("FR Distance", a_FRModule.getDistance());
+    frc::SmartDashboard::PutNumber("BL Distance", a_BLModule.getDistance());
+    frc::SmartDashboard::PutNumber("BR Distance", a_BRModule.getDistance());
+    
+    frc::SmartDashboard::PutNumber("FL Velocity", a_FLModule.getVelocity());
+    frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
+    frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
+    frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
+    
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -115,6 +143,7 @@ void Robot::RobotPeriodic() {
     //     a_BLModule.steerToAng(150);
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
+    frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 }
 
 void Robot::DisabledInit() {
@@ -319,12 +348,13 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("x", x);
     frc::SmartDashboard::PutNumber("y", y);
     frc::SmartDashboard::PutNumber("z", z);
-    if (!inDeadzone) {
+
+      if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     } else {
         a_SwerveDrive.stop();
     }
-
+  
     /* =-=-=-=-=-=-=-=-=-=-= Change Cone/ Cube Mode =-=-=-=-=-=-=-=-=-=-= */
 
     // if(a_OperatorXboxController.GetXButtonPressed()) { //can change button later
@@ -334,9 +364,11 @@ void Robot::TeleopPeriodic() {
     //     SetTargetType(target_type_enum::CUBE);
     // }
 }
-
 void Robot::TestInit() {
     TeleopInit();
+    auto newTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(a_odometry.GetPose(), interiorWaypoints, endPose, configTrajectory);
+    
+    
 }
 
 
