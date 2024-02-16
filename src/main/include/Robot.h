@@ -62,7 +62,6 @@ class Robot : public frc::TimedRobot {
        
 
     private:
-        bool clawClosed;
         int armStage;
         bool isHighPistonDone;
         // keeps track of when to call enabled init
@@ -70,7 +69,6 @@ class Robot : public frc::TimedRobot {
         frc::SendableChooser<std::string> m_AutoModeSelector;
 
         Gyro a_Gyro;
-        Claw a_Claw;
 
         SwerveModule a_FLModule;
         SwerveModule a_FRModule;
@@ -149,28 +147,6 @@ class Robot : public frc::TimedRobot {
         frc::Rotation2d Rotation2d;
         frc::SwerveDriveOdometry<4> a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_Gyro.getAngleClamped()*((2*M_PI)/360.0))), 
         {a_FLModule.GetPosition(), a_FRModule.GetPosition(), a_BLModule.GetPosition(), a_BRModule.GetPosition()}};
-
-        frc2::PIDController xPid;
-        frc2::PIDController yPid;
-        frc2::PIDController rotPid;
-
-        frc::TrajectoryConfig configTrajectory{units::meters_per_second_t(5.0), units::meters_per_second_squared_t(3.0)};	
-
-        
-        const frc::Pose2d startPose{0_m, 0_m, 0_rad};
-        const frc::Pose2d endPose{1_m, 2_m, 3.14_rad};
-
-       
-        std::vector<frc::Translation2d> interiorWaypoints{
-        frc::Translation2d{-1_m, 0_m},
-        frc::Translation2d{0_m, 2_m}
-
-        
-        };
- 
-       
-        //frc::TrajectoryGenerator generateTrajectory{startPose, interiorWaypoints, endPose, configTrajectory};
-        
       
 };
  

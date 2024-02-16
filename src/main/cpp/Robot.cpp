@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <frc/interfaces/Gyro.h>
-#include "Claw.h"
+
 #include <frc/XboxController.h>
 #include "Collector.h"
 #include "BeamBreak.h"
@@ -19,21 +19,17 @@
 /*~~ hi :) ~~ */
 Robot::Robot():
 a_Gyro(GYRO_ID),
-a_Claw(ARM_MOTOR, SHUTTLE_MOTOR, PISTON_PUSH_SOLENOID_MODULE, PISTON_PULL_SOLENOID_MODULE, CLAW_OPEN_SOLENOID_MODULE, CLAW_CLOSE_SOLENOID_MODULE, /*CONE_PRESSURE_SOLENOID, CUBE_PRESSURE_SOLENOID,*/ CANCODER_ID_ARM, LIMIT_SWITCH), //Get the IDs for the arms solenoids
 a_FLModule(misc::GetFLDrive(), misc::GetFLSteer(), misc::GetFLCANCoder()),
 a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
 a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
 a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_TOF(),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Claw, &a_TOF),
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
-a_LED(ARDUINO_DIO_PIN),
-xPid(.1, 0, 0),
-yPid(.1, 0, 0),
-rotPid(.1, 0, 0)
+a_LED(ARDUINO_DIO_PIN)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -44,7 +40,7 @@ rotPid(.1, 0, 0)
     }*/
 
     armStage = 1;
-    clawClosed = false;
+    
 
     
     pvaluedrive = .037;
@@ -100,11 +96,10 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    a_Claw.updateDashboard();
+    
     a_LED.Update();
     a_TOF.Update();
-    a_Claw.UpdateShuttleEncoder(); //automatically sets the shuttle's encoder to 0 if hitting the limit switch
-
+    
     
     a_odometry.Update(frc::Rotation2d(units::degree_t(a_Gyro.getAngleClamped())), 
         {a_FLModule.GetPosition(), a_FRModule.GetPosition(), a_BLModule.GetPosition(), a_BRModule.GetPosition()});
@@ -204,83 +199,10 @@ void Robot::TeleopPeriodic() {
    
     
     
-    /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
-    // if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
-    //     a_Claw.ClawClose();
-    //     if(!catchBegin) {
-    //         state_time = Autonomous::gettime_d();
-    //         catchBegin = true;
-    //     }
-    //     if(Autonomous::gettime_d() > state_time + 0.5) {
-    //         armStage = 1;
-    //         clawClosed = true;
-    //         catchBegin = false;
-    //     }
-    // }
-
-    // if (a_DriverXboxController.GetYButton()){
-    //     armStage = 1;
-    // } else if (a_DriverXboxController.GetBButton()) {
-    //     armStage = 2;
-    // } else if (a_OperatorXboxController.GetLeftBumperPressed()) {
-    //     armStage = 3;
-    // } else if (a_OperatorXboxController.GetRightBumperPressed()) {
-    //     armStage = 4;
-    // } else if (a_DriverXboxController.GetAButton()) {
-    //     armStage = 6;
-    // }
-
-    // switch (armStage) {
-    //     case 1:
-    //         a_Claw.TransformClaw(125, -15, false); // transport
-    //         break;
-    //     case 2:
-    //         a_Claw.TransformClaw(10, -15, false); // arm down pointing downwards from the back
-    //         break;
-    //     case 3:
-    //         a_Claw.TransformClaw(190, 500, false); // arm at the top, piston off
-    //         break;
-    //     case 4:
-    //         isHighPistonDone = false;
-    //         piston_time = Autonomous::gettime_d();
-    //         armStage = 5;
-    //         break;
-    //     case 5:
-    //         if (!isHighPistonDone){
-    //             bool pistonDone = a_Claw.TransformClaw(160, 500, true);
-    //             isHighPistonDone = pistonDone && (Autonomous::gettime_d() > piston_time + 3);
-    //         } else {
-    //             a_Claw.TransformClaw(185, 500, true); // arm at the top, piston on
-    //         }
-    //         break;
-    //     case 6: {
-    //         bool transformDone = a_Claw.TransformClaw(160, 640, false);
-    //         if (transformDone){
-    //             armStage = 7;
-    //         }
-    //         break;
-    //     }
-    //     case 7:
-    //         a_Claw.TransformClaw(300, 640, false); //set point 290 640
-    //         break;
-    //     default:
-    //         a_Claw.TransformClaw(130, -15, false); // transport as default state
-    //         break;
-    // }
-
-    // claw open/close controls
-    // if(a_DriverXboxController.GetRightBumper()) {
-    //     a_Claw.ClawOpen();
-    //     clawClosed = false;
-    // } else if (a_DriverXboxController.GetLeftBumper()) {
-    //     a_Claw.ClawClose();
-    //     clawClosed = true;
-    // }
-
+    
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
-    // dpad up for full speed,
-    // down for half speed
+   
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
         a_slowSpeed = true;
     } else  {
@@ -365,9 +287,7 @@ void Robot::TeleopPeriodic() {
     // }
 }
 void Robot::TestInit() {
-    TeleopInit();
-    auto newTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(a_odometry.GetPose(), interiorWaypoints, endPose, configTrajectory);
-    
+    TeleopInit();    
     
 }
 
