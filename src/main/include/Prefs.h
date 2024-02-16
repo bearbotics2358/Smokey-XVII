@@ -30,7 +30,9 @@
 #define LIMIT_SWITCH 0
 
 #define MAX_CLIMB_PERCENT 0.1
-#define MAX_FREE_SPEED 16.3
+//in m/s
+#define MAX_FREE_SPEED 4.9
+
 
 #define TICKS_STEERING 18.0 // roughly 18 "position" units per steering rotation
 

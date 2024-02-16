@@ -145,7 +145,10 @@ float SwerveDrive::getAvgDistance() {
   //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
   return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
 }
-
+float SwerveDrive::getAvgVelocity() {
+  //  return (fabs(flModule.getDistance()) + fabs(frModule.getDistance()) + fabs(blModule.getDistance()) + fabs(brModule.getDistance())) / 4.0;
+  return (fabs(flModule.getVelocity()) + fabs(frModule.getVelocity()) + fabs(blModule.getVelocity()) + fabs(brModule.getVelocity())) / 4.0;
+}
 bool SwerveDrive::turnToAngle(float angle, bool positive_speed) {
         float gyroDegrees = a_gyro.getAngleClamped();
     // calculates a speed we need to go based off our current sensor and target position
@@ -322,3 +325,4 @@ float SwerveDrive::crabCalcZ(float angle, float gyroDegrees) {
 float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
     return std::clamp(turnAnglePid.Calculate(gyroDegrees, angle), -0.2, 0.2);
 }
+

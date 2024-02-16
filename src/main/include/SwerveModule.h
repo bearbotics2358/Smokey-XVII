@@ -3,6 +3,13 @@
 #include "Prefs.h"
 #include <ctre/Phoenix.h>
 #include <frc/controller/PIDController.h>
+#include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/kinematics/SwerveDriveOdometry.h>
+#include <frc/kinematics/SwerveModuleState.h>
+#include <frc/Counter.h>
+
+
 
 class SwerveModule // Handles steering and driving of each Swerve Module
 {
@@ -10,7 +17,14 @@ class SwerveModule // Handles steering and driving of each Swerve Module
         SwerveModule(int driveID, int steerID, int CANCoderID); // CAN IDs, analog port for steer encoder
 
         // Returns position of the distance encoder in meters
-        float getDistance();
+        double getDistance();
+
+        double getVelocity();
+        double getRadians();
+        frc::SwerveModulePosition GetPosition();
+        frc::SwerveModuleState getState();
+        void setState(frc::SwerveModuleState state);
+
         // sets the drive encoder to 0 ticks
         void resetDriveEncoder();
 
@@ -50,6 +64,7 @@ class SwerveModule // Handles steering and driving of each Swerve Module
         static double wheelSpeedToRpm(double speed);
         static double metersToMotorTicks(double meters);
         static double motorTicksToMeters(double motorTicks);
+        static double motorTicksToRadians(double motorTicks);
 
         TalonFX driveMotor;
         TalonFX steerMotor;
@@ -59,6 +74,7 @@ class SwerveModule // Handles steering and driving of each Swerve Module
         CANCoder m_CANCoder;
 
         frc2::PIDController steerPID;
+
 
         int _steerID = 0;
         int _CANCoderID = 0;

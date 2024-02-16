@@ -7,11 +7,13 @@ class Shooter{
     Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID);
     void setSpeed(double percent);
     void stopShooter();
+    void moveToAngle(double angle);
     private:
     // rev::CANSparkMax rightShooterMotor;
     // rev::CANSparkMax leftShooterMotor;
     frc2::PIDController leftShooterPID;
     frc2::PIDController rightShooterPID;
+    frc2::PIDController pivotPID;
 
     TalonFX rightShooterMotor;
     TalonFX leftShooterMotor;
