@@ -68,6 +68,15 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // the 'bot will not slam on the brakes once the first run is successful
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
+        void odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+
+        void updateOdometry();
+
+        frc::Pose2d getPose();
+        double getXPose();
+        double getYPose();
+        double getRotPose();
+
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -113,6 +122,19 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         constexpr static float GO_TO_ANGLE_DONE = 5.0;
 
        
+        frc::Translation2d a_FLLocation{+0.3_m, +0.3_m};
+        frc::Translation2d a_FRLocation{+0.3_m, -0.3_m};
+        frc::Translation2d a_BLLocation{-0.3_m, +0.3_m};
+        frc::Translation2d a_BRLocation{-0.3_m, -0.3_m};
 
+
+        frc::SwerveDriveKinematics<4> a_kinematics{a_FLLocation, a_FRLocation, a_BLLocation, a_BRLocation};
+
+        frc::Rotation2d Rotation2d;
+        frc::SwerveDriveOdometry<4> a_odometry;
+
+        frc::PIDController xPid;
+        frc::PIDController yPid;
+        frc::PIDController rotPid;
         
 };
