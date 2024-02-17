@@ -267,14 +267,36 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("z", z);
 
 
+    photonlib::PhotonPipelineResult result = a_camera.GetLatestResult();
+
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
     }
     else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    } else {
+    } else if(a_DriverXboxController.GetBButton()) {
+
+        if (result.HasTargets()) {
+            photonlib::PhotonTrackedTarget target = result.GetBestTarget();
+            double target_Yaw = target.GetYaw();
+            double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
+            frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
+            a_SwerveDrive.turnToAngle(goToYaw, true);
+        } 
+        } else {
         a_SwerveDrive.stop();
     }
+
+//@TODO for debug only -- Remove later
+    if (result.HasTargets()) {
+        frc::SmartDashboard::PutString("Target?", "Yes");
+        photonlib::PhotonTrackedTarget target = result.GetBestTarget();
+        frc::SmartDashboard::PutNumber("Yaw", target.GetYaw());
+    } else {
+        frc::SmartDashboard::PutString("Target?", "No");
+        frc::SmartDashboard::PutNumber("Yaw", 0);
+    }
+
 
     if(a_DriverXboxController.GetAButtonPressed()){
         a_SwerveDrive.zeroPose();
