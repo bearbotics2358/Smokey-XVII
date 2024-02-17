@@ -17,9 +17,10 @@
 #include <photonlib/PhotonUtils.h>
 #include "BeamBreak.h"
 #include "TOF.h"
-
+#include "Shooter.h"
 #include <frc/smartdashboard/SendableChooser.h>
-
+#include "Collector.h"
+#include "BeamBreak.h"
 #include "LED_DIO.h"
 #include <frc/controller/PIDController.h>
 
@@ -90,7 +91,8 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-
+        Shooter a_Shooter;
+        Collector a_Collector;
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
