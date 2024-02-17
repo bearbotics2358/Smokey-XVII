@@ -119,19 +119,19 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         float blLastPos { 0.0 };
         float brLastPos { 0.0 };
 
-        constexpr static float DRIVE_LENGTH = 29.75;
-        constexpr static float DRIVE_WIDTH = 29.75;
+        constexpr static float DRIVE_LENGTH = 13.0;
+        constexpr static float DRIVE_WIDTH = 29.5;
 
         // for goToPosition, when the distance to the target position is within this amount, say that we are done (assuming angle is also close enough)
         constexpr static float GO_TO_DIST_DONE = 0.2;
         // for goToPosition, when the angle difference from the target angle is within this amount, say that we are done (assuming distance is also close enough)
         constexpr static float GO_TO_ANGLE_DONE = 5.0;
 
-       
-        frc::Translation2d a_FLLocation{+0.3_m, +0.3_m};
-        frc::Translation2d a_FRLocation{+0.3_m, -0.3_m};
-        frc::Translation2d a_BLLocation{-0.3_m, +0.3_m};
-        frc::Translation2d a_BRLocation{-0.3_m, -0.3_m};
+       // 36 in 29.5 in
+        frc::Translation2d a_FLLocation{+0.11_m, +0.375_m};
+        frc::Translation2d a_FRLocation{+0.2_m, -0.375_m};
+        frc::Translation2d a_BLLocation{-0.11_m, +0.375_m};
+        frc::Translation2d a_BRLocation{-0.2_m, -0.375_m};
 
 
         frc::SwerveDriveKinematics<4> a_kinematics{a_FLLocation, a_FRLocation, a_BLLocation, a_BRLocation};

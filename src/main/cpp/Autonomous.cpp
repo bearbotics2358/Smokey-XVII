@@ -7,10 +7,11 @@
 #include <sys/time.h>
 
 //left if positive degrees right is negative
-Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof):
+Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof, Shooter *Shooter, Collector *Collector):
 a_Gyro(Gyro),
 a_SwerveDrive(SwerveDrive),
-
+a_Shooter(Shooter),
+a_Collector(Collector),
 a_TOF(tof),
 autoDrivePID(.4, .1, 0) 
 {}
@@ -23,8 +24,8 @@ void Autonomous::StartAuto(const std::string autoMode) {
     if(autoMode == onePieceAMP){
         oneAMP();
     }
-    else if (autoMode == twoPieceAMP){
-        twoAMP();
+    else if (autoMode == firstNote){
+        NoteOne();
     }
     else if (autoMode == BlueMiddleOneNote){
         BMOneNote();
@@ -55,8 +56,8 @@ void Autonomous::PeriodicAuto(const std::string periodicAutoMode) {
     if(periodicAutoMode == onePieceAMP){
         PeriodiconeAMP();
     }
-    else if (periodicAutoMode == twoPieceAMP){
-        PeriodictwoAMP();
+    else if (periodicAutoMode == firstNote){
+        PeriodicNoteOne();
     }
     else if (periodicAutoMode == BlueMiddleOneNote){
         PeriodicBMOneNote();
@@ -129,66 +130,33 @@ void Autonomous::PeriodiconeAMP() {
 }
 
 
-void Autonomous::twoAMP() {
-    a_Gyro->setYaw(270);
-    a_AutoState1 = kBlueGo1;
-    drivestart = 0.0;
-
+void Autonomous::NoteOne() {
+    a_AutoState1 = kGoToNote1;
     state_time = gettime_d();
 }
 
-void Autonomous::PeriodictwoAMP() {
+void Autonomous::PeriodicNoteOne() {
 
     AutoState1 nextState = a_AutoState1;
 
     switch (a_AutoState1) {
-         case kBlueAutoIdle1:
+         case kAutoIdle1:
             StopSwerves();
             break;
-        case kBlueGo1:
-             if (DriveDirection(.45, 180, .25, true)) {
-                nextState = kBlueStartShooter1;
-            }  
+        case kGoToNote1:
+            a_SwerveDrive -> odometryGoToPose(2.9, 0.0, 0.0);
+            nextState = kShootNote1;
             break;
-        case kBlueStartShooter1:
-            nextState = kBlueShoot1;
+        case kShootNote1:
+            a_Collector -> indexToShoot();
+            nextState = kAutoIdle1;
             break;
-        case kBlueShoot1:
-            nextState = kBlueTurn1;
-            break;
-        case kBlueTurn1:
-            if(TurnToAngle(325, false)){
-                nextState = kBlueGetPiece1;
-            }
-            break;
-        case kBlueGetPiece1:
-            if (DriveDirection(1.78, 0, 0.25, true)) {
-                nextState = kBlueRotateBack1;
-            }
-            break;
-        case kBlueRotateBack1:
-             if(DriveDirection(1.78, 180, 0.25, true)){
-                nextState = kBlueGoToAmp1;
-            }
-            break;
-        case kBlueGoToAmp1:
-            if (TurnToAngle(270, true)) {
-                nextState = kBlueRestartShooter1;
-            }
-            break;
-        case kBlueRestartShooter1:
-            nextState = kBlueShootAgain1;     
-            break;
-        case kBlueShootAgain1:
-            nextState = kBlueAutoIdle1;
-            break;
-
        }
     a_AutoState1 = nextState;
 }
 
 void Autonomous::BMOneNote() {
-    a_AutoState2 = kBlueStartShooter2;   
+    a_AutoState2 = kGoToNote2;   
     state_time = gettime_d();
     drivestart = 0.0;
 
@@ -199,20 +167,17 @@ void Autonomous::PeriodicBMOneNote() {
     AutoState2 nextState = a_AutoState2;
 
     switch (a_AutoState2) {
-       case kBlueAutoIdle2:
+       case kAutoIdle2:
             StopSwerves();
             break;
-         case kBlueStartShooter2:
-            nextState = kBlueShoot2;
+         case kGoToNote2:
+            a_SwerveDrive -> odometryGoToPose(2.9, -1.45, 0.0);
+            nextState = kShootNote2;
             break;
-        case kBlueShoot2:
-            nextState = kBlueDriveBack2;
-            break;
-        case kBlueDriveBack2:
-            if (DriveDirection(1.94, 0, 0.25, true)) {
-                nextState = kBlueAutoIdle2;
-            }
-            break;        
+        case kShootNote2:
+            a_Collector -> indexToShoot();
+            nextState = kAutoIdle2;
+            break;      
     }
     a_AutoState2 = nextState;
 }

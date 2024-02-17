@@ -11,11 +11,13 @@
 #include <frc/XboxController.h>
 #include <units/math.h>
 #include "TOF.h"
+#include "Shooter.h"
+#include "Collector.h"
 
 
 
 const std::string onePieceAMP = "One Amp";
-const std::string twoPieceAMP = "Two Amp";
+const std::string firstNote = "Note 1";
 const std::string BlueMiddleOneNote = "Blue Middle One Note";
 const std::string BlueMiddleTwoNote = "Blue Middle Two Note";
 const std::string BlueRightOneNote = "Blue Right One Note";
@@ -41,24 +43,16 @@ enum AutoState0 { // Encoders
 };
 
 enum AutoState1 { // Encoders
-    kBlueAutoIdle1,
-    kBlueGo1,
-    kBlueStartShooter1,
-    kBlueShoot1,
-    kBlueTurn1,
-    kBlueGetPiece1,
-    kBlueRotateBack1,
-    kBlueGoToAmp1,
-    kBlueRestartShooter1,
-    kBlueShootAgain1
+    kAutoIdle1,
+    kGoToNote1,
+    kShootNote1,
 };
 
 enum AutoState2 { // T.O.F and Encoders
-    kBlueAutoIdle2,
-    kBlueStartShooter2,
-    kBlueShoot2,
-    kBlueDriveBack2,
-};
+    kAutoIdle2,
+    kGoToNote2,
+    kShootNote2,
+    };
 
 // states for 3 ball auto
 enum AutoState3 {
@@ -195,7 +189,7 @@ class Autonomous {
         void PeriodicAuto(const std::string periodicAutoMode);
 
     void DecidePath();
-    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof);
+    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof, Shooter *Shooter, Collector *Collector);
 
    // const char *GetCurrentPath();
 
@@ -207,8 +201,8 @@ class Autonomous {
     void oneAMP();         // Blue Drop and Go Left AutoState0
     void PeriodiconeAMP(); // Periodic Blue Drop and Go Left AutoState0
 
-    void twoAMP();         // Blue Charge Station Left AutoState1
-    void PeriodictwoAMP(); // Periodic Blue Charge Station Left AutoState1
+    void NoteOne();         // Blue Charge Station Left AutoState1
+    void PeriodicNoteOne(); // Periodic Blue Charge Station Left AutoState1
 
     void BMOneNote();         // Blue Drop and Go Middle AutoState2
     void PeriodicBMOneNote(); // Periodic Blue Drop and Go Middle AutoState2
@@ -228,9 +222,26 @@ class Autonomous {
     void RCSL();         // Red Charge Station Left AutoState7
     void PeriodicRCSL(); // Periodic Red Charge Station Left AutoState7
 
+    void RDGM();         // Red Drop and Go Middle AutoState8
+    void PeriodicRDGM(); // Periodic Red Drop and Go Middle AutoState8
+
+    void RCSM();         // Red Charge Station Middle AutoState9
+    void PeriodicRCSM(); // Periodic Red Charge Station Middle AutoState9
+
+    void RDGR();         // Red Drop and Go Right AutoState10
+    void PeriodicRDGR(); // Periodic Red Drop and Go Right AutoState10
+
+    void RCSR();         // Red Charge Station Right AutoState11
+    void PeriodicRCSR(); // Periodic Red Charge Station Right AutoState11
+
     void DoNothing();
     void PeriodicDoNothing();
 
+    void LeftPiece2();
+    void LeftPeriodicPiece2();
+
+    void RightPiece2();
+    void RightPeriodicPiece2();
 
     // ------------------Sub-Routines-------------------------//
 
@@ -252,8 +263,9 @@ class Autonomous {
 private:
     Gyro *a_Gyro;
     SwerveDrive *a_SwerveDrive;
-
+    Shooter *a_Shooter;
     TOF *a_TOF;
+    Collector *a_Collector;
 
 
 

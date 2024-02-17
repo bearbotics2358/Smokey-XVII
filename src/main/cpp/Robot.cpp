@@ -25,13 +25,13 @@ a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
 a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_TOF(),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
 a_LED(ARDUINO_DIO_PIN),
 a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
-a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID)
+a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF, &a_Shooter, &a_Collector)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -76,7 +76,7 @@ void Robot::RobotInit() {
 
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(onePieceAMP, onePieceAMP);
-    m_AutoModeSelector.AddOption(twoPieceAMP, twoPieceAMP);
+    m_AutoModeSelector.AddOption(firstNote, firstNote);
     m_AutoModeSelector.AddOption(BlueMiddleOneNote, BlueMiddleOneNote);
     m_AutoModeSelector.AddOption( BlueMiddleTwoNote,  BlueMiddleTwoNote);
     m_AutoModeSelector.AddOption(BlueRightOneNote, BlueRightOneNote);
