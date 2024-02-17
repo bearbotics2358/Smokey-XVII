@@ -14,7 +14,7 @@
 #include "Collector.h"
 #include "BeamBreak.h"
 #include "SwerveDrive.h"
-#include <frc2/command/SwerveControllerCommand.h>
+
 
 /*~~ hi :) ~~ */
 Robot::Robot():
@@ -40,13 +40,13 @@ a_LED(ARDUINO_DIO_PIN)
     }*/
 
     armStage = 1;
-    
 
-    
+
+
     pvaluedrive = .037;
     a_FLModule.setDrivePID(pvaluedrive, 0, 0);
     a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
 
     a_FRModule.setDrivePID(pvaluedrive, 0, 0);
 
@@ -96,17 +96,16 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    
+
     a_LED.Update();
     a_TOF.Update();
-    
-    
-    a_odometry.Update(frc::Rotation2d(units::degree_t(a_Gyro.getAngleClamped())), 
-        {a_FLModule.GetPosition(), a_FRModule.GetPosition(), a_BLModule.GetPosition(), a_BRModule.GetPosition()});
 
-    frc::SmartDashboard::PutNumber("xPose", (a_odometry.GetPose().X().value()));
-    frc::SmartDashboard::PutNumber("yPose", (a_odometry.GetPose().Y().value()));
-    frc::SmartDashboard::PutNumber("degreePose", ( a_odometry.GetPose().Rotation().Degrees().value()));
+    a_SwerveDrive.updateOdometry();
+
+
+    frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
+    frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
+    frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
 
     frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
     frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
@@ -117,12 +116,12 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("FR Distance", a_FRModule.getDistance());
     frc::SmartDashboard::PutNumber("BL Distance", a_BLModule.getDistance());
     frc::SmartDashboard::PutNumber("BR Distance", a_BRModule.getDistance());
-    
+
     frc::SmartDashboard::PutNumber("FL Velocity", a_FLModule.getVelocity());
     frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
     frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
-    
+
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -193,16 +192,12 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-   
+
     // EnabledPeriodic();
 
-   
-    
-    
-    
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
-   
+
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
         a_slowSpeed = true;
     } else  {
@@ -229,7 +224,7 @@ void Robot::TeleopPeriodic() {
     }
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
-    
+
     if(a_DriverXboxController.GetLeftBumperPressed()){
         a+=.1;
     }
@@ -271,24 +266,26 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("y", y);
     frc::SmartDashboard::PutNumber("z", z);
 
-      if (!inDeadzone) {
+
+    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+        a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
+    }
+    else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     } else {
         a_SwerveDrive.stop();
     }
-  
-    /* =-=-=-=-=-=-=-=-=-=-= Change Cone/ Cube Mode =-=-=-=-=-=-=-=-=-=-= */
 
-    // if(a_OperatorXboxController.GetXButtonPressed()) { //can change button later
-    //     SetTargetType(target_type_enum::CONE);  //270 is left, 90 is right
-    // }                                           //0 is up, 180 is down
-    // else if(a_OperatorXboxController.GetBButtonPressed()) { //can change button later
-    //     SetTargetType(target_type_enum::CUBE);
-    // }
-}
+    if(a_DriverXboxController.GetAButtonPressed()){
+        a_SwerveDrive.zeroPose();
+    }
+
+
+
+
+    }
 void Robot::TestInit() {
-    TeleopInit();    
-    
+    TeleopInit();
 }
 
 
@@ -312,7 +309,7 @@ void Robot::TestPeriodic() {
     //     dvaluesteer-=.1;
     // }
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
     // a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     // a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
@@ -328,7 +325,7 @@ void Robot::TestPeriodic() {
     //     a_FLModule.steerToAng(0);
     //     a_BRModule.steerToAng(0);
     //     a_BLModule.steerToAng(0);
-    // } 
+    // }
     // else {
     //     a_FRModule.steerToAng(45);
     //     a_FLModule.steerToAng(45);

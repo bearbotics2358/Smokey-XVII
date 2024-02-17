@@ -23,7 +23,6 @@ class SwerveModule // Handles steering and driving of each Swerve Module
         double getRadians();
         frc::SwerveModulePosition GetPosition();
         frc::SwerveModuleState getState();
-        void setState(frc::SwerveModuleState state);
 
         // sets the drive encoder to 0 ticks
         void resetDriveEncoder();

@@ -249,9 +249,3 @@ frc::SwerveModuleState SwerveModule::getState(){
     return frc::SwerveModuleState(units::meters_per_second_t(getVelocity()), frc::Rotation2d(units::degree_t((getAngle()))));
 }
 
-void SwerveModule::setState(frc::SwerveModuleState state){
-    state = state.Optimize(state, frc::Rotation2d(units::degree_t(getAngle())));
-    driveMotor.Set(TalonFXControlMode::PercentOutput, state.speed.value()/MAX_FREE_SPEED);
-    double turningSpeed = steerPID.Calculate(getAngle(), state.angle.Degrees().value());
-    steerMotor.Set(TalonFXControlMode::PercentOutput, turningSpeed);
-}

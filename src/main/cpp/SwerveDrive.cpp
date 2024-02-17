@@ -11,7 +11,13 @@ blModule(blModule),
 brModule(brModule),
 a_gyro(gyro),
 turnAnglePid(0.014, 0.0, 0.0),
-crabAnglePid(1.5, 0.0, 0.01) {
+crabAnglePid(1.5, 0.0, 0.01),
+a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
+        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
+xProfiledPid(.5, .1, 0.0, linearConstraints),
+yProfiledPid(.5, .1, 0.0, linearConstraints),
+rotProfiledPid(.5, 0.0, 0.0, rotationalConstraints)
+{
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
 }
@@ -324,5 +330,39 @@ float SwerveDrive::crabCalcZ(float angle, float gyroDegrees) {
 
 float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
     return std::clamp(turnAnglePid.Calculate(gyroDegrees, angle), -0.2, 0.2);
+}
+void SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired){
+        double xPose = a_odometry.GetPose().X().value();
+        double yPose = a_odometry.GetPose().Y().value();
+        double rotPose = a_odometry.GetPose().Rotation().Radians().value();
+
+
+        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(xDesired)), -.25, .25);
+        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(yDesired)), -.25, .25);
+        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
+
+        swerveUpdate(xSpeed, ySpeed, -rotSpeed, true);
+
+}
+void SwerveDrive::updateOdometry(){
+     a_odometry.Update(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
+        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()});
+}
+frc::Pose2d SwerveDrive::getPose(){
+    return a_odometry.GetPose();
+}
+double SwerveDrive::getXPose(){
+    return getPose().X().value();
+}
+double SwerveDrive::getYPose(){
+    return getPose().Y().value();
+}
+double SwerveDrive::getRotPose(){
+    return getPose().Rotation().Degrees().value();
+}
+double SwerveDrive::zeroPose(){
+    a_odometry.ResetPosition(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
+    {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
+    frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
 }
 
