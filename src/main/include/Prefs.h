@@ -30,7 +30,10 @@
 #define LIMIT_SWITCH 0
 
 #define MAX_CLIMB_PERCENT 0.1
-#define MAX_FREE_SPEED 16.3
+//in m/s
+#define MAX_FREE_SPEED 4.9
+#define MAX_ROT_SPEED 2.07
+
 
 #define TICKS_STEERING 18.0 // roughly 18 "position" units per steering rotation
 
@@ -137,6 +140,8 @@ static double CANCODER_OFFSETS[] = {
 // I have a feeling this might be wrong, since our distance measurents are sligtly off
 // ratio is drive motor rotations / wheel rotations
 #define SWERVE_DRIVE_MOTOR_GEAR_RATIO (6.75 / 1.0)
+
+#define SHOOTER_GEAR_RATIO (3.25)
 
 #define INVERTED_MOTOR (-1.0) //used to allow for the inversion of motors in MK4i modules
 

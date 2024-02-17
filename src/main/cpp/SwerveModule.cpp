@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/phoenix/sensors/CANCoder.h>
+#include <ctre/phoenix/motorcontrol/IMotorController.h>
 
 /* ============= Drive Motor Current Limits ============= */
 
@@ -31,7 +32,8 @@ steerMotor(steerID),
 driveEnc(driveMotor),
 steerEncFalcon(steerMotor),
 m_CANCoder(CANCoderID),
-steerPID(0, 0, 0){
+steerPID(0, 0, 0)
+{
     _steerID = steerID;
     _CANCoderID = CANCoderID - 17;
 
@@ -53,7 +55,7 @@ steerPID(0, 0, 0){
     drive_config.supplyCurrLimit.currentLimit = kDriveMotorCurrentLimit;
     drive_config.supplyCurrLimit.enable = true;
 
-    drive_config.velocityMeasurementPeriod = ctre::phoenix::sensors::SensorVelocityMeasPeriod::Period_25Ms;
+    drive_config.velocityMeasurementPeriod = ctre::phoenix::sensors::SensorVelocityMeasPeriod::Period_20Ms;
 
     // this allows the motor to actually turn, pid values are set later
     drive_config.slot0.kP = 1.0;
@@ -78,8 +80,15 @@ steerPID(0, 0, 0){
     steerPID.EnableContinuousInput(0.0, 360.0);
 }
 
-float SwerveModule::getDistance() {
-    return motorTicksToMeters(driveEnc.GetIntegratedSensorPosition());
+double SwerveModule::getDistance() {
+    return motorTicksToMeters(driveMotor.GetSelectedSensorPosition());
+}
+double SwerveModule::getVelocity() {
+    // try multiplying by 1000 if it doesnt work
+    return (1000*(motorTicksToMeters(driveMotor.GetSelectedSensorVelocity())));
+}
+double SwerveModule::getRadians() {
+    return motorTicksToRadians(steerMotor.GetSelectedSensorPosition());
 }
 
 void SwerveModule::resetDriveEncoder() {
@@ -118,6 +127,7 @@ float SwerveModule::getAngle() {
     }
     return misc::clampDegrees(getRelativeAngle() + encZeroPoint);
 }
+
 
 void SwerveModule::goToPosition(float meters) {
     float ticks = SwerveModule::metersToMotorTicks(meters);
@@ -222,3 +232,20 @@ double SwerveModule::motorTicksToMeters(double motorTicks) {
     double angularPosition = rotations * 2 * M_PI;
     return angularPosition * 0.5 * WHEEL_DIAMETER;
 }
+double SwerveModule::motorTicksToRadians(double motorTicks) {
+    // like ticks of the wheel
+    double scaledTicks = motorTicks / SWERVE_DRIVE_MOTOR_GEAR_RATIO;
+    double rotations = (scaledTicks / FALCON_UNITS_PER_REV);
+    // angular position in radians
+    double angularPosition = rotations * 2 * M_PI;
+    return angularPosition;
+}
+frc::SwerveModulePosition SwerveModule::GetPosition(){
+  return {units::meter_t{getDistance()},
+          frc::Rotation2d(units::degree_t{getAngle()})};
+}
+
+frc::SwerveModuleState SwerveModule::getState(){
+    return frc::SwerveModuleState(units::meters_per_second_t(getVelocity()), frc::Rotation2d(units::degree_t((getAngle()))));
+}
+

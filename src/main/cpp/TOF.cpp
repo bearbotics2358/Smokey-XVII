@@ -64,7 +64,7 @@ void TOF::Update()
 			// terminate the report string
 			rx_buff[rx_index] = 0;
 
-			printf("TOF report: %s\n", rx_buff);
+			// printf("TOF report: %s\n", rx_buff);
 
 			ProcessReport();
 			

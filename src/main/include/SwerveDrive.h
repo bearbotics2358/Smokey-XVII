@@ -5,6 +5,12 @@
 #include "Gyro.h"
 #include "Prefs.h"
 #include "SwerveModule.h"
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/trajectory/TrapezoidProfile.h>
+#include <units/acceleration.h>
+#include <units/velocity.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
 
 class SwerveDrive // Class to handle the kinematics of Swerve Drive
 {
@@ -57,7 +63,8 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         // returns the average of the total distance of the drive encoders in all 4 modules in meters
         float getAvgDistance();
-    
+        float getAvgVelocity();
+       
         // angle is in degrees
         bool turnToAngle(float angle, bool positive_speed);
 
@@ -65,6 +72,17 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // if another call to goToTheDon() will follow this call, suggest setting stop_on_completion false so that
         // the 'bot will not slam on the brakes once the first run is successful
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
+
+        void odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+
+        void updateOdometry();
+
+        frc::Pose2d getPose();
+        double getXPose();
+        double getYPose();
+        double getRotPose();
+        double zeroPose();
+
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -108,4 +126,25 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         constexpr static float GO_TO_DIST_DONE = 0.2;
         // for goToPosition, when the angle difference from the target angle is within this amount, say that we are done (assuming distance is also close enough)
         constexpr static float GO_TO_ANGLE_DONE = 5.0;
+
+       
+        frc::Translation2d a_FLLocation{+0.3_m, +0.3_m};
+        frc::Translation2d a_FRLocation{+0.3_m, -0.3_m};
+        frc::Translation2d a_BLLocation{-0.3_m, +0.3_m};
+        frc::Translation2d a_BRLocation{-0.3_m, -0.3_m};
+
+
+        frc::SwerveDriveKinematics<4> a_kinematics{a_FLLocation, a_FRLocation, a_BLLocation, a_BRLocation};
+
+        frc::Rotation2d Rotation2d;
+        frc::SwerveDriveOdometry<4> a_odometry;
+
+        
+        frc::TrapezoidProfile<units::meters>::Constraints linearConstraints{units::meters_per_second_t(2.0), units::meters_per_second_squared_t(2.0)};
+        frc::ProfiledPIDController<units::meters> xProfiledPid;
+        frc::ProfiledPIDController<units::meters> yProfiledPid;
+
+        frc::TrapezoidProfile<units::radian>::Constraints rotationalConstraints{units::radians_per_second_t(4.0), units::radians_per_second_squared_t(4.0)};
+        frc::ProfiledPIDController<units::radian> rotProfiledPid;
+
 };

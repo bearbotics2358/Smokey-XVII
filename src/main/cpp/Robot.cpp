@@ -9,23 +9,24 @@
 #include <iostream>
 #include <stdio.h>
 #include <frc/interfaces/Gyro.h>
-#include "Claw.h"
+
 #include <frc/XboxController.h>
 #include <cmath>
 #include "Collector.h"
 #include "BeamBreak.h"
+#include "SwerveDrive.h"
+
 
 /*~~ hi :) ~~ */
 Robot::Robot():
 a_Gyro(GYRO_ID),
-a_Claw(ARM_MOTOR, SHUTTLE_MOTOR, PISTON_PUSH_SOLENOID_MODULE, PISTON_PULL_SOLENOID_MODULE, CLAW_OPEN_SOLENOID_MODULE, CLAW_CLOSE_SOLENOID_MODULE, /*CONE_PRESSURE_SOLENOID, CUBE_PRESSURE_SOLENOID,*/ CANCODER_ID_ARM, LIMIT_SWITCH), //Get the IDs for the arms solenoids
 a_FLModule(misc::GetFLDrive(), misc::GetFLSteer(), misc::GetFLCANCoder()),
 a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
 a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
 a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_TOF(),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Claw, &a_TOF),
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
@@ -41,21 +42,21 @@ rotPid(.5, 0, 0)
     }*/
 
     armStage = 1;
-    clawClosed = false;
 
-    a_FLModule.setDrivePID(0.001, 0, 0);
-    a_FLModule.setSteerPID(STEERING_PVALUE, .3, 0);
-    
+
+
+    pvaluedrive = .037;
+    a_FLModule.setDrivePID(pvaluedrive, 0, 0);
+    a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     a_FRModule.setDrivePID(pvaluedrive, 0, 0);
+    a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
-   a_FRModule.setSteerPID(STEERING_PVALUE, .3, 0);
+    a_BLModule.setDrivePID(pvaluedrive, 0, 0);
+    a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
-    a_BLModule.setDrivePID(0.001, 0, 0);
-    a_BLModule.setSteerPID(STEERING_PVALUE, .3, 0);
-
-    a_BRModule.setDrivePID(0.001, 0, 0);
-    a_BRModule.setSteerPID(STEERING_PVALUE, .3, 0);
+    a_BRModule.setDrivePID(pvaluedrive, 0, 0);
+    a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     a_SwerveDrive.brakeOnStop();
 }
@@ -95,10 +96,31 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    a_Claw.updateDashboard();
+
     a_LED.Update();
     a_TOF.Update();
-    a_Claw.UpdateShuttleEncoder(); //automatically sets the shuttle's encoder to 0 if hitting the limit switch
+
+    a_SwerveDrive.updateOdometry();
+
+
+    frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
+    frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
+    frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
+
+    frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
+    frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
+    frc::SmartDashboard::PutNumber("BL Radians", a_BLModule.getAngle());
+    frc::SmartDashboard::PutNumber("BR Radians", a_BRModule.getAngle());
+
+    frc::SmartDashboard::PutNumber("FL Distance", a_FLModule.getDistance());
+    frc::SmartDashboard::PutNumber("FR Distance", a_FRModule.getDistance());
+    frc::SmartDashboard::PutNumber("BL Distance", a_BLModule.getDistance());
+    frc::SmartDashboard::PutNumber("BR Distance", a_BRModule.getDistance());
+
+    frc::SmartDashboard::PutNumber("FL Velocity", a_FLModule.getVelocity());
+    frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
+    frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
+    frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
 
 //testing code block for PID tuning
 
@@ -115,6 +137,7 @@ void Robot::RobotPeriodic() {
     //     a_BLModule.steerToAng(150);
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
+    frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 }
 
 void Robot::DisabledInit() {
@@ -169,89 +192,12 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-   
+
     // EnabledPeriodic();
-
-   
-    
-    
-    /* =-=-=-=-=-=-=-=-=-=-= Claw Controls =-=-=-=-=-=-=-=-=-=-= */
-    // if (catchBegin || (a_TOF.GetTargetRangeIndicator() == target_range_enum::TARGET_IN_RANGE && a_DriverXboxController.GetRightTriggerAxis() > 0.5 && clawClosed == false)) {
-    //     a_Claw.ClawClose();
-    //     if(!catchBegin) {
-    //         state_time = Autonomous::gettime_d();
-    //         catchBegin = true;
-    //     }
-    //     if(Autonomous::gettime_d() > state_time + 0.5) {
-    //         armStage = 1;
-    //         clawClosed = true;
-    //         catchBegin = false;
-    //     }
-    // }
-
-    // if (a_DriverXboxController.GetYButton()){
-    //     armStage = 1;
-    // } else if (a_DriverXboxController.GetBButton()) {
-    //     armStage = 2;
-    // } else if (a_OperatorXboxController.GetLeftBumperPressed()) {
-    //     armStage = 3;
-    // } else if (a_OperatorXboxController.GetRightBumperPressed()) {
-    //     armStage = 4;
-    // } else if (a_DriverXboxController.GetAButton()) {
-    //     armStage = 6;
-    // }
-
-    // switch (armStage) {
-    //     case 1:
-    //         a_Claw.TransformClaw(125, -15, false); // transport
-    //         break;
-    //     case 2:
-    //         a_Claw.TransformClaw(10, -15, false); // arm down pointing downwards from the back
-    //         break;
-    //     case 3:
-    //         a_Claw.TransformClaw(190, 500, false); // arm at the top, piston off
-    //         break;
-    //     case 4:
-    //         isHighPistonDone = false;
-    //         piston_time = Autonomous::gettime_d();
-    //         armStage = 5;
-    //         break;
-    //     case 5:
-    //         if (!isHighPistonDone){
-    //             bool pistonDone = a_Claw.TransformClaw(160, 500, true);
-    //             isHighPistonDone = pistonDone && (Autonomous::gettime_d() > piston_time + 3);
-    //         } else {
-    //             a_Claw.TransformClaw(185, 500, true); // arm at the top, piston on
-    //         }
-    //         break;
-    //     case 6: {
-    //         bool transformDone = a_Claw.TransformClaw(160, 640, false);
-    //         if (transformDone){
-    //             armStage = 7;
-    //         }
-    //         break;
-    //     }
-    //     case 7:
-    //         a_Claw.TransformClaw(300, 640, false); //set point 290 640
-    //         break;
-    //     default:
-    //         a_Claw.TransformClaw(130, -15, false); // transport as default state
-    //         break;
-    // }
-
-    // claw open/close controls
-    // if(a_DriverXboxController.GetRightBumper()) {
-    //     a_Claw.ClawOpen();
-    //     clawClosed = false;
-    // } else if (a_DriverXboxController.GetLeftBumper()) {
-    //     a_Claw.ClawClose();
-    //     clawClosed = true;
-    // }
 
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
-    // dpad up for full speed,
-    // down for half speed
+
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
         a_slowSpeed = true;
     } else  {
@@ -278,7 +224,7 @@ void Robot::TeleopPeriodic() {
     }
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
-    
+
     if(a_DriverXboxController.GetLeftBumperPressed()){
         a+=.1;
     }
@@ -306,7 +252,7 @@ void Robot::TeleopPeriodic() {
     }
 
     frc::SmartDashboard::PutBoolean("field oriented: ", fieldOreo);
-    
+
     // calibrate gyro
     if (a_DriverXboxController.GetPOV() == 180) {
         a_Gyro.Cal();
@@ -321,13 +267,17 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("z", z);
 
     photonlib::PhotonPipelineResult result = a_camera.GetLatestResult();
-    if (!inDeadzone) {
+
+    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+        a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
+    }
+    else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    } 
+    }
     else if(a_DriverXboxController.GetRightTriggerAxis() > 0.5) {
-         
-               
-      
+
+
+
         if (result.HasTargets()) {
             photonlib::PhotonTrackedTarget target = result.GetBestTarget();
             double target_Yaw = target.GetYaw();
@@ -353,9 +303,13 @@ void Robot::TeleopPeriodic() {
         // frc::SmartDashboard::PutNumber("Velocity: ", velocity);
         // frc::SmartDashboard::PutNumber("RPM: ", rpm);
     }
-    else {         
+    else {
         a_SwerveDrive.stop();
-    } 
+    }
+
+    if (a_DriverXboxController.GetAButtonPressed()) {
+        a_SwerveDrive.zeroPose();
+    }
 }
 
 void Robot::TestInit() {
@@ -384,7 +338,7 @@ void Robot::TestPeriodic() {
     //     dvaluesteer-=.1;
     // }
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
     // a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     // a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
@@ -400,7 +354,7 @@ void Robot::TestPeriodic() {
     //     a_FLModule.steerToAng(0);
     //     a_BRModule.steerToAng(0);
     //     a_BLModule.steerToAng(0);
-    // } 
+    // }
     // else {
     //     a_FRModule.steerToAng(45);
     //     a_FLModule.steerToAng(45);
@@ -433,7 +387,7 @@ double Robot::velocity_needed_to_reach_height(double theta) {
     return sqrt(
         (2 * SPEAKER_HEIGHT_CENTER * ACCELERATION_DUE_TO_GRAVITY) /
         (pow(sin(theta), 2))
-    ); 
+    );
 }
 
 double Robot::half_of_range(double x, double y) {

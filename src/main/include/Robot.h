@@ -21,6 +21,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "LED_DIO.h"
+#include <frc/controller/PIDController.h>
 
 
 
@@ -62,10 +63,9 @@ class Robot : public frc::TimedRobot {
         double calculate_shooting_angle(double R);
         double velocity_needed_to_reach_height(double range);
         double velocity_to_rpm(double velocity);
-        
+
 
     private:
-        bool clawClosed;
         int armStage;
         bool isHighPistonDone;
         // keeps track of when to call enabled init
@@ -73,14 +73,13 @@ class Robot : public frc::TimedRobot {
         frc::SendableChooser<std::string> m_AutoModeSelector;
 
         Gyro a_Gyro;
-        Claw a_Claw;
 
         SwerveModule a_FLModule;
         SwerveModule a_FRModule;
         SwerveModule a_BLModule;
         SwerveModule a_BRModule;
         SwerveDrive a_SwerveDrive;
-       
+
 
         // speed multiplier for driver controls for the swerve
         bool a_slowSpeed { false };
@@ -96,6 +95,7 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
+
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
@@ -117,7 +117,7 @@ class Robot : public frc::TimedRobot {
 
         units::meter_t newXComponent;
 
-        
+
         //--------------photonvision-------------//
         const units::meter_t CAMERA_HEIGHT = 24_in;
         const units::meter_t TARGET_HEIGHT = 5_ft;
