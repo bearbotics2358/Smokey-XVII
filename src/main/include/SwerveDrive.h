@@ -5,7 +5,12 @@
 #include "Gyro.h"
 #include "Prefs.h"
 #include "SwerveModule.h"
-
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/trajectory/TrapezoidProfile.h>
+#include <units/acceleration.h>
+#include <units/velocity.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
 
 class SwerveDrive // Class to handle the kinematics of Swerve Drive
 {
@@ -134,8 +139,12 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         frc::Rotation2d Rotation2d;
         frc::SwerveDriveOdometry<4> a_odometry;
 
-        frc::PIDController xPid;
-        frc::PIDController yPid;
-        frc::PIDController rotPid;
         
+        frc::TrapezoidProfile<units::meters>::Constraints linearConstraints{units::meters_per_second_t(2.0), units::meters_per_second_squared_t(2.0)};
+        frc::ProfiledPIDController<units::meters> xProfiledPid;
+        frc::ProfiledPIDController<units::meters> yProfiledPid;
+
+        frc::TrapezoidProfile<units::radian>::Constraints rotationalConstraints{units::radians_per_second_t(4.0), units::radians_per_second_squared_t(4.0)};
+        frc::ProfiledPIDController<units::radian> rotProfiledPid;
+
 };

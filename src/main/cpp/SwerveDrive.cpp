@@ -14,9 +14,9 @@ turnAnglePid(0.014, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01),
 a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
         {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
-xPid(.5, .1, 0),
-yPid(.5, .1, 0),
-rotPid(.014, 0.0, 0.0)
+xProfiledPid(.5, .1, 0.0, linearConstraints),
+yProfiledPid(.5, .1, 0.0, linearConstraints),
+rotProfiledPid(.5, 0.0, 0.0, rotationalConstraints)
 {
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
@@ -334,26 +334,14 @@ float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
 void SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired){
         double xPose = a_odometry.GetPose().X().value();
         double yPose = a_odometry.GetPose().Y().value();
-        double rotPose = a_odometry.GetPose().Rotation().Degrees().value();
+        double rotPose = a_odometry.GetPose().Rotation().Radians().value();
 
-        xPid.SetSetpoint(xDesired);
-        yPid.SetSetpoint(yDesired);
-        rotPid.SetSetpoint(rotDesired);
 
-        rotPid.SetTolerance(5.0);
+        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(xDesired)), -.25, .25);
+        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(yDesired)), -.25, .25);
+        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
 
-        //yPid.SetTolerance(.1);
-
-        double xSpeed = std::clamp (xPid.Calculate(yPose, xDesired), -.25, .25);
-        double ySpeed = std::clamp (yPid.Calculate(xPose, yDesired), -.25, .25);
-        double rotSpeed = std::clamp (rotPid.Calculate(rotPose, rotDesired), -.25, .25);
-
-        if(rotPid.AtSetpoint() && xPid.AtSetpoint() && yPid.AtSetpoint()){
-            stop();
-        }
-        else{
         swerveUpdate(xSpeed, ySpeed, -rotSpeed, true);
-        }
 
 }
 void SwerveDrive::updateOdometry(){
