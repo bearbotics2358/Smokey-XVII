@@ -29,7 +29,9 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
-a_LED(ARDUINO_DIO_PIN)
+a_LED(ARDUINO_DIO_PIN),
+a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
+a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -194,9 +196,32 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
 
     // EnabledPeriodic();
+    a_Collector.update();
+    /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
 
+    if (a_DriverXboxController.GetAButtonPressed()) {
+        double rpm = 3000;
+        a_Shooter.setSpeed(rpm);
+    }
+    if (a_DriverXboxController.GetBButtonPressed()) {
+        a_Shooter.stopShooter();
+    }
+
+    /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
+    
+    if (a_OperatorXboxController.GetAButtonPressed()) {
+        a_Collector.startCollector();
+    }
+    if (a_OperatorXboxController.GetBButtonPressed()) {
+        a_Collector.stopCollector();
+    }
+    if (a_DriverXboxController.GetXButtonPressed()) {
+        a_Collector.indexToShoot();
+    }
+    if (a_DriverXboxController.GetYButtonPressed()) {
+        a_Collector.stopIndexer();
+    }
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
-
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
         a_slowSpeed = true;
@@ -225,12 +250,12 @@ void Robot::TeleopPeriodic() {
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
 
-    if(a_DriverXboxController.GetLeftBumperPressed()){
-        a+=.1;
-    }
-    else if(a_DriverXboxController.GetRightBumperPressed()){
-        a-=.1;
-    }
+    // if(a_DriverXboxController.GetLeftBumperPressed()){
+    //     a+=.1;
+    // }
+    // else if(a_DriverXboxController.GetRightBumperPressed()){
+    //     a-=.1;
+    // }
     frc::SmartDashboard::PutNumber("a", a);
     x = (1-a)*xlast + a*x;
     y = (1-a)*ylast + a*y;
@@ -274,7 +299,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    } else if(a_DriverXboxController.GetBButton()) {
+    } else if(a_DriverXboxController.GetRightBumper()) {
 
         if (result.HasTargets()) {
             photonlib::PhotonTrackedTarget target = result.GetBestTarget();
@@ -298,7 +323,7 @@ void Robot::TeleopPeriodic() {
     }
 
 
-    if(a_DriverXboxController.GetAButtonPressed()){
+    if(a_DriverXboxController.GetLeftBumperPressed()){
         a_SwerveDrive.zeroPose();
     }
 

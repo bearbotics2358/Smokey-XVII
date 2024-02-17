@@ -10,8 +10,7 @@ class BeamBreak {
     public:
         BeamBreak(int port);
         bool beamBroken();
-        bool isBroken = false;
-
     private:
+        bool isBroken = false;
         frc::DigitalInput a_Input;
 };

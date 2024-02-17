@@ -1,7 +1,9 @@
+#pragma once
 #include <rev/CANSparkMax.h>
 #include <ctre/Phoenix.h>
+#include "BeamBreak.h"
 
-class Collector{
+class Collector {
     public:
         Collector(int collectorMotorID, int indexerMotorID);          
         void startCollector();
@@ -9,9 +11,11 @@ class Collector{
         void indexToShoot();
         void indexToAmp();
         void stopIndexer();
-        private:
+        void update();
+    private:
         // rev::CANSparkMax collectorMotor;
         // rev::CANSparkMax indexerMotor;
         TalonFX indexerMotor;
         TalonFX collectorMotor;
+        BeamBreak beamBreak;
 };
