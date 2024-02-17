@@ -271,10 +271,17 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("z", z);
 
      
-    if (!inDeadzone) {
+    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+        a_SwerveDrive.odometryGoToPose(1.0, 1.0, 90.0);
+    }
+    else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     } else {
         a_SwerveDrive.stop();
+    }
+
+    if(a_DriverXboxController.GetAButtonPressed()){
+        a_SwerveDrive.zeroPose();
     }
   
     

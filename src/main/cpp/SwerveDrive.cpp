@@ -14,9 +14,9 @@ turnAnglePid(0.014, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01),
 a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
         {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
-xPid(.1, 0, 0),
-yPid(.1, 0, 0),
-rotPid(.1, 0.0, 0.0)
+xPid(.5, .1, 0),
+yPid(.5, .1, 0),
+rotPid(.014, 0.0, 0.0)
 {
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
@@ -336,11 +336,24 @@ void SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         double yPose = a_odometry.GetPose().Y().value();
         double rotPose = a_odometry.GetPose().Rotation().Degrees().value();
 
-        double xSpeed = std::clamp (xPid.Calculate(xPose, xDesired), -.25, .25);
-        double ySpeed = std::clamp (yPid.Calculate(yPose, yDesired), -.25, .25);
+        xPid.SetSetpoint(xDesired);
+        yPid.SetSetpoint(yDesired);
+        rotPid.SetSetpoint(rotDesired);
+
+        rotPid.SetTolerance(5.0);
+
+        //yPid.SetTolerance(.1);
+
+        double xSpeed = std::clamp (xPid.Calculate(yPose, xDesired), -.25, .25);
+        double ySpeed = std::clamp (yPid.Calculate(xPose, yDesired), -.25, .25);
         double rotSpeed = std::clamp (rotPid.Calculate(rotPose, rotDesired), -.25, .25);
 
-        swerveUpdate(xSpeed, ySpeed, rotSpeed, true);
+        if(rotPid.AtSetpoint() && xPid.AtSetpoint() && yPid.AtSetpoint()){
+            stop();
+        }
+        else{
+        swerveUpdate(xSpeed, ySpeed, -rotSpeed, true);
+        }
 
 }
 void SwerveDrive::updateOdometry(){
@@ -358,5 +371,10 @@ double SwerveDrive::getYPose(){
 }
 double SwerveDrive::getRotPose(){
     return getPose().Rotation().Degrees().value();
+}
+double SwerveDrive::zeroPose(){
+    a_odometry.ResetPosition(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
+    {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
+    frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
 }
 

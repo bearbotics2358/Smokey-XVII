@@ -76,6 +76,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         double getXPose();
         double getYPose();
         double getRotPose();
+        double zeroPose();
 
 
     private:
