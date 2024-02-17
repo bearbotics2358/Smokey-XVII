@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <frc/interfaces/Gyro.h>
-#include "Claw.h"
+
 #include <frc/XboxController.h>
 #include "Collector.h"
 #include "BeamBreak.h"
@@ -19,20 +19,17 @@
 /*~~ hi :) ~~ */
 Robot::Robot():
 a_Gyro(GYRO_ID),
-a_Claw(ARM_MOTOR, SHUTTLE_MOTOR, PISTON_PUSH_SOLENOID_MODULE, PISTON_PULL_SOLENOID_MODULE, CLAW_OPEN_SOLENOID_MODULE, CLAW_CLOSE_SOLENOID_MODULE, /*CONE_PRESSURE_SOLENOID, CUBE_PRESSURE_SOLENOID,*/ CANCODER_ID_ARM, LIMIT_SWITCH), //Get the IDs for the arms solenoids
 a_FLModule(misc::GetFLDrive(), misc::GetFLSteer(), misc::GetFLCANCoder()),
 a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
 a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
 a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_TOF(),
-
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Claw, &a_TOF),
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_CompressorController(),
 a_LED(ARDUINO_DIO_PIN)
-
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -43,13 +40,13 @@ a_LED(ARDUINO_DIO_PIN)
     }*/
 
     armStage = 1;
-    clawClosed = false;
 
-    
+
+
     pvaluedrive = .037;
     a_FLModule.setDrivePID(pvaluedrive, 0, 0);
     a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
 
     a_FRModule.setDrivePID(pvaluedrive, 0, 0);
 
@@ -99,13 +96,12 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    a_Claw.updateDashboard();
+
     a_LED.Update();
     a_TOF.Update();
-    a_Claw.UpdateShuttleEncoder(); //automatically sets the shuttle's encoder to 0 if hitting the limit switch
 
     a_SwerveDrive.updateOdometry();
-   
+
 
     frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
     frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
@@ -120,12 +116,12 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("FR Distance", a_FRModule.getDistance());
     frc::SmartDashboard::PutNumber("BL Distance", a_BLModule.getDistance());
     frc::SmartDashboard::PutNumber("BR Distance", a_BRModule.getDistance());
-    
+
     frc::SmartDashboard::PutNumber("FL Velocity", a_FLModule.getVelocity());
     frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
     frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
-    
+
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -196,7 +192,7 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-   
+
     // EnabledPeriodic();
 
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
@@ -228,7 +224,7 @@ void Robot::TeleopPeriodic() {
     }
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
-    
+
     if(a_DriverXboxController.GetLeftBumperPressed()){
         a+=.1;
     }
@@ -270,7 +266,7 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("y", y);
     frc::SmartDashboard::PutNumber("z", z);
 
-     
+
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
         a_SwerveDrive.odometryGoToPose(1.0, 1.0, 90.0);
     }
@@ -283,8 +279,8 @@ void Robot::TeleopPeriodic() {
     if(a_DriverXboxController.GetAButtonPressed()){
         a_SwerveDrive.zeroPose();
     }
-  
-    
+
+
 
 
     }
@@ -313,7 +309,7 @@ void Robot::TestPeriodic() {
     //     dvaluesteer-=.1;
     // }
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
     // a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     // a_BLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
@@ -329,7 +325,7 @@ void Robot::TestPeriodic() {
     //     a_FLModule.steerToAng(0);
     //     a_BRModule.steerToAng(0);
     //     a_BLModule.steerToAng(0);
-    // } 
+    // }
     // else {
     //     a_FRModule.steerToAng(45);
     //     a_FLModule.steerToAng(45);

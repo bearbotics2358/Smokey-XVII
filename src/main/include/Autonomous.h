@@ -10,7 +10,6 @@
 #include <frc/Timer.h>
 #include <frc/XboxController.h>
 #include <units/math.h>
-#include "Claw.h"
 #include "TOF.h"
 
 
@@ -196,7 +195,7 @@ class Autonomous {
         void PeriodicAuto(const std::string periodicAutoMode);
 
     void DecidePath();
-    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Claw *Claw, TOF *tof);
+    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof);
 
    // const char *GetCurrentPath();
 
@@ -229,26 +228,9 @@ class Autonomous {
     void RCSL();         // Red Charge Station Left AutoState7
     void PeriodicRCSL(); // Periodic Red Charge Station Left AutoState7
 
-    void RDGM();         // Red Drop and Go Middle AutoState8
-    void PeriodicRDGM(); // Periodic Red Drop and Go Middle AutoState8
-
-    void RCSM();         // Red Charge Station Middle AutoState9
-    void PeriodicRCSM(); // Periodic Red Charge Station Middle AutoState9
-
-    void RDGR();         // Red Drop and Go Right AutoState10
-    void PeriodicRDGR(); // Periodic Red Drop and Go Right AutoState10
-
-    void RCSR();         // Red Charge Station Right AutoState11
-    void PeriodicRCSR(); // Periodic Red Charge Station Right AutoState11
-
     void DoNothing();
     void PeriodicDoNothing();
 
-    void LeftPiece2();
-    void LeftPeriodicPiece2();
-
-    void RightPiece2();
-    void RightPeriodicPiece2();
 
     // ------------------Sub-Routines-------------------------//
 
@@ -269,7 +251,6 @@ class Autonomous {
 
 private:
     Gyro *a_Gyro;
-    Claw *a_Claw;
     SwerveDrive *a_SwerveDrive;
 
     TOF *a_TOF;

@@ -58,10 +58,9 @@ class Robot : public frc::TimedRobot {
 
         void SetTargetType(target_type_enum target);
 
-       
+
 
     private:
-        bool clawClosed;
         int armStage;
         bool isHighPistonDone;
         // keeps track of when to call enabled init
@@ -69,14 +68,13 @@ class Robot : public frc::TimedRobot {
         frc::SendableChooser<std::string> m_AutoModeSelector;
 
         Gyro a_Gyro;
-        Claw a_Claw;
 
         SwerveModule a_FLModule;
         SwerveModule a_FRModule;
         SwerveModule a_BLModule;
         SwerveModule a_BRModule;
         SwerveDrive a_SwerveDrive;
-       
+
 
         // speed multiplier for driver controls for the swerve
         bool a_slowSpeed { false };
@@ -92,7 +90,7 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-        
+
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
@@ -107,7 +105,7 @@ class Robot : public frc::TimedRobot {
         bool catchBegin = false;
 
         // stuff that autonomous needs
-        
+
         double pvaluedrive;
         double pChange;
         double iChange;
@@ -137,9 +135,5 @@ class Robot : public frc::TimedRobot {
 
         enum target_type_enum target_type = target_type_enum::CONE;
 
-        // Half of the drive length and width, NEED TO TEST NEW .3 VALUE
-       
-    
-      
+
 };
- 
