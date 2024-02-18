@@ -17,5 +17,5 @@ class Collector {
         // rev::CANSparkMax indexerMotor;
         TalonFX indexerMotor;
         TalonFX collectorMotor;
-        BeamBreak beamBreak;
+        // BeamBreak beamBreak;
 };

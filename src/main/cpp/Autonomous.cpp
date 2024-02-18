@@ -7,12 +7,11 @@
 #include <sys/time.h>
 
 //left if positive degrees right is negative
-Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof, Shooter *Shooter, Collector *Collector):
+Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Shooter *Shooter, Collector *Collector):
 a_Gyro(Gyro),
 a_SwerveDrive(SwerveDrive),
 a_Shooter(Shooter),
 a_Collector(Collector),
-a_TOF(tof),
 autoDrivePID(.4, .1, 0) 
 {}
 

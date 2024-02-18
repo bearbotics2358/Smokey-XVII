@@ -24,14 +24,13 @@ a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
 a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
 a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
-a_TOF(),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
-a_CompressorController(),
-a_LED(ARDUINO_DIO_PIN),
+//a_CompressorController(),
+//a_LED(ARDUINO_DIO_PIN),
 a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
 a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF, &a_Shooter, &a_Collector)
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Shooter, &a_Collector)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -40,8 +39,6 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_TOF, &a_Shooter, &a_Collector)
     /*if (!handler.ready()) {
         // do something if handler failed to connect
     }*/
-
-    armStage = 1;
 
 
 
@@ -91,16 +88,16 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(RightTwoPiece, RightTwoPiece);
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
-    a_LED.Init();
+    //a_LED.Init();
 
-    SetTargetType(target_type_enum::CONE);
+    //SetTargetType(target_type_enum::CONE);
 }
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
 
-    a_LED.Update();
-    a_TOF.Update();
+    //a_LED.Update();
+  
 
     a_SwerveDrive.updateOdometry();
 
@@ -149,13 +146,13 @@ void Robot::DisabledInit() {
 void Robot::EnabledInit(){}
 
 void Robot::EnabledPeriodic() {
-    a_CompressorController.update();
+  //  a_CompressorController.update();
 }
 void Robot::DisabledPeriodic(){}
 
 
 void Robot::AutonomousInit() {
-    SetTargetType(target_type_enum::CONE);
+   // SetTargetType(target_type_enum::CONE);
 
     if (a_doEnabledInit) {
         EnabledInit();
@@ -177,7 +174,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    SetTargetType(target_type_enum::CONE);
+   // SetTargetType(target_type_enum::CONE);
 
     //a_Gyro.setYaw(180 + a_Gyro.getYaw());
 
@@ -381,20 +378,18 @@ void Robot::TestPeriodic() {
     // }
 }
 
-void Robot::SetTargetType(target_type_enum target) {
-    target_type = target;
-    if(target_type == target_type_enum::CONE) {
-        // Set target type to CONE
-        a_LED.SetTargetType(target_type_enum::CONE);
-        a_TOF.SetTargetType(target_type_enum::CONE);
-        //a_Claw.ConePressure();
-    } else if(target_type == target_type_enum::CUBE) {
-        // Set target type to CUBE
-        a_LED.SetTargetType(target_type_enum::CUBE);
-        a_TOF.SetTargetType(target_type_enum::CUBE);
-        //a_Claw.CubePressure();
+// void Robot::SetTargetType(target_type_enum target) {
+//     target_type = target;
+//     if(target_type == target_type_enum::CONE) {
+//         // Set target type to CONE
+//        // a_LED.SetTargetType(target_type_enum::CONE);
+//         //a_Claw.ConePressure();
+//     } else if(target_type == target_type_enum::CUBE) {
+//         // Set target type to CUBE
+//        // a_LED.SetTargetType(target_type_enum::CUBE);
+//         //a_Claw.CubePressure();
 
-    }
-}
+//     }
+// }
 
 int main() { return frc::StartRobot<Robot>(); } // Initiate main loop

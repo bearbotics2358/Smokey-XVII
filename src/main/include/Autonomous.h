@@ -10,7 +10,6 @@
 #include <frc/Timer.h>
 #include <frc/XboxController.h>
 #include <units/math.h>
-#include "TOF.h"
 #include "Shooter.h"
 #include "Collector.h"
 
@@ -189,7 +188,7 @@ class Autonomous {
         void PeriodicAuto(const std::string periodicAutoMode);
 
     void DecidePath();
-    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, TOF *tof, Shooter *Shooter, Collector *Collector);
+    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Shooter *Shooter, Collector *Collector);
 
    // const char *GetCurrentPath();
 
@@ -264,7 +263,6 @@ private:
     Gyro *a_Gyro;
     SwerveDrive *a_SwerveDrive;
     Shooter *a_Shooter;
-    TOF *a_TOF;
     Collector *a_Collector;
 
 

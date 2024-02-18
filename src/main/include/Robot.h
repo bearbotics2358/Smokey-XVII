@@ -16,7 +16,6 @@
 #include <photonlib/PhotonCamera.h>
 #include <photonlib/PhotonUtils.h>
 #include "BeamBreak.h"
-#include "TOF.h"
 #include "Shooter.h"
 #include <frc/smartdashboard/SendableChooser.h>
 #include "Collector.h"
@@ -57,7 +56,7 @@ class Robot : public frc::TimedRobot {
         void TestInit();
         void TestPeriodic();
 
-        void SetTargetType(target_type_enum target);
+        // void SetTargetType(target_type_enum target);
 
 
 
@@ -97,10 +96,10 @@ class Robot : public frc::TimedRobot {
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
 
-        CompressorController a_CompressorController;
-        TOF a_TOF;
+        //CompressorController a_CompressorController;
 
-        LED_DIO a_LED;
+
+        //LED_DIO a_LED;
 
         double state_time;
         double piston_time;
