@@ -72,20 +72,15 @@ void Robot::RobotInit() {
     a_Gyro.Zero();
 
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
-    m_AutoModeSelector.AddOption(onePieceAMP, onePieceAMP);
+    m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(firstNote, firstNote);
-    m_AutoModeSelector.AddOption(BlueMiddleOneNote, BlueMiddleOneNote);
-    m_AutoModeSelector.AddOption( BlueMiddleTwoNote,  BlueMiddleTwoNote);
-    m_AutoModeSelector.AddOption(BlueRightOneNote, BlueRightOneNote);
-    m_AutoModeSelector.AddOption(BlueRightTwoNote, BlueRightTwoNote);
-    m_AutoModeSelector.AddOption(RedDropAndGoLeft, RedDropAndGoLeft);
-    m_AutoModeSelector.AddOption(RedChargeStationLeft, RedChargeStationLeft);
-    m_AutoModeSelector.AddOption(RedDropAndGoMiddle, RedDropAndGoMiddle);
-    m_AutoModeSelector.AddOption(RedChargeStationMiddle, RedChargeStationMiddle);
-    m_AutoModeSelector.AddOption(RedDropAndGoRight, RedDropAndGoRight);
-    m_AutoModeSelector.AddOption(RedChargeStationRight, RedChargeStationRight);
-    m_AutoModeSelector.AddOption(LeftTwoPiece, LeftTwoPiece);
-    m_AutoModeSelector.AddOption(RightTwoPiece, RightTwoPiece);
+    m_AutoModeSelector.AddOption(secondNote, secondNote);
+    m_AutoModeSelector.AddOption(thirdNote,  thirdNote);
+    m_AutoModeSelector.AddOption(fourthNote, fourthNote);
+    m_AutoModeSelector.AddOption(fifthNote, fifthNote);
+    m_AutoModeSelector.AddOption(sixthNote, sixthNote);
+    m_AutoModeSelector.AddOption(seventhNote, seventhNote);
+    m_AutoModeSelector.AddOption(eighthNote, eighthNote);
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
     //a_LED.Init();
