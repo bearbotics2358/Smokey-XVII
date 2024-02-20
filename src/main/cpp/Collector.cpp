@@ -12,7 +12,7 @@ void Collector::startCollector() {
     // if(beamBreak.beamBroken()) {
     //     return;
     // }
-    collectorMotor.Set(TalonFXControlMode::PercentOutput, .1);
+    collectorMotor.Set(TalonFXControlMode::PercentOutput, .25);
 }
 void Collector::stopCollector() {
     collectorMotor.Set(TalonFXControlMode::PercentOutput, 0);

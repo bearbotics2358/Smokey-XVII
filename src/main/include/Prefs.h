@@ -11,7 +11,7 @@
 #define COMP_BOT
 
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
-#define GYRO_ID 1
+#define GYRO_ID 35
 #else
 #define GYRO_ID 35
 #endif
@@ -102,12 +102,12 @@ m = number engraved on module
 
 #define CANCODER_OFFSET_1 129.5 - 180
 #define CANCODER_OFFSET_2 115.3 - 180
-#define CANCODER_OFFSET_3 70.6
-#define CANCODER_OFFSET_4 234.2 - 180
+#define CANCODER_OFFSET_3 71.45
+#define CANCODER_OFFSET_4 508.6 - 180 - 180
 #define CANCODER_OFFSET_5 42.2 - 180
 #define CANCODER_OFFSET_6 127.4 - 180
-#define CANCODER_OFFSET_7 278.2 - 180
-#define CANCODER_OFFSET_8 156.8 - 180
+#define CANCODER_OFFSET_7 278.437 - 180
+#define CANCODER_OFFSET_8 246.2 
 #define CANCODER_OFFSET_ARM -318.17
 
 

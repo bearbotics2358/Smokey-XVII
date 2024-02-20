@@ -81,7 +81,7 @@ class Robot : public frc::TimedRobot {
         double xlast = 0.0;
         double ylast = 0.0;
         double zlast = 0.0;
-        double a = .4;
+        double a = 1.0;
         double xnew = 0;
         double ynew = 0;
         double znew = 0;

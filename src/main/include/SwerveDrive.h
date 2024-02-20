@@ -119,8 +119,8 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         float blLastPos { 0.0 };
         float brLastPos { 0.0 };
 
-        constexpr static float DRIVE_LENGTH = 13.0;
-        constexpr static float DRIVE_WIDTH = 29.5;
+        constexpr static float DRIVE_LENGTH = 13.0026;
+        constexpr static float DRIVE_WIDTH = 29.4878;
 
         // for goToPosition, when the distance to the target position is within this amount, say that we are done (assuming angle is also close enough)
         constexpr static float GO_TO_DIST_DONE = 0.2;
