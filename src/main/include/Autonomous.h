@@ -87,7 +87,7 @@ class Autonomous {
         void PeriodicAuto(const std::string periodicAutoMode);
 
     void DecidePath();
-    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Shooter *Shooter, Collector *Collector);
+    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Collector *Collector);
 
    // const char *GetCurrentPath();
 
@@ -181,5 +181,5 @@ private:
     bool startedClimb{false};
     float startTime{0.0};
 
-    frc2::PIDController autoDrivePID;
+    frc::PIDController autoDrivePID;
 };
