@@ -3,16 +3,16 @@
 
 Collector::Collector(int collectorMotorID, int indexerMotorID):
 collectorMotor(collectorMotorID),
-indexerMotor(indexerMotorID),
-beamBreak(BEAMBREAK_PORT)
+indexerMotor(indexerMotorID)
+//beamBreak(BEAMBREAK_PORT)
 {
 
 }
 void Collector::startCollector() {
-    if(beamBreak.beamBroken()) {
-        return;
-    }
-    collectorMotor.Set(TalonFXControlMode::PercentOutput, .1);
+    // if(beamBreak.beamBroken()) {
+    //     return;
+    // }
+    collectorMotor.Set(TalonFXControlMode::PercentOutput, .25);
 }
 void Collector::stopCollector() {
     collectorMotor.Set(TalonFXControlMode::PercentOutput, 0);
@@ -27,8 +27,8 @@ void Collector::stopIndexer() {
     indexerMotor.Set(TalonFXControlMode::PercentOutput, 0);
 }
 void Collector::update() {
-    if(beamBreak.beamBroken()) {
-        stopCollector();
-    }
+    // if(beamBreak.beamBroken()) {
+    //     stopCollector();
+    // }
 }
 

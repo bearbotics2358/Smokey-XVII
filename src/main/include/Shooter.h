@@ -1,3 +1,4 @@
+#pragma once
 #include <rev/CANSparkMax.h>
 #include <frc/controller/PIDController.h>
 #include <ctre/Phoenix.h>

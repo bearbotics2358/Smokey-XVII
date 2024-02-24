@@ -11,7 +11,7 @@
 #define COMP_BOT
 
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
-#define GYRO_ID 1
+#define GYRO_ID 35
 #else
 #define GYRO_ID 35
 #endif
@@ -102,12 +102,12 @@ m = number engraved on module
 
 #define CANCODER_OFFSET_1 129.5 - 180
 #define CANCODER_OFFSET_2 115.3 - 180
-#define CANCODER_OFFSET_3 70.6
-#define CANCODER_OFFSET_4 234.2 - 180
+#define CANCODER_OFFSET_3 71.45
+#define CANCODER_OFFSET_4 508.6 - 180 - 180
 #define CANCODER_OFFSET_5 42.2 - 180
 #define CANCODER_OFFSET_6 127.4 - 180
-#define CANCODER_OFFSET_7 278.2 - 180
-#define CANCODER_OFFSET_8 156.8 - 180
+#define CANCODER_OFFSET_7 278.437 - 180
+#define CANCODER_OFFSET_8 246.2 
 #define CANCODER_OFFSET_ARM -318.17
 
 
@@ -150,7 +150,7 @@ static double CANCODER_OFFSETS[] = {
 // ratio is drive motor rotations / wheel rotations
 #define SWERVE_DRIVE_MOTOR_GEAR_RATIO (6.75 / 1.0)
 
-#define SHOOTER_GEAR_RATIO (3.25)
+#define SHOOTER_GEAR_RATIO (2.333333333)
 
 #define INVERTED_MOTOR (-1.0) //used to allow for the inversion of motors in MK4i modules
 
@@ -203,11 +203,11 @@ constexpr units::angle::radian_t TARGET_PITCH = units::angle::radian_t(0.0);
 
 /* ============= Arduino ============= */
 
-#define BAUD_RATE_TOF 115200
-#define USB_PORT_TOF frc::SerialPort::kUSB1
-#define DATA_BITS_TOF 8
-#define PARITY_TOF frc::SerialPort::kParity_None
-#define STOP_BITS_TOF frc::SerialPort::kStopBits_One
+// #define BAUD_RATE_TOF 115200
+// #define USB_PORT_TOF frc::SerialPort::kUSB1
+// #define DATA_BITS_TOF 8
+// #define PARITY_TOF frc::SerialPort::kParity_None
+// #define STOP_BITS_TOF frc::SerialPort::kStopBits_One
 
 #define BAUD_RATE_ARDUINO 115200
 #define USB_PORT_ARDUINO frc::SerialPort::kOnboard
