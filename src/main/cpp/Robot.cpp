@@ -92,8 +92,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    a_Collector.update();
-
+    
     //a_LED.Update();
   
 
@@ -220,7 +219,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (a_DriverXboxController.GetRightBumper()) {
         a_Collector.indexToShoot();
-        a_Collector.startCollector(-.4);
+        a_Collector.startCollector(-.65);
     }
     else if (a_Gamepad.GetRawButton(4)){
         a_Collector.indexToAmp();
