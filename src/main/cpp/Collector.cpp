@@ -12,20 +12,21 @@ a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_S
     stopCollector();
     stopIndexer();
 }
-void Collector::startCollector() {
-    if(beamBreak.beamBroken()) {
-        return;
-    }
-    collectorMotor.Set(-.25);
+void Collector::startCollector(double speed) {
+        collectorMotor.Set(speed);
+
+}
+void Collector::runCollectorback(){
+    collectorMotor.Set(.25);
 }
 void Collector::stopCollector() {
     collectorMotor.StopMotor();
 }
 void Collector::indexToShoot() {
-    indexerMotor.Set(-0.25);
+    indexerMotor.Set(-0.5);
 }
 void Collector::indexToAmp() {
-    indexerMotor.Set(.1);
+    indexerMotor.Set(.25);
 }
 void Collector::stopIndexer() {
     indexerMotor.StopMotor();
@@ -46,4 +47,6 @@ void Collector::setSpeed(double rpm){
 void Collector::stopShooter(){
     a_Shooter.stopShooter();
 }
-
+bool Collector::beamBroken(){
+    return beamBreak.beamBroken();
+}

@@ -96,7 +96,7 @@ class Robot : public frc::TimedRobot {
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
-        frc::GenericHID a_HIDGamepad;
+        frc::GenericHID a_Gamepad;
 
         //CompressorController a_CompressorController;
 

@@ -25,7 +25,7 @@ a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
-a_HIDGamepad(21),
+a_Gamepad(4),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
@@ -119,7 +119,7 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
     frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
-    frc::SmartDashboard::PutNumber("Button Count", a_HIDGamepad.GetButtonCount());
+    frc::SmartDashboard::PutNumber("Button Count", a_Gamepad.GetButtonCount());
 
     
 //testing code block for PID tuning
@@ -204,30 +204,33 @@ void Robot::TeleopPeriodic() {
     
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
 
-    if (a_DriverXboxController.GetAButtonPressed()) {
+    if (a_Gamepad.GetRawButton(6)) {
         double rpm = 3500;
         // a_Shooter.setSpeed(rpm);
         a_Collector.setSpeed(rpm);
     }
-    if (a_DriverXboxController.GetBButtonPressed()) {
-        // a_Shooter.stopShooter();
+    else{
         a_Collector.stopShooter();
     }
-
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
     
-    if (a_OperatorXboxController.GetAButtonPressed()) {
-        a_Collector.startCollector();
-    }
-    if (a_OperatorXboxController.GetBButtonPressed()) {
-        a_Collector.stopCollector();
-    }
-    if (a_DriverXboxController.GetXButtonPressed()) {
+    if (a_Gamepad.GetRawButton(3) && !a_Collector.beamBroken() ) {
+        a_Collector.startCollector(-.4);
         a_Collector.indexToShoot();
     }
-    if (a_DriverXboxController.GetYButtonPressed()) {
+    else if (a_DriverXboxController.GetRightBumper()) {
+        a_Collector.indexToShoot();
+        a_Collector.startCollector(-.4);
+    }
+    else if (a_Gamepad.GetRawButton(4)){
+        a_Collector.indexToAmp();
+        a_Collector.runCollectorback();
+    }
+    else{
+        a_Collector.stopCollector();
         a_Collector.stopIndexer();
     }
+
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
