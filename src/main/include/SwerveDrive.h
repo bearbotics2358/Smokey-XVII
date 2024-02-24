@@ -103,10 +103,10 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         Gyro& a_gyro;
 
         // pid when using turn to angle
-        frc2::PIDController turnAnglePid;
+        frc::PIDController turnAnglePid;
 
         // pid when using crabUpdate
-        frc2::PIDController crabAnglePid;
+        frc::PIDController crabAnglePid;
 
         // if we're in crab drive mode
         bool crab;

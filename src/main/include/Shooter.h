@@ -1,31 +1,37 @@
 #pragma once
-#include <rev/CANSparkMax.h>
+#include <ctre/phoenix6/TalonFX.hpp>
+
 #include <frc/controller/PIDController.h>
-#include <ctre/Phoenix.h>
 #include "LimitSwitch.h"
 
 class Shooter{
     public:
-    Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID, int limitSwitchID);
-    void setSpeed(double percent);
-    void stopShooter();
-    void moveToAngle(double rpm);
-    double getSpeed();
-    void setShooterAngle();
-    double GetShooterAngle();
+        Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID, int limitSwitchID);
+        void setSpeed(double percent);
+        void stopShooter();
+        void moveToAngle(double rpm);
+        double getSpeed();
+        void setShooterAngle();
+        units::degree_t GetShooterAngle();
+        double velocity_needed_to_reach_target(double theta);
+        double range(double x, double y);
+        double calculate_shooting_angle(double angle);
+        double velocity_to_rpm(double velocity);
 
     private:
     // rev::CANSparkMax rightShooterMotor;
     // rev::CANSparkMax leftShooterMotor;
-    frc2::PIDController leftShooterPID;
-    frc2::PIDController rightShooterPID;
-    frc2::PIDController pivotPID;
+        frc::PIDController leftShooterPID;
+        frc::PIDController rightShooterPID;
+        frc::PIDController pivotPID;
 
-    TalonFX rightShooterMotor;
-    TalonFX leftShooterMotor;
-    TalonFX pivotMotor;
-    TalonFXSensorCollection pivotEncoder;
+        ctre::phoenix6::hardware::TalonFX rightShooterMotor;
+        ctre::phoenix6::hardware::TalonFX leftShooterMotor;
+        ctre::phoenix6::hardware::TalonFX pivotMotor;
 
-    LimitSwitch shooterLimitSwitch;
+        //TalonFXSensorCollection pivotEncoder;
+
+        
+        LimitSwitch shooterLimitSwitch;
     
 };

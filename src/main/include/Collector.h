@@ -1,21 +1,26 @@
 #pragma once
-#include <rev/CANSparkMax.h>
-#include <ctre/Phoenix.h>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include "BeamBreak.h"
+#include "Shooter.h"
 
 class Collector {
     public:
         Collector(int collectorMotorID, int indexerMotorID);          
-        void startCollector();
+        void startCollector(double speed);
         void stopCollector();
         void indexToShoot();
         void indexToAmp();
         void stopIndexer();
         void update();
+        void setSpeed(double rpm);
+        void stopShooter();
+        bool beamBroken();
+        void runCollectorback();
     private:
         // rev::CANSparkMax collectorMotor;
         // rev::CANSparkMax indexerMotor;
-        TalonFX indexerMotor;
-        TalonFX collectorMotor;
-        // BeamBreak beamBreak;
+        ctre::phoenix6::hardware::TalonFX indexerMotor;
+        ctre::phoenix6::hardware::TalonFX collectorMotor;
+        BeamBreak beamBreak;
+        Shooter a_Shooter;
 };

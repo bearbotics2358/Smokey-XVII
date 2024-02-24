@@ -28,7 +28,7 @@
 // #define SHUTTLE_MOTOR 22
 // #define ARM_MOTOR 12
 
-#define BEAMBREAK_PORT 0 // change later
+#define BEAMBREAK_PORT 8 
 
 #define LIMIT_SWITCH 0 // change later
 
@@ -150,7 +150,7 @@ static double CANCODER_OFFSETS[] = {
 // ratio is drive motor rotations / wheel rotations
 #define SWERVE_DRIVE_MOTOR_GEAR_RATIO (6.75 / 1.0)
 
-#define SHOOTER_GEAR_RATIO (2.333333333)
+#define SHOOTER_GEAR_RATIO (5.0)
 
 #define INVERTED_MOTOR (-1.0) //used to allow for the inversion of motors in MK4i modules
 
@@ -158,10 +158,10 @@ static double CANCODER_OFFSETS[] = {
 #define WHEEL_DIAMETER 0.095
 
 
-
-
-
-
+// Vision Related
+#define SPEAKER_HEIGHT 1.7021    
+#define RADIUS_OF_MOTOR 0.0254
+#define VELOCITY_CONSTANT 1.01
 
 /* ============= MqttClient ============= */
 

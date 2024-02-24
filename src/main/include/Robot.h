@@ -8,13 +8,12 @@
 #include "LimitSwitch.h"
 #include "SwerveDrive.h" // Swerve kinematics
 #include "SwerveModule.h" // Swerve modules
-#include "photonlib/photon.h"
 #include <frc/Joystick.h> // Joystick
 #include <frc/TimedRobot.h> // "Timed Robot" template
 #include <frc/Timer.h>
 #include <frc/XboxController.h>
-#include <photonlib/PhotonCamera.h>
-#include <photonlib/PhotonUtils.h>
+#include "photon/PhotonCamera.h"
+#include "photon/PhotonUtils.h"
 #include "BeamBreak.h"
 #include "Shooter.h"
 #include <frc/smartdashboard/SendableChooser.h>
@@ -22,6 +21,7 @@
 #include "BeamBreak.h"
 #include "LED_DIO.h"
 #include <frc/controller/PIDController.h>
+#include <frc/GenericHID.h>
 
 
 
@@ -61,6 +61,7 @@ class Robot : public frc::TimedRobot {
 
 
     private:
+        double pivotAngle = 1.0;
         int armStage;
         bool isHighPistonDone;
         // keeps track of when to call enabled init
@@ -90,11 +91,12 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-        Shooter a_Shooter;
+        // Shooter a_Shooter;
         Collector a_Collector;
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
+        frc::GenericHID a_Gamepad;
 
         //CompressorController a_CompressorController;
 
@@ -127,12 +129,12 @@ class Robot : public frc::TimedRobot {
         // PID constants should be tuned per robot
         const double LINEAR_P = 0.1;
         const double LINEAR_D = 0.0;
-        frc2::PIDController forwardController{LINEAR_P, 0.0, LINEAR_D};
+        frc::PIDController forwardController{LINEAR_P, 0.0, LINEAR_D};
         const double ANGULAR_P = 0.1;
         const double ANGULAR_D = 0.0;
-        frc2::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
+        frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-        photonlib::PhotonCamera a_camera{"limelight1"}; //name of camera
+       photon::PhotonCamera a_camera{"limelight1"}; //name of camera
 
         enum target_type_enum target_type = target_type_enum::CONE;
 

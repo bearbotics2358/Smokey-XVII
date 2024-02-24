@@ -1,4 +1,3 @@
-
 #include "Robot.h"
 #include "Autonomous.h"
 #include "Prefs.h"
@@ -9,11 +8,11 @@
 #include <iostream>
 #include <stdio.h>
 #include <frc/interfaces/Gyro.h>
-
 #include <frc/XboxController.h>
 #include "Collector.h"
 #include "BeamBreak.h"
 #include "SwerveDrive.h"
+#include <frc/GenericHID.h>
 
 
 /*~~ hi :) ~~ */
@@ -26,11 +25,12 @@ a_BRModule(misc::GetBRDrive(), misc::GetBRSteer(), misc::GetBRCANCoder()),
 a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
+a_Gamepad(4),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
-a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
+// a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
 a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Shooter, &a_Collector)
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Collector)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -71,6 +71,8 @@ void Robot::RobotInit() {
     a_Gyro.Init();
     a_Gyro.Zero();
 
+    // a_Shooter.setShooterAngle();
+
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(firstNote, firstNote);
@@ -90,11 +92,13 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
+    a_Collector.update();
 
     //a_LED.Update();
   
 
     a_SwerveDrive.updateOdometry();
+    // frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
 
 
     frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
@@ -115,7 +119,9 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("FR Velocity", a_FRModule.getVelocity());
     frc::SmartDashboard::PutNumber("BL Velocity", a_BLModule.getVelocity());
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
+    frc::SmartDashboard::PutNumber("Button Count", a_Gamepad.GetButtonCount());
 
+    
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -172,11 +178,16 @@ void Robot::TeleopInit() {
    // SetTargetType(target_type_enum::CONE);
 
     //a_Gyro.setYaw(180 + a_Gyro.getYaw());
+    a_Collector.stopCollector();
+    a_Collector.stopIndexer();
+    a_Collector.stopShooter();
+    // a_Shooter.stopShooter();
 
     if (a_doEnabledInit) {
         EnabledInit();
         a_doEnabledInit = false;
     }
+
 
     // pChange = 0;
     // iChange = 0;
@@ -186,33 +197,40 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-
+    //a_Shooter.moveToAngle(20.0);
+    // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
+    // a_Shooter.moveToAngle(pivotAngle);
     // EnabledPeriodic();
-    a_Collector.update();
+    
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
 
-    if (a_DriverXboxController.GetAButtonPressed()) {
-        double rpm = 3000;
-        a_Shooter.setSpeed(rpm);
+    if (a_Gamepad.GetRawButton(6)) {
+        double rpm = 3500;
+        // a_Shooter.setSpeed(rpm);
+        a_Collector.setSpeed(rpm);
     }
-    if (a_DriverXboxController.GetBButtonPressed()) {
-        a_Shooter.stopShooter();
+    else{
+        a_Collector.stopShooter();
     }
-
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
     
-    if (a_OperatorXboxController.GetAButtonPressed()) {
-        a_Collector.startCollector();
-    }
-    if (a_OperatorXboxController.GetBButtonPressed()) {
-        a_Collector.stopCollector();
-    }
-    if (a_DriverXboxController.GetXButtonPressed()) {
+    if (a_Gamepad.GetRawButton(3) && !a_Collector.beamBroken() ) {
+        a_Collector.startCollector(-.4);
         a_Collector.indexToShoot();
     }
-    if (a_DriverXboxController.GetYButtonPressed()) {
+    else if (a_DriverXboxController.GetRightBumper()) {
+        a_Collector.indexToShoot();
+        a_Collector.startCollector(-.4);
+    }
+    else if (a_Gamepad.GetRawButton(4)){
+        a_Collector.indexToAmp();
+        a_Collector.runCollectorback();
+    }
+    else{
+        a_Collector.stopCollector();
         a_Collector.stopIndexer();
     }
+
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
@@ -284,42 +302,66 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("z", z);
 
 
-    photonlib::PhotonPipelineResult result = a_camera.GetLatestResult();
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
     }
     else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    } else if(a_DriverXboxController.GetRightBumper()) {
+    }  else if(a_DriverXboxController.GetRightBumper()) {
 
-        if (result.HasTargets()) {
-            photonlib::PhotonTrackedTarget target = result.GetBestTarget();
-            double target_Yaw = target.GetYaw();
-            double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
-            frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
-            a_SwerveDrive.turnToAngle(goToYaw, true);
+         if (result.HasTargets()) {
+             photon::PhotonTrackedTarget target = result.GetBestTarget();
+             double target_Yaw = target.GetYaw();
+             double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
+             frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
+             a_SwerveDrive.turnToAngle(goToYaw, true);
+         } 
         } 
-        } else {
+        else {
         a_SwerveDrive.stop();
     }
 
 //@TODO for debug only -- Remove later
-    if (result.HasTargets()) {
-        frc::SmartDashboard::PutString("Target?", "Yes");
-        photonlib::PhotonTrackedTarget target = result.GetBestTarget();
-        frc::SmartDashboard::PutNumber("Yaw", target.GetYaw());
-    } else {
-        frc::SmartDashboard::PutString("Target?", "No");
-        frc::SmartDashboard::PutNumber("Yaw", 0);
-    }
+    // if (result.HasTargets()) {
+    //     frc::SmartDashboard::PutString("Target?", "Yes");
+    //     photonlib::PhotonTrackedTarget target = result.GetBestTarget();
+    //     frc::SmartDashboard::PutNumber("Yaw", target.GetYaw());
+    // } else {
+    //     frc::SmartDashboard::PutString("Target?", "No");
+    //     frc::SmartDashboard::PutNumber("Yaw", 0);
+    // }
 
 
     if(a_DriverXboxController.GetLeftBumperPressed()){
         a_SwerveDrive.zeroPose();
     }
+    if (!result.HasTargets()) {
+       return; 
+    }
 
+    photon::PhotonTrackedTarget target = result.GetBestTarget();
+    frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
 
+    double x_vision = bestCameraToTarget.X().value();
+    double y_vision = bestCameraToTarget.Y().value();
+
+    // Get the range (stright line) to april tag.
+    // double range = a_Shooter.range(x_vision, y_vision);
+    
+    // double angle = a_Shooter.calculate_shooting_angle(range);
+
+    // double velocity = a_Shooter.velocity_needed_to_reach_target(angle);
+
+    // double shooter_rpm = a_Shooter.velocity_to_rpm(velocity);
+
+    // if(a_DriverXboxController.GetXButton()) {
+    //     frc::SmartDashboard::PutNumber("Range: ", range);
+    //     frc::SmartDashboard::PutNumber("Angle: ", angle);
+    //     frc::SmartDashboard::PutNumber("Velocity: ", velocity);
+    //     frc::SmartDashboard::PutNumber("RPM: ", shooter_rpm);
+    // }
 
 
     }
