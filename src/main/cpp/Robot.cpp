@@ -152,15 +152,14 @@ void Robot::DisabledPeriodic(){}
 
 
 void Robot::AutonomousInit() {
-   // SetTargetType(target_type_enum::CONE);
-
+       a_SwerveDrive.zeroPose();
     if (a_doEnabledInit) {
         EnabledInit();
         a_doEnabledInit = false;
     }
 
     a_SwerveDrive.unsetHoldAngle();
-    a_Gyro.Zero();
+    a_Gyro.Zero(0.0);
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
@@ -188,7 +187,7 @@ void Robot::TeleopInit() {
         EnabledInit();
         a_doEnabledInit = false;
     }
-
+    a_Gyro.Zero(0.0);
 
     // pChange = 0;
     // iChange = 0;
