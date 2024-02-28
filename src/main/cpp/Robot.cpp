@@ -92,8 +92,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_Gyro.Update();
-    a_Collector.update();
-
+    
     //a_LED.Update();
   
 
@@ -153,25 +152,26 @@ void Robot::DisabledPeriodic(){}
 
 
 void Robot::AutonomousInit() {
-   // SetTargetType(target_type_enum::CONE);
-
+       a_SwerveDrive.zeroPose();
     if (a_doEnabledInit) {
         EnabledInit();
         a_doEnabledInit = false;
     }
 
     a_SwerveDrive.unsetHoldAngle();
-    a_Gyro.Zero();
+    a_Gyro.Zero(0.0);
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-
+    a_Collector.setSpeed(3500.0);
 }
 
 void Robot::AutonomousPeriodic() {
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
     a_Autonomous.PeriodicAuto(SelectedRoute);
     EnabledPeriodic();
+    
+    
 }
 
 void Robot::TeleopInit() {
@@ -187,7 +187,7 @@ void Robot::TeleopInit() {
         EnabledInit();
         a_doEnabledInit = false;
     }
-
+    a_Gyro.Zero(0.0);
 
     // pChange = 0;
     // iChange = 0;
@@ -220,7 +220,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (a_DriverXboxController.GetRightBumper()) {
         a_Collector.indexToShoot();
-        a_Collector.startCollector(-.4);
+        a_Collector.startCollector(-.65);
     }
     else if (a_Gamepad.GetRawButton(4)){
         a_Collector.indexToAmp();
