@@ -40,7 +40,7 @@
 
 #define MAX_CLIMB_PERCENT 0.1
 //in m/s
-#define MAX_FREE_SPEED 4.9
+#define MAX_FREE_SPEED 4.968
 #define MAX_ROT_SPEED 2.07
 
 
@@ -63,7 +63,7 @@ m = number engraved on module
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
 #define FL_ID 8
 #define FR_ID 4
-#define BL_ID 7
+#define BL_ID 2
 #define BR_ID 3
 #else
 #define FL_ID 1
@@ -101,7 +101,7 @@ m = number engraved on module
 #define BR_SWERVE_ABS_ENC_MAX_VOLTS 4.963378
 
 #define CANCODER_OFFSET_1 129.5 - 180
-#define CANCODER_OFFSET_2 115.3 - 180
+#define CANCODER_OFFSET_2 115.3
 #define CANCODER_OFFSET_3 71.45
 #define CANCODER_OFFSET_4 508.6 - 180 - 180
 #define CANCODER_OFFSET_5 42.2 - 180

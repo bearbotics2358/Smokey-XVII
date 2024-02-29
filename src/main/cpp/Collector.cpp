@@ -7,7 +7,7 @@ Collector::Collector(int collectorMotorID, int indexerMotorID):
 collectorMotor(collectorMotorID),
 indexerMotor(indexerMotorID),
 beamBreak(BEAMBREAK_PORT),
-a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH)
+a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID)
 {
     stopCollector();
     stopIndexer();

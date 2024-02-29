@@ -4,19 +4,19 @@
 #include <cmath>
 #include <ctre/phoenix6/configs/Configs.hpp>
 
-Shooter::Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID, int limitSwitchID):
+Shooter::Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID): //int limitSwitchID):
 
 rightShooterMotor(rightShooterMotorID),
 leftShooterMotor(leftShooterMotorID),
 pivotMotor(pivotMotorID),
 // pivotEncoder(pivotMotor),
-shooterLimitSwitch(limitSwitchID),
-pivotPID(0.0125, 0.001, 0.0),
+//shooterLimitSwitch(limitSwitchID),
+pivotPID(0.011, 0.00, 0.0),
 leftShooterPID(0.0, 0.0, 0.0),
 rightShooterPID(0.0, 0.0, 0.0)
 {
     ctre::phoenix6::configs::TalonFXConfiguration pivot_config_angle{};
-    pivot_config_angle.Feedback.SensorToMechanismRatio = .1545;
+    pivot_config_angle.Feedback.SensorToMechanismRatio = .1455;
     pivotMotor.GetConfigurator().Apply(pivot_config_angle);
     ctre::phoenix6::configs::MotorOutputConfigs pivot_output_config{};
     pivot_output_config.Inverted = true;
@@ -45,25 +45,16 @@ void Shooter::stopShooter(){
 }
 void Shooter::moveToAngle(double angle){
     pivotPID.SetSetpoint(angle);
-    double degrees = GetShooterAngle().value();
+    double degrees = GetShooterAngle();
     double speed = pivotPID.Calculate(degrees, angle);
-    speed = std::clamp(speed, -.5, .5);
+    speed = std::clamp(speed, -.2, .2);
     pivotMotor.Set(speed);
     if(pivotPID.AtSetpoint()){
-        // pivotMotor.Set(0.0);
         pivotMotor.StopMotor();
     }
 }
-units::degree_t Shooter::GetShooterAngle(){
-
-   // return 360.0*(pivotMotor.GetPosition().GetValue().value() / 5.0);
-    return units::degree_t{10.0*pivotMotor.GetPosition().GetValue().value()};
-    // double scaledTicks = pivotMotor.GetPosition().GetValueAsDouble() / SHOOTER_GEAR_RATIO;
-    // double rotations = (scaledTicks / FALCON_UNITS_PER_REV);
-    // //angular position in radians
-    // double angularPosition = rotations * 2 * M_PI;
-    // double degrees = angularPosition * (180.0/M_PI);
-     //degrees;
+double Shooter::GetShooterAngle(){
+    return (10.0*pivotMotor.GetPosition().GetValue().value());
 }
 
 double Shooter::velocity_needed_to_reach_target(double theta) {

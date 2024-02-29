@@ -6,6 +6,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/phoenix/sensors/CANCoder.h>
 #include <ctre/phoenix/motorcontrol/IMotorController.h>
+#include <iostream>
 
 /* ============= Drive Motor Current Limits ============= */
 
@@ -60,6 +61,7 @@ steerPID(0, 0, 0)
     // this allows the motor to actually turn, pid values are set later
     drive_config.slot0.kP = 1.0;
 
+
     driveMotor.ConfigAllSettings(drive_config);
 
     ctre::phoenix::motorcontrol::can::TalonFXConfiguration steer_config;
@@ -84,8 +86,7 @@ double SwerveModule::getDistance() {
     return motorTicksToMeters(driveMotor.GetSelectedSensorPosition());
 }
 double SwerveModule::getVelocity() {
-    // try multiplying by 1000 if it doesnt work
-    return (1000*(motorTicksToMeters(driveMotor.GetSelectedSensorVelocity())));
+    return 10.0*((motorTicksToMeters(driveMotor.GetSelectedSensorVelocity())));
 }
 double SwerveModule::getRadians() {
     return motorTicksToRadians(steerMotor.GetSelectedSensorPosition());

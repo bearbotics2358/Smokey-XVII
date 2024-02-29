@@ -299,6 +299,10 @@ void SwerveDrive::swerveUpdateInner(float x, float y, float z, float gyroDegrees
     }*/
 
     // update speeds and angles
+    frc::SmartDashboard::PutNumber("fl output", flSpeed);-
+    frc::SmartDashboard::PutNumber("fr output", frSpeed);
+    frc::SmartDashboard::PutNumber("bl output", blSpeed);
+    frc::SmartDashboard::PutNumber("br output", brSpeed);
     if (flModule.adjustAngle(flAngle)) {
         flModule.setDrivePercent(-flSpeed);
     } else {
@@ -331,18 +335,21 @@ float SwerveDrive::crabCalcZ(float angle, float gyroDegrees) {
 float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
     return std::clamp(turnAnglePid.Calculate(gyroDegrees, angle), -0.2, 0.2);
 }
-void SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired){
+bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired){
         double xPose = a_odometry.GetPose().X().value();
         double yPose = a_odometry.GetPose().Y().value();
         double rotPose = a_odometry.GetPose().Rotation().Radians().value();
 
-
+        xProfiledPid.SetGoal(units::meter_t(xDesired));
+        yProfiledPid.SetGoal(units::meter_t(yDesired));
+        rotProfiledPid.SetGoal(units::radian_t(rotDesired));
         double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(xDesired)), -.25, .25);
         double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(yDesired)), -.25, .25);
         double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
 
         swerveUpdate(xSpeed, ySpeed, -rotSpeed, true);
 
+        return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());     
 }
 void SwerveDrive::updateOdometry(){
      a_odometry.Update(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
@@ -365,4 +372,3 @@ void SwerveDrive::zeroPose(){
     {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
     frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
 }
-
