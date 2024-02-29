@@ -108,7 +108,7 @@ void Autonomous::PeriodicDoNothing() {
 
 
 void Autonomous::NoteOne() {
-    a_AutoState1 = kGoToNote1;
+    a_AutoState1 = kShootNote1;
     state_time = gettime_d();
 }
 
@@ -122,11 +122,21 @@ void Autonomous::PeriodicNoteOne() {
             break;
         case kGoToNote1:
             a_SwerveDrive -> odometryGoToPose(2.9, 0.0, 0.0);
+            if(!a_Collector->beamBroken()){
+                a_Collector->startCollector(-.4);
+                a_Collector->indexToShoot();
+            }
+            else{
+                a_Collector->stopCollector();
+                a_Collector->stopIndexer();
+            }
             nextState = kShootNote1;
             break;
         case kShootNote1:
             a_Collector -> indexToShoot();
-            nextState = kAutoIdle1;
+            if((gettime_d() + state_time) > 2.0){
+                nextState = kGoToNote1;
+            }
             break;
        }
     a_AutoState1 = nextState;

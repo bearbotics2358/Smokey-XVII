@@ -23,7 +23,7 @@ void Collector::stopCollector() {
     collectorMotor.StopMotor();
 }
 void Collector::indexToShoot() {
-    indexerMotor.Set(-0.5);
+    indexerMotor.Set(-0.40);
 }
 void Collector::indexToAmp() {
     indexerMotor.Set(.25);
