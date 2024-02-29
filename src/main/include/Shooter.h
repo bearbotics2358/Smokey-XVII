@@ -6,13 +6,13 @@
 
 class Shooter{
     public:
-        Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID, int limitSwitchID);
+        Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID);
         void setSpeed(double percent);
         void stopShooter();
         void moveToAngle(double rpm);
         double getSpeed();
         void setShooterAngle();
-        units::degree_t GetShooterAngle();
+        double GetShooterAngle();
         double velocity_needed_to_reach_target(double theta);
         double range(double x, double y);
         double calculate_shooting_angle(double angle);
@@ -32,6 +32,6 @@ class Shooter{
         //TalonFXSensorCollection pivotEncoder;
 
         
-        LimitSwitch shooterLimitSwitch;
+        //LimitSwitch shooterLimitSwitch;
     
 };

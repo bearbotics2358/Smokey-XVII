@@ -73,7 +73,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // the 'bot will not slam on the brakes once the first run is successful
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
-        void odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+        bool odometryGoToPose(double xDesired, double yDesired, double rotDesired);
 
         void updateOdometry();
 
@@ -82,7 +82,6 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         double getYPose();
         double getRotPose();
         void zeroPose();
-
 
     private:
         // called by both crabUpdate and swerveUpdata
