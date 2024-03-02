@@ -26,9 +26,7 @@ a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_Gamepad(4),
-a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID),
-a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_NoteHandler(&a_Shooter, &a_Collector),
+a_NoteHandler(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
@@ -41,8 +39,6 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
     /*if (!handler.ready()) {
         // do something if handler failed to connect
     }*/
-
-
 
     pvaluedrive = .037;
     a_FLModule.setDrivePID(pvaluedrive, 0, 0);
@@ -170,7 +166,7 @@ void Robot::AutonomousInit() {
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-    a_NoteHandler.startShooter(3500.0, DEFAULT_SHOOTER_ANGLE);
+    a_NoteHandler.startShooter(3500.0, 30.0); // change angle later
 }
 
 void Robot::AutonomousPeriodic() {
@@ -208,7 +204,7 @@ void Robot::TeleopPeriodic() {
     // getting shooter up to speeed
     if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
         double rpm = 3500;
-        a_NoteHandler.startShooter(rpm, DEFAULT_SHOOTER_ANGLE);
+        a_NoteHandler.startShooter(rpm, 32.5);
     } else {
         a_NoteHandler.stopShooter();
     }
@@ -298,6 +294,7 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("z", z);
 
 
+
     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
@@ -305,7 +302,7 @@ void Robot::TeleopPeriodic() {
     }
     else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    }  else if(a_DriverXboxController.GetRightBumper()) {
+}   else if(a_DriverXboxController.GetRightBumper()) {
 
          if (result.HasTargets()) {
              photon::PhotonTrackedTarget target = result.GetBestTarget();
@@ -315,52 +312,25 @@ void Robot::TeleopPeriodic() {
              a_SwerveDrive.turnToAngle(goToYaw, true);
          } 
         } 
-        else {
+    else {
         a_SwerveDrive.stop();
     }
-
-//@TODO for debug only -- Remove later
-    // if (result.HasTargets()) {
-    //     frc::SmartDashboard::PutString("Target?", "Yes");
-    //     photonlib::PhotonTrackedTarget target = result.GetBestTarget();
-    //     frc::SmartDashboard::PutNumber("Yaw", target.GetYaw());
-    // } else {
-    //     frc::SmartDashboard::PutString("Target?", "No");
-    //     frc::SmartDashboard::PutNumber("Yaw", 0);
-    // }
-
 
     if(a_DriverXboxController.GetLeftBumperPressed()){
         a_SwerveDrive.zeroPose();
     }
-    if (!result.HasTargets()) {
-       return; 
+    frc::SmartDashboard::PutBoolean("PHOTONLIB HAS TARGETS", result.HasTargets());
+    if (result.HasTargets()) {
+        photon::PhotonTrackedTarget target = result.GetBestTarget();
+        frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
+
+        double x_vision = bestCameraToTarget.X().value();
+        double y_vision = bestCameraToTarget.Y().value();
+
+        frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
     }
+}
 
-    photon::PhotonTrackedTarget target = result.GetBestTarget();
-    frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
-
-    double x_vision = bestCameraToTarget.X().value();
-    double y_vision = bestCameraToTarget.Y().value();
-
-    // Get the range (stright line) to april tag.
-    // double range = a_Shooter.range(x_vision, y_vision);
-    
-    // double angle = a_Shooter.calculate_shooting_angle(range);
-
-    // double velocity = a_Shooter.velocity_needed_to_reach_target(angle);
-
-    // double shooter_rpm = a_Shooter.velocity_to_rpm(velocity);
-
-    // if(a_DriverXboxController.GetXButton()) {
-    //     frc::SmartDashboard::PutNumber("Range: ", range);
-    //     frc::SmartDashboard::PutNumber("Angle: ", angle);
-    //     frc::SmartDashboard::PutNumber("Velocity: ", velocity);
-    //     frc::SmartDashboard::PutNumber("RPM: ", shooter_rpm);
-    // }
-
-
-    }
 void Robot::TestInit() {
     TeleopInit();
 }

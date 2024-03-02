@@ -19,8 +19,6 @@
 #include <frc/controller/PIDController.h>
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
-#include <Shooter.h>
-#include <Collector.h>
 
 enum class DriveBackState {
     Inactive,
@@ -88,8 +86,6 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-        Shooter a_Shooter;
-        Collector a_Collector;
         NoteHandler a_NoteHandler;
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)

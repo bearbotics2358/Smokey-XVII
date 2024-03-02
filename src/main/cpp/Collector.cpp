@@ -6,9 +6,7 @@
 Collector::Collector(int collectorMotorID, int indexerMotorID):
 collectorMotor(collectorMotorID),
 indexerMotor(indexerMotorID),
-beamBreak(BEAMBREAK_PORT),
-a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID),
-a_DriverXboxController(DRIVER_PORT)
+beamBreak(BEAMBREAK_PORT)
 {
     stopCollector();
     stopIndexer();
@@ -30,9 +28,6 @@ void Collector::indexToAmp() {
 }
 void Collector::stopIndexer() {
     indexerMotor.StopMotor();
-}
-void Collector::stopShooter(){
-    a_Shooter.stopShooter();
 }
 bool Collector::beamBroken(){
     return beamBreak.beamBroken();

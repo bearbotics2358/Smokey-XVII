@@ -5,7 +5,7 @@
 
 class NoteHandler {
     public:
-        NoteHandler(Shooter *Shooter, Collector *Collector);
+        NoteHandler();
 
         // Shooter Stuff
         double getShooterAngle();
@@ -31,6 +31,6 @@ class NoteHandler {
         bool beamBroken();
 
     private:
-        Shooter *a_Shooter;
-        Collector *a_Collector;
+        Shooter a_Shooter;
+        Collector a_Collector;
 };

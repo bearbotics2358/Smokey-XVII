@@ -23,6 +23,4 @@ class Collector {
         // rev::CANSparkMax indexerMotor;
         ctre::phoenix6::hardware::TalonFX indexerMotor;
         ctre::phoenix6::hardware::TalonFX collectorMotor;
-        Shooter a_Shooter;
-        frc::XboxController a_DriverXboxController;
 };

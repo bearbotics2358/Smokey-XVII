@@ -11,7 +11,7 @@
 #define COLLECTOR_BUTTON 3
 #define INVERSE_COLLECTOR_BUTTON 4
 #define SHOOTER_BUTTON 6
-#define DEFAULT_SHOOTER_ANGLE 20.0
+//#define DEFAULT_SHOOTER_ANGLE 36.0
 
 // For the competition bot, this line *MUST* be enabled. For the practice bot, comment out this line.
 #define COMP_BOT
@@ -67,10 +67,10 @@ m = number engraved on module
 */
 
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
-#define FL_ID 8
-#define FR_ID 4
-#define BL_ID 2
-#define BR_ID 3
+#define FL_ID 6
+#define FR_ID 1
+#define BL_ID 7
+#define BR_ID 5
 #else
 #define FL_ID 1
 #define FR_ID 6

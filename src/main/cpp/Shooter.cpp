@@ -11,12 +11,13 @@ leftShooterMotor(leftShooterMotorID),
 pivotMotor(pivotMotorID),
 // pivotEncoder(pivotMotor),
 //shooterLimitSwitch(limitSwitchID),
-pivotPID(0.005, 0.0005, 0.0),
+// .0067, .006, 0.0
+pivotPID(0.005, 0.0045, 0.0005),
 leftShooterPID(0.0, 0.0, 0.0),
 rightShooterPID(0.0, 0.0, 0.0)
 {
     ctre::phoenix6::configs::TalonFXConfiguration pivot_config_angle{};
-    pivot_config_angle.Feedback.SensorToMechanismRatio = .74;
+    pivot_config_angle.Feedback.SensorToMechanismRatio = .62;
     pivotMotor.GetConfigurator().Apply(pivot_config_angle);
     ctre::phoenix6::configs::MotorOutputConfigs pivot_output_config{};
     pivot_output_config.Inverted = true;
@@ -53,5 +54,5 @@ void Shooter::moveToAngle(double angle){
     }
 }
 double Shooter::GetShooterAngle(){
-    return (10.0*pivotMotor.GetPosition().GetValue().value());
+    return fabs(10.0*pivotMotor.GetPosition().GetValue().value());
 }
