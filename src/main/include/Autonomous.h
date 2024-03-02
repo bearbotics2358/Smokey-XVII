@@ -10,10 +10,7 @@
 #include <frc/Timer.h>
 #include <frc/XboxController.h>
 #include <units/math.h>
-#include "Shooter.h"
-#include "Collector.h"
-
-
+#include <NoteHandler.h>
 
 const std::string RobotDoNothing = "Sit Still";
 const std::string firstNote = "Note 1";
@@ -87,7 +84,7 @@ class Autonomous {
         void PeriodicAuto(const std::string periodicAutoMode);
 
     void DecidePath();
-    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, Collector *Collector);
+    Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, NoteHandler *NoteHandler);
 
    // const char *GetCurrentPath();
 
@@ -143,10 +140,7 @@ class Autonomous {
 private:
     Gyro *a_Gyro;
     SwerveDrive *a_SwerveDrive;
-    Shooter *a_Shooter;
-    Collector *a_Collector;
-
-
+    NoteHandler *a_NoteHandler;
 
     AutoState0 a_AutoState0;
     AutoState1 a_AutoState1;

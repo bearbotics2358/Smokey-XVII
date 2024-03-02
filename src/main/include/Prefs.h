@@ -7,6 +7,12 @@
 
 // Declare constants such as CAN IDs here
 
+/*======= DRIVER STATION & IT'S RELATED STUFF CONSTANTS =======*/
+#define COLLECTOR_BUTTON 3
+#define INVERSE_COLLECTOR_BUTTON 4
+#define SHOOTER_BUTTON 6
+#define DEFAULT_SHOOTER_ANGLE 20.0
+
 // For the competition bot, this line *MUST* be enabled. For the practice bot, comment out this line.
 #define COMP_BOT
 

@@ -26,11 +26,13 @@ a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
 a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_Gamepad(4),
+a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID),
+a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
+a_NoteHandler(&a_Shooter, &a_Collector),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
-a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_Collector)
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -71,7 +73,7 @@ void Robot::RobotInit() {
     a_Gyro.Init();
     a_Gyro.Zero();
 
-    // a_Shooter.setShooterAngle();
+    a_NoteHandler.setShooterAngleToDefault();
 
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
@@ -91,6 +93,11 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+
+    frc::SmartDashboard::PutNumber("Shooter Angle", a_NoteHandler.getShooterAngle());
+
+    frc::SmartDashboard::PutBoolean("BeamBreak", a_NoteHandler.beamBroken());
+
     a_Gyro.Update();
     
     //a_LED.Update();
@@ -152,7 +159,7 @@ void Robot::DisabledPeriodic(){}
 
 
 void Robot::AutonomousInit() {
-       a_SwerveDrive.zeroPose();
+    a_SwerveDrive.zeroPose();
     if (a_doEnabledInit) {
         EnabledInit();
         a_doEnabledInit = false;
@@ -163,25 +170,20 @@ void Robot::AutonomousInit() {
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-    a_Collector.setSpeed(3500.0);
+    a_NoteHandler.startShooter(3500.0, DEFAULT_SHOOTER_ANGLE);
 }
 
 void Robot::AutonomousPeriodic() {
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
     a_Autonomous.PeriodicAuto(SelectedRoute);
     EnabledPeriodic();
-    
-    
 }
 
 void Robot::TeleopInit() {
    // SetTargetType(target_type_enum::CONE);
 
     //a_Gyro.setYaw(180 + a_Gyro.getYaw());
-    a_Collector.stopCollector();
-    a_Collector.stopIndexer();
-    a_Collector.stopShooter();
-    // a_Shooter.stopShooter();
+    a_NoteHandler.stopAll();
 
     if (a_doEnabledInit) {
         EnabledInit();
@@ -203,32 +205,26 @@ void Robot::TeleopPeriodic() {
     // EnabledPeriodic();
     
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
-
-    if (a_Gamepad.GetRawButton(6)) {
+    // getting shooter up to speeed
+    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
         double rpm = 3500;
-        // a_Shooter.setSpeed(rpm);
-        a_Collector.setSpeed(rpm);
-    }
-    else{
-        a_Collector.stopShooter();
+        a_NoteHandler.startShooter(rpm, DEFAULT_SHOOTER_ANGLE);
+    } else {
+        a_NoteHandler.stopShooter();
     }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
     
-    if (a_Gamepad.GetRawButton(3) && !a_Collector.beamBroken() ) {
-        a_Collector.startCollector(-.4);
-        a_Collector.indexToShoot();
-    }
-    else if (a_DriverXboxController.GetRightBumper()) {
-        a_Collector.indexToShoot();
-        a_Collector.startCollector(-.65);
-    }
-    else if (a_Gamepad.GetRawButton(4)){
-        a_Collector.indexToAmp();
-        a_Collector.runCollectorback();
-    }
-    else{
-        a_Collector.stopCollector();
-        a_Collector.stopIndexer();
+    // start collector
+    if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
+        a_NoteHandler.collectNote(-0.4, true);
+    } else if (a_DriverXboxController.GetRightBumper()) {
+        // give note to shooter
+        a_NoteHandler.collectNote(-.65, false);
+    } else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
+        // drop the note  
+        a_NoteHandler.dispenseNote();
+    } else {
+        a_NoteHandler.stopCollection();
     }
 
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
