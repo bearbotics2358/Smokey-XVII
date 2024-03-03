@@ -1,5 +1,6 @@
 #include "AmpTrap.h"
 #include <units/length.h>
+#include "Prefs.h"
 
 AmpTrap::AmpTrap(int rollerMotorID, int extensionMotorID, int rotationMotorID):
 
@@ -28,7 +29,10 @@ void AmpTrap::extendExtender(){
     }
 }
 double AmpTrap::GetExtensionPosition(){
-    return units::meter_t((extensionMotor.GetPosition().GetValue())).value();    
+    double rotations = extensionMotor.GetPosition().GetValue().value();
+    return rotations * M_PI * EXTENSION_DIAMETER; //need to update extension diameter and double check calculations
+
+
 }
 void AmpTrap::setPosition(){
     extensionMotor.SetPosition(units::angle::turn_t{0.0});

@@ -156,7 +156,8 @@ static double CANCODER_OFFSETS[] = {
 
 // wheel diameter in meters
 #define WHEEL_DIAMETER 0.095
-
+#define EXTENSION_DIAMETER 0.0
+#define CLIMBER_DIAMETER 0.0
 
 // Vision Related
 #define SPEAKER_HEIGHT 1.7021    

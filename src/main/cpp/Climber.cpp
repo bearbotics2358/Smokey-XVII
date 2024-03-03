@@ -1,5 +1,6 @@
 #include "Climber.h"
 #include <units/length.h>
+#include "Prefs.h"
 
 Climber::Climber(int climberMotorID):
 climberMotor(climberMotorID),
@@ -31,7 +32,8 @@ void Climber::retractClimber(){
     }
 }
 double Climber::GetClimberPosition(){
-    return units::meter_t((climberMotor.GetPosition().GetValue())).value();    
+    double rotations = climberMotor.GetPosition().GetValue().value();
+    return rotations * M_PI * CLIMBER_DIAMETER; //need to update climber diameter and double check calculation
 }
 void Climber::setPosition(){
     climberMotor.SetPosition(units::angle::turn_t{0.0});
