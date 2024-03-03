@@ -2,6 +2,7 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include "BeamBreak.h"
 #include "Shooter.h"
+#include <frc/XboxController.h>
 
 class Collector {
     public:
@@ -11,18 +12,15 @@ class Collector {
         void indexToShoot();
         void indexToAmp();
         void stopIndexer();
-        void update();
-        void setSpeed(double rpm);
         void stopShooter();
         bool beamBroken();
         void runCollectorback();
         double getShooterAngle();
         void setShooterAngle();
+        BeamBreak beamBreak;
     private:
         // rev::CANSparkMax collectorMotor;
         // rev::CANSparkMax indexerMotor;
         ctre::phoenix6::hardware::TalonFX indexerMotor;
         ctre::phoenix6::hardware::TalonFX collectorMotor;
-        BeamBreak beamBreak;
-        Shooter a_Shooter;
 };

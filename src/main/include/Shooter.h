@@ -9,15 +9,11 @@ class Shooter{
         Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID);
         void setSpeed(double percent);
         void stopShooter();
-        void moveToAngle(double rpm);
+        void moveToAngle(double angle);
         double getSpeed();
         void setShooterAngle();
         double GetShooterAngle();
-        double velocity_needed_to_reach_target(double theta);
-        double range(double x, double y);
-        double calculate_shooting_angle(double angle);
-        double velocity_to_rpm(double velocity);
-
+        
     private:
     // rev::CANSparkMax rightShooterMotor;
     // rev::CANSparkMax leftShooterMotor;

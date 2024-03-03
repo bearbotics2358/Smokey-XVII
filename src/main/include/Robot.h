@@ -14,16 +14,11 @@
 #include <frc/XboxController.h>
 #include "photon/PhotonCamera.h"
 #include "photon/PhotonUtils.h"
-#include "BeamBreak.h"
-#include "Shooter.h"
 #include <frc/smartdashboard/SendableChooser.h>
-#include "Collector.h"
-#include "BeamBreak.h"
 #include "LED_DIO.h"
 #include <frc/controller/PIDController.h>
 #include <frc/GenericHID.h>
-
-
+#include "NoteHandler.h"
 
 enum class DriveBackState {
     Inactive,
@@ -91,8 +86,7 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-        // Shooter a_Shooter;
-        Collector a_Collector;
+        NoteHandler a_NoteHandler;
 
         frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
         frc::XboxController a_OperatorXboxController;
@@ -134,9 +128,7 @@ class Robot : public frc::TimedRobot {
         const double ANGULAR_D = 0.0;
         frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-       photon::PhotonCamera a_camera{"limelight1"}; //name of camera
+        photon::PhotonCamera a_camera{"limelight1"}; //name of camera
 
         enum target_type_enum target_type = target_type_enum::CONE;
-
-
 };

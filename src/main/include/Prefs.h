@@ -7,6 +7,12 @@
 
 // Declare constants such as CAN IDs here
 
+/*======= DRIVER STATION & IT'S RELATED STUFF CONSTANTS =======*/
+#define COLLECTOR_BUTTON 3
+#define INVERSE_COLLECTOR_BUTTON 4
+#define SHOOTER_BUTTON 6
+//#define DEFAULT_SHOOTER_ANGLE 36.0
+
 // For the competition bot, this line *MUST* be enabled. For the practice bot, comment out this line.
 #define COMP_BOT
 
@@ -37,6 +43,7 @@
 #define SHOOTER_RIGHT_MOTOR_ID 32
 #define INDEXER_MOTOR_ID 33
 #define PIVOT_MOTOR_ID 34
+#define ARM_PIVOT_MOTOR_ID 35
 
 #define MAX_CLIMB_PERCENT 0.1
 //in m/s
@@ -61,10 +68,10 @@ m = number engraved on module
 */
 
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
-#define FL_ID 8
-#define FR_ID 4
-#define BL_ID 2
-#define BR_ID 3
+#define FL_ID 6
+#define FR_ID 1
+#define BL_ID 7
+#define BR_ID 5
 #else
 #define FL_ID 1
 #define FR_ID 6
