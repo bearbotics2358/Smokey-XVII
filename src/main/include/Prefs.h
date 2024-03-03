@@ -43,6 +43,7 @@
 #define SHOOTER_RIGHT_MOTOR_ID 32
 #define INDEXER_MOTOR_ID 33
 #define PIVOT_MOTOR_ID 34
+#define ARM_PIVOT_MOTOR_ID 35
 
 #define MAX_CLIMB_PERCENT 0.1
 //in m/s

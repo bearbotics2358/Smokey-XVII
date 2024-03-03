@@ -90,6 +90,14 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
 
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+
+    if (result.HasTargets()) {
+        frc::SmartDashboard::PutString("HAS_TARGETS", "YES");
+    } else {
+        frc::SmartDashboard::PutString("HAS_TARGETS", "NO");
+    }
+
     frc::SmartDashboard::PutNumber("Shooter Angle", a_NoteHandler.getShooterAngle());
 
     frc::SmartDashboard::PutBoolean("BeamBreak", a_NoteHandler.beamBroken());
@@ -295,40 +303,39 @@ void Robot::TeleopPeriodic() {
 
 
 
-    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+//     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
-    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
-        a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
-    }
-    else if (!inDeadzone) {
-        a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-}   else if(a_DriverXboxController.GetRightBumper()) {
+//     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+//         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
+//     }
+//     else if (!inDeadzone) {
+//         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
+// }   else if(a_DriverXboxController.GetRightBumper()) {
 
-         if (result.HasTargets()) {
-             photon::PhotonTrackedTarget target = result.GetBestTarget();
-             double target_Yaw = target.GetYaw();
-             double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
-             frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
-             a_SwerveDrive.turnToAngle(goToYaw, true);
-         } 
-        } 
-    else {
-        a_SwerveDrive.stop();
-    }
+//          if (result.HasTargets()) {
+//              photon::PhotonTrackedTarget target = result.GetBestTarget();
+//              double target_Yaw = target.GetYaw();
+//              double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
+//              frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
+//              a_SwerveDrive.turnToAngle(goToYaw, true);
+//          } 
+//         } 
+//     else {
+//         a_SwerveDrive.stop();
+//     }
 
-    if(a_DriverXboxController.GetLeftBumperPressed()){
-        a_SwerveDrive.zeroPose();
-    }
-    frc::SmartDashboard::PutBoolean("PHOTONLIB HAS TARGETS", result.HasTargets());
-    if (result.HasTargets()) {
-        photon::PhotonTrackedTarget target = result.GetBestTarget();
-        frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
+//     if(a_DriverXboxController.GetLeftBumperPressed()){
+//         a_SwerveDrive.zeroPose();
+//     }
+//     if (result.HasTargets()) {
+//         photon::PhotonTrackedTarget target = result.GetBestTarget();
+//         frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
 
-        double x_vision = bestCameraToTarget.X().value();
-        double y_vision = bestCameraToTarget.Y().value();
+//         double x_vision = bestCameraToTarget.X().value();
+//         double y_vision = bestCameraToTarget.Y().value();
 
-        frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
-    }
+//         frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
+//     }
 }
 
 void Robot::TestInit() {

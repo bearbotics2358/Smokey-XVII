@@ -128,7 +128,7 @@ class Robot : public frc::TimedRobot {
         const double ANGULAR_D = 0.0;
         frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-       photon::PhotonCamera a_camera{"limelight1"}; //name of camera
+        photon::PhotonCamera a_camera{"limelight1"}; //name of camera
 
         enum target_type_enum target_type = target_type_enum::CONE;
 };
