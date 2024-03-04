@@ -7,6 +7,12 @@
 
 // Declare constants such as CAN IDs here
 
+/*======= For Interpolating Map =======*/
+struct Values {
+    double angle;
+    int rpm;
+};
+
 /*======= DRIVER STATION & IT'S RELATED STUFF CONSTANTS =======*/
 #define COLLECTOR_BUTTON 3
 #define INVERSE_COLLECTOR_BUTTON 4
