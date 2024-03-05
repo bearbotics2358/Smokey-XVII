@@ -1,8 +1,5 @@
-#include <frc/WPILib.h>
 #include "ArmAngle.h"
 #include <HAL/HAL.h>
-#include <LiveWindow/LiveWindow.h>
-
 
 ArmAngle::ArmAngle(int x_deviceID):
     deviceID(x_deviceID),
@@ -23,19 +20,17 @@ void ArmAngle::Update()
 
 
 	if(ret) {
-		char stemp[9];
-
 		for(i = 0; i < data1.length; i++) {
 			rxBuf[i] = data1.data[i];
 		}
 
 		decodeArmAngleMsg();
 	}
-    
+
 
 }
 
-double ArmAngle::GeAngle()
+double ArmAngle::GetAngle()
 {
   return angle_f;
 

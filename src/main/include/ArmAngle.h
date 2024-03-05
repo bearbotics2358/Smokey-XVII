@@ -1,6 +1,5 @@
 #pragma once
 
-#include "frc/WPILib.h"
 #include <frc/CAN.h>
 
 #define CAN_ID 0x0a080081
@@ -23,12 +22,12 @@ public:
 
 
 private:
-    frc::CAN a_FeatherCAN;
     int deviceID;
+    frc::CAN a_FeatherCAN;
     unsigned char rxBuf[8];
 
     double angle_f = 0.0;
 
-    void decodeREVEncoderMsg();
+    void decodeArmAngleMsg();
 
 };
