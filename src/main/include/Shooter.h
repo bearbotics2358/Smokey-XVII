@@ -1,8 +1,8 @@
 #pragma once
 #include <ctre/phoenix6/TalonFX.hpp>
-
 #include <frc/controller/PIDController.h>
 #include "LimitSwitch.h"
+#include <wpi/interpolating_map.h>
 
 class Shooter{
     public:
@@ -13,10 +13,8 @@ class Shooter{
         double getSpeed();
         void setShooterAngle();
         double GetShooterAngle();
-        
     private:
-    // rev::CANSparkMax rightShooterMotor;
-    // rev::CANSparkMax leftShooterMotor;
+    
         frc::PIDController leftShooterPID;
         frc::PIDController rightShooterPID;
         frc::PIDController pivotPID;
@@ -24,10 +22,7 @@ class Shooter{
         ctre::phoenix6::hardware::TalonFX rightShooterMotor;
         ctre::phoenix6::hardware::TalonFX leftShooterMotor;
         ctre::phoenix6::hardware::TalonFX pivotMotor;
-
-        //TalonFXSensorCollection pivotEncoder;
-
-        
+      
         //LimitSwitch shooterLimitSwitch;
     
 };

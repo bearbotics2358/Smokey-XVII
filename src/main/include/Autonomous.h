@@ -30,8 +30,11 @@ enum AutoState0 { // Encoders
 
 enum AutoState1 { // Encoders
     kAutoIdle1,
-    kGoToNote1,
-    kShootNote1
+    kShoot1stNote1,
+    kGoTo2ndNote1,
+    kShoot2ndNote1,
+    kGoTo3rdNote1,
+    kShoot3rdNote1
 };
 
 enum AutoState2 { // T.O.F and Encoders
