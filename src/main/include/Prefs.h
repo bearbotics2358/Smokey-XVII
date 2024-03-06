@@ -8,10 +8,11 @@
 // Declare constants such as CAN IDs here
 
 /*======= For Interpolating Map =======*/
-struct Values {
-    double angle;
-    int rpm;
-};
+#define ANGLE_LOWER_BOUND 20.0
+#define ANGLE_UPPER_BOUND 85.0
+
+#define RPM_LOWER_BOUND 0.0
+#define RPM_UPPER_BOUND 6000.0
 
 /*======= DRIVER STATION & IT'S RELATED STUFF CONSTANTS =======*/
 #define COLLECTOR_BUTTON 3

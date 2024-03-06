@@ -1,20 +1,22 @@
+#pragma once
+
 #include <iostream>
 #include <map>
 #include <Prefs.h>
+#include <InterpolationValues.h>
 
 using namespace std;
 
 class InterpolatingMap {
     public:
-        void add(double distance, Values value);
+        void insert(double distance, InterpolationValues value);
         void remove(double distance);
         void clear();
 
-        Values interpolate(double distance);
+        InterpolationValues interpolate(double distance);
+        InterpolationValues operator[](double distance);
     private:
-        Values lerp(double lower_bound, double upper_bound, double distance);
-        Values values_add(Values A, Values B);
-        Values scalar_multiply(Values A, double multiplier);
+        InterpolationValues lerp(double lower_bound, double upper_bound, double distance);
 
-        map<double, Values> values_map;
+        map<double, InterpolationValues> values_map;
 };
