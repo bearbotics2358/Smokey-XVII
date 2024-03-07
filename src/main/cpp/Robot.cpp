@@ -13,6 +13,7 @@
 #include "BeamBreak.h"
 #include "SwerveDrive.h"
 #include <frc/GenericHID.h>
+#include "LimelightHelpers.h"
 
 
 /*~~ hi :) ~~ */
@@ -91,12 +92,15 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
 
     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
     if (result.HasTargets()) {
-        frc::SmartDashboard::PutString("HAS_TARGETS", "YES");
+        frc::SmartDashboard::PutString("Has_AprilTags", "YES");
     } else {
-        frc::SmartDashboard::PutString("HAS_TARGETS", "NO");
+        frc::SmartDashboard::PutString("Has_AprilTags", "NO");
     }
+
+    frc::SmartDashboard::PutNumber("Note_Offset", Note_Offset);
 
     frc::SmartDashboard::PutNumber("Shooter Angle", a_NoteHandler.getShooterAngle());
 
