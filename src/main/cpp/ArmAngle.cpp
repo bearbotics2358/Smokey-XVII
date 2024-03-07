@@ -16,7 +16,7 @@ void ArmAngle::Update()
 	frc::CANData data1;
 	int i;
 
-	bool ret = a_FeatherCAN.ReadPacketNew(2, &data1);
+	bool ret = a_FeatherCAN.ReadPacketNew(4, &data1);
 
 
 	if(ret) {

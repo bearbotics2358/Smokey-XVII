@@ -19,6 +19,7 @@
 #include <frc/controller/PIDController.h>
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
+#include "ArmAngle.h"
 
 enum class DriveBackState {
     Inactive,
@@ -131,4 +132,6 @@ class Robot : public frc::TimedRobot {
         photon::PhotonCamera a_camera{"limelight1"}; //name of camera
 
         enum target_type_enum target_type = target_type_enum::CONE;
+
+        ArmAngle a_ArnmAngle;
 };

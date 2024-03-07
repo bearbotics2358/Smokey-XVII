@@ -30,7 +30,8 @@ a_NoteHandler(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler),
+a_ArnmAngle(1)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -90,6 +91,9 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
 
+    a_ArnmAngle.Update();
+    frc::SmartDashboard::PutNumber("Encoder Arm Angle", a_ArnmAngle.GetAngle());
+    
     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
     if (result.HasTargets()) {
