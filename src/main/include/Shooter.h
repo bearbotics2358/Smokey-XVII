@@ -24,5 +24,4 @@ class Shooter{
         ctre::phoenix6::hardware::TalonFX pivotMotor;
       
         //LimitSwitch shooterLimitSwitch;
-    
 };
