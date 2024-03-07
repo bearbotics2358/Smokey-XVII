@@ -29,5 +29,4 @@ class Shooter{
 
         
         //LimitSwitch shooterLimitSwitch;
-    
 };
