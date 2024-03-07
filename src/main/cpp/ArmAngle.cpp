@@ -1,5 +1,5 @@
 #include "ArmAngle.h"
-#include <HAL/HAL.h>
+//#include <HAL/HAL.h>
 
 ArmAngle::ArmAngle(int x_deviceID):
     deviceID(x_deviceID),
