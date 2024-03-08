@@ -311,7 +311,7 @@ void Robot::TeleopPeriodic() {
 
 
 
-//     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
 //     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
 //         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
@@ -335,15 +335,15 @@ void Robot::TeleopPeriodic() {
 //     if(a_DriverXboxController.GetLeftBumperPressed()){
 //         a_SwerveDrive.zeroPose();
 //     }
-//     if (result.HasTargets()) {
-//         photon::PhotonTrackedTarget target = result.GetBestTarget();
-//         frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
+    if (result.HasTargets()) {
+        photon::PhotonTrackedTarget target = result.GetBestTarget();
+        frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
 
-//         double x_vision = bestCameraToTarget.X().value();
-//         double y_vision = bestCameraToTarget.Y().value();
+        double x_vision = bestCameraToTarget.X().value();
+        double y_vision = bestCameraToTarget.Y().value();
 
-//         frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
-//     }
+        frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
+    }
 }
 
 void Robot::TestInit() {
