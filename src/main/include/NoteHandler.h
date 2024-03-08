@@ -2,8 +2,6 @@
 
 #include <Shooter.h>
 #include <Collector.h>
-#include <InterpolatingMap.h>
-#include <InterpolationValues.h>
 
 class NoteHandler {
     public:
@@ -32,12 +30,7 @@ class NoteHandler {
         void dispenseNote();
         bool beamBroken();
 
-        // Interpolation
-        InterpolationValues interpolate(double x);
-        void insertToInterpolatingMap(double x, InterpolationValues value);
-
     private:
         Shooter a_Shooter;
         Collector a_Collector;
-        InterpolatingMap map;
 };

@@ -88,7 +88,6 @@ void Robot::RobotInit() {
     //a_LED.Init();
 
     //SetTargetType(target_type_enum::CONE);
-    //a_NoteHandler.insertToInterpolatingMap();
 }
 
 void Robot::RobotPeriodic() {

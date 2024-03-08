@@ -3,8 +3,6 @@
 
 #include <frc/controller/PIDController.h>
 #include "LimitSwitch.h"
-#include <InterpolatingMap.h>
-#include <InterpolationValues.h>
 
 class Shooter{
     public:
