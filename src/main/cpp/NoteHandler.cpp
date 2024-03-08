@@ -80,3 +80,12 @@ void NoteHandler::dispenseNote() {
 bool NoteHandler::beamBroken() {
     return a_Collector.beamBreak.beamBroken();
 }
+
+// Interpolation
+InterpolationValues NoteHandler::interpolate(double x) {
+    return map[x];
+}
+
+void NoteHandler::insertToInterpolatingMap(double x, InterpolationValues value) {
+    map.insert(x, value);
+}
