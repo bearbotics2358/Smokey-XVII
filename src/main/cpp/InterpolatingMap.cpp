@@ -23,7 +23,7 @@ InterpolationValues InterpolatingMap::operator[](double distance) {
     // less than min distance
     double curr_min = values_map.begin()->first;
     if (distance < curr_min) {
-        return (values_map[curr_min] * (distance / curr_min)).clampValues();
+        return( values_map[curr_min] * (distance / curr_min)).clampValues();
     }
     
     // greater than max distance
