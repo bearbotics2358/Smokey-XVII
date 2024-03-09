@@ -26,7 +26,8 @@ private:
     frc::CAN a_FeatherCAN;
     unsigned char rxBuf[8];
 
-    double angle_f = 0.0;
+    // The raw angle from the encoder (no offset applied)
+    double m_rawAngleDeg = 0.0;
 
     void decodeArmAngleMsg();
 
