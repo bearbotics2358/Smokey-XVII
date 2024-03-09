@@ -1,10 +1,10 @@
 #include "Climber.h"
-#include <units/length.h>
 #include "Prefs.h"
 
-Climber::Climber(int climberMotorID):
+Climber::Climber(int climberMotorID, int topPort, int bottomPort):
 climberMotor(climberMotorID),
-climberPID(0.0, 0.0, 0.0)
+topLimitSwitch(topPort),
+bottomLimitSWitch(bottomPort)
 {
 
 }
@@ -12,29 +12,20 @@ void Climber::stopClimber(){
     climberMotor.StopMotor();
 }
 void Climber::extendClimnber(){
-    climberPID.SetSetpoint(0.0);//neeed to change from 0.0
-    double dist = GetClimberPosition();
-    double speed = climberPID.Calculate(dist, 0.0);
-    speed = std::clamp(speed, -.2, .2);
-    climberMotor.Set(speed);
-    if(climberPID.AtSetpoint()){
-        climberMotor.StopMotor();
+    
+    if (topLimitSwitch.limitSwitchPressed()){
+        stopClimber();
+    }
+    else {
+       climberMotor.Set(.5);
     }
 }
 void Climber::retractClimber(){
-    climberPID.SetSetpoint(0.0);
-    double dist = GetClimberPosition();
-    double speed = climberPID.Calculate(dist, 0.0);
-    speed = std::clamp(speed, -.2, .2);
-    climberMotor.Set(speed);
-    if(climberPID.AtSetpoint()){
-        climberMotor.StopMotor();
-    }
-}
-double Climber::GetClimberPosition(){
-    double rotations = climberMotor.GetPosition().GetValue().value();
-    return rotations * M_PI * CLIMBER_DIAMETER; //need to update climber diameter and double check calculation
-}
-void Climber::setPosition(){
-    climberMotor.SetPosition(units::angle::turn_t{0.0});
+   
+   if (bottomLimitSWitch.limitSwitchPressed()){
+        stopClimber();
+   }
+   else {
+     climberMotor.Set(-.5);
+   }
 }
