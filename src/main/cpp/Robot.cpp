@@ -94,7 +94,7 @@ void Robot::RobotPeriodic() {
 
     a_ArnmAngle.Update();
     frc::SmartDashboard::PutNumber("Encoder Arm Angle", a_ArnmAngle.GetAngle());
-    
+
     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
     double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
@@ -111,9 +111,9 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutBoolean("BeamBreak", a_NoteHandler.beamBroken());
 
     a_Gyro.Update();
-    
+
     //a_LED.Update();
-  
+
 
     a_SwerveDrive.updateOdometry();
     // frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
@@ -139,7 +139,7 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
     frc::SmartDashboard::PutNumber("Button Count", a_Gamepad.GetButtonCount());
 
-    
+
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -215,7 +215,7 @@ void Robot::TeleopPeriodic() {
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
     // EnabledPeriodic();
-    
+
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
     if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
@@ -225,7 +225,7 @@ void Robot::TeleopPeriodic() {
         a_NoteHandler.stopShooter();
     }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
-    
+
     // start collector
     if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
         a_NoteHandler.collectNote(-0.4, true);
@@ -233,7 +233,7 @@ void Robot::TeleopPeriodic() {
         // give note to shooter
         a_NoteHandler.collectNote(-.65, false);
     } else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
-        // drop the note  
+        // drop the note
         a_NoteHandler.dispenseNote();
     } else {
         a_NoteHandler.stopCollection();
@@ -326,8 +326,8 @@ void Robot::TeleopPeriodic() {
 //              double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
 //              frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
 //              a_SwerveDrive.turnToAngle(goToYaw, true);
-//          } 
-//         } 
+//          }
+//         }
 //     else {
 //         a_SwerveDrive.stop();
 //     }
