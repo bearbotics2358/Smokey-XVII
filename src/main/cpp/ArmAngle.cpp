@@ -1,5 +1,5 @@
 #include "ArmAngle.h"
-//#include <HAL/HAL.h>
+#include "Prefs.h"
 
 ArmAngle::ArmAngle(int x_deviceID):
     deviceID(x_deviceID),
@@ -18,7 +18,6 @@ void ArmAngle::Update()
 
 	bool ret = a_FeatherCAN.ReadPacketNew(4, &data1);
 
-
 	if(ret) {
 		for(i = 0; i < data1.length; i++) {
 			rxBuf[i] = data1.data[i];
@@ -26,21 +25,17 @@ void ArmAngle::Update()
 
 		decodeArmAngleMsg();
 	}
-
-
 }
 
 double ArmAngle::GetAngle()
 {
-  return angle_f;
-
+	return m_rawAngleDeg + ARM_ANGLE_OFFSET_DEGREES;
 }
 
 void ArmAngle::decodeArmAngleMsg()
 {
-  int anglex10 = 0;
+	int anglex10 = 0;
 
-  anglex10 = (rxBuf[0] << 8) | rxBuf[1];
-  angle_f = (anglex10 * 1.0) / 10.0;
+	anglex10 = (rxBuf[0] << 8) | rxBuf[1];
+	m_rawAngleDeg = (anglex10 * 1.0) / 10.0;
 }
-
