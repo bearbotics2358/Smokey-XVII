@@ -2,7 +2,8 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/controller/PIDController.h>
 #include "LimitSwitch.h"
-#include <wpi/interpolating_map.h>
+#include <InterpolatingMap.h>
+#include <InterpolationValues.h>
 
 class Shooter{
     public:
