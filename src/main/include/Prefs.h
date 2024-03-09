@@ -14,7 +14,7 @@
 #define RPM_LOWER_BOUND 0.0
 #define RPM_UPPER_BOUND 6000.0
 
-/*======= DRIVER STATION & IT'S RELATED STUFF CONSTANTS =======*/
+/*======= DRIVER STATION & ITS RELATED STUFF CONSTANTS =======*/
 #define COLLECTOR_BUTTON 3
 #define INVERSE_COLLECTOR_BUTTON 4
 #define SHOOTER_BUTTON 6
@@ -29,19 +29,9 @@
 #define GYRO_ID 35
 #endif
 
-// #define PISTON_PUSH_SOLENOID_MODULE 10
-// #define PISTON_PULL_SOLENOID_MODULE 11
-// #define CLAW_OPEN_SOLENOID_MODULE 12
-// #define CLAW_CLOSE_SOLENOID_MODULE 13
-
-#define EXTEND_PISTON_TIME 2.0
-#define CLAW_PISTON_TIME 2.0
-
 #define PITCH_OFFSET -2;
-// #define SHUTTLE_MOTOR 22
-// #define ARM_MOTOR 12
 
-#define BEAMBREAK_PORT 8 
+#define BEAMBREAK_PORT 8
 
 #define LIMIT_SWITCH 0 // change later
 
@@ -121,7 +111,7 @@ m = number engraved on module
 #define CANCODER_OFFSET_5 42.2 - 180
 #define CANCODER_OFFSET_6 127.4 - 180
 #define CANCODER_OFFSET_7 278.437 - 180
-#define CANCODER_OFFSET_8 246.2 
+#define CANCODER_OFFSET_8 246.2
 #define CANCODER_OFFSET_ARM -318.17
 
 
@@ -174,7 +164,7 @@ static double CANCODER_OFFSETS[] = {
 #define CLIMBER_DIAMETER 0.0
 
 // Vision Related
-#define SPEAKER_HEIGHT 1.7021    
+#define SPEAKER_HEIGHT 1.7021
 #define RADIUS_OF_MOTOR 0.0254
 #define VELOCITY_CONSTANT 1.01
 
@@ -213,16 +203,9 @@ constexpr units::length::meter_t TARGET_HEIGHT = units::length::meter_t(1.0);
 constexpr units::angle::radian_t TARGET_PITCH = units::angle::radian_t(0.0);
 
 // mdns name of camera
-#define SHOOTER_CAMERA_NAME "photonvision"
-#define BALL_CAMERA_NAME "temp"
+#define SHOOTER_CAMERA_NAME "limelight1"
 
 /* ============= Arduino ============= */
-
-// #define BAUD_RATE_TOF 115200
-// #define USB_PORT_TOF frc::SerialPort::kUSB1
-// #define DATA_BITS_TOF 8
-// #define PARITY_TOF frc::SerialPort::kParity_None
-// #define STOP_BITS_TOF frc::SerialPort::kStopBits_One
 
 #define BAUD_RATE_ARDUINO 115200
 #define USB_PORT_ARDUINO frc::SerialPort::kOnboard
@@ -237,7 +220,4 @@ constexpr units::angle::radian_t TARGET_PITCH = units::angle::radian_t(0.0);
 sraight up: 78.57
 "0": 130.34
 back: 319.13
-
-no cone/cube front clearance: 120
-no cone/cube back clearance: 330
 */
