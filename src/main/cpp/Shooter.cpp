@@ -23,6 +23,11 @@ rightShooterPID(0.0, 0.0, 0.0)
     pivot_output_config.Inverted = true;
     pivotMotor.GetConfigurator().Apply(pivot_output_config);
     pivotMotor.SetNeutralMode(1);
+    ctre::phoenix6::configs::HardwareLimitSwitchConfigs limitConfig{};
+    limitConfig.ForwardLimitAutosetPositionValue = 0;
+    pivotMotor.GetConfigurator().Apply(limitConfig);
+
+
     //pivotPID.SetTolerance(5.0);
     stopShooter();
 }
@@ -54,5 +59,5 @@ void Shooter::moveToAngle(double angle){
     }
 }
 double Shooter::GetShooterAngle(){
-    return fabs(10.0*pivotMotor.GetPosition().GetValue().value());
+    return 10.0*pivotMotor.GetPosition().GetValue().value();
 }

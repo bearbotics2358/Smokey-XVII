@@ -23,12 +23,15 @@ class NoteHandler {
         // Indexer Stuff
         void indexToShoot();
         void indexToAmp();
+        void indexToCollect();
         void stopIndexer();
 
         // Miscellaneous
         void stopAll();
         void stopCollection();
         void collectNote(double speed, bool doNotIgnoreBeamBreak);
+        void shootNote(double speed);
+        
         void dispenseNote();
         bool beamBroken();
 

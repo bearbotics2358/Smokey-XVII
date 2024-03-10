@@ -47,7 +47,9 @@ void NoteHandler::indexToShoot() {
 void NoteHandler::indexToAmp() {
     a_Collector.indexToAmp();
 }
-
+void NoteHandler::indexToCollect(){
+    a_Collector.indexToCollect();
+}
 void NoteHandler::stopIndexer() {
     a_Collector.stopIndexer();
 }
@@ -69,11 +71,15 @@ void NoteHandler::collectNote(double speed, bool doNotIgnoreBeamBreak) {
         return;
     }
     startCollector(speed);
+    indexToCollect();
+}
+void NoteHandler::shootNote(double speed){
+    startCollector(speed);
     indexToShoot();
 }
 
 void NoteHandler::dispenseNote() {
-    a_Collector.indexToAmp();
+    indexToAmp();
     runCollectorBack();
 }
 

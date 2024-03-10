@@ -88,6 +88,10 @@ void Robot::RobotInit() {
     //a_LED.Init();
 
     //SetTargetType(target_type_enum::CONE);
+    //InterpolationValues value = {22.5, 3500};
+    a_NoteHandler.insertToInterpolatingMap(2.546859, {22.5, 4000});
+    a_NoteHandler.insertToInterpolatingMap(4.212965, {9.5, 4000});
+
 }
 
 void Robot::RobotPeriodic() {
@@ -95,14 +99,14 @@ void Robot::RobotPeriodic() {
     a_ArnmAngle.Update();
     frc::SmartDashboard::PutNumber("Encoder Arm Angle", a_ArnmAngle.GetAngle());
 
-    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    // photon::PhotonPipelineResult result = a_camera.GetLatestResult();
     double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
-    if (result.HasTargets()) {
-        frc::SmartDashboard::PutString("Has_AprilTags", "YES");
-    } else {
-        frc::SmartDashboard::PutString("Has_AprilTags", "NO");
-    }
+    // if (result.HasTargets()) {
+    //     frc::SmartDashboard::PutString("Has_AprilTags", "YES");
+    // } else {
+    //     frc::SmartDashboard::PutString("Has_AprilTags", "NO");
+    // }
 
     frc::SmartDashboard::PutNumber("Note_Offset", Note_Offset);
 
@@ -215,12 +219,12 @@ void Robot::TeleopPeriodic() {
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
     // EnabledPeriodic();
-
+    
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
-        double rpm = 3500;
-        a_NoteHandler.startShooter(rpm, 32.5);
+    if (a_DriverXboxController.GetAButton()) {
+        double rpm = 4350;
+        a_NoteHandler.startShooter(rpm, 5.0);
     } else {
         a_NoteHandler.stopShooter();
     }
@@ -231,7 +235,7 @@ void Robot::TeleopPeriodic() {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
-        a_NoteHandler.collectNote(-.65, false);
+        a_NoteHandler.shootNote(-.65);
     } else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
         // drop the note
         a_NoteHandler.dispenseNote();
@@ -311,7 +315,7 @@ void Robot::TeleopPeriodic() {
 
 
 
-    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    // photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
 //     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
 //         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
@@ -335,6 +339,14 @@ void Robot::TeleopPeriodic() {
 //     if(a_DriverXboxController.GetLeftBumperPressed()){
 //         a_SwerveDrive.zeroPose();
 //     }
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+
+    if (result.HasTargets()) {
+        frc::SmartDashboard::PutString("HAS_TARGETS", "YES");
+    } else {
+        frc::SmartDashboard::PutString("HAS_TARGETS", "NO");
+    }
+
     if (result.HasTargets()) {
         photon::PhotonTrackedTarget target = result.GetBestTarget();
         frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();

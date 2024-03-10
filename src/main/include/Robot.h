@@ -19,6 +19,7 @@
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
 #include "ArmAngle.h"
+#include "Climber.h"
 
 enum class DriveBackState {
     Inactive,
@@ -87,6 +88,7 @@ class Robot : public frc::TimedRobot {
 
         Autonomous a_Autonomous;
         NoteHandler a_NoteHandler;
+        
 
         frc::XboxController a_DriverXboxController;
         frc::XboxController a_OperatorXboxController;
