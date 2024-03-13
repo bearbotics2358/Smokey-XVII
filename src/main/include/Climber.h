@@ -5,7 +5,7 @@
 
 class Climber {
     public:
-        Climber(int climberMotorID, int topLimitSwitchPort);//,int topPort, int bottomPort);          
+        Climber(int climberMotorID);//, int topLimitSwitchPort);//,int topPort, int bottomPort);          
         void stopClimber();
         void extendClimnber();
         void retractClimber();
@@ -16,6 +16,6 @@ class Climber {
         
         ctre::phoenix6::hardware::TalonFX climberMotor;
         frc::PIDController climberPID;
-        LimitSwitch topLimitSwitch; 
+        //LimitSwitch topLimitSwitch; 
         
 };

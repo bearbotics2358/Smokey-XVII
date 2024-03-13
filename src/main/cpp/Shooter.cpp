@@ -48,7 +48,7 @@ void Shooter::stopShooter(){
    rightShooterMotor.StopMotor();
    leftShooterMotor.StopMotor();
 }
-void Shooter::moveToAngle(double angle){
+bool Shooter::moveToAngle(double angle){
     pivotPID.SetSetpoint(angle);
     double degrees = GetShooterAngle();
     double speed = pivotPID.Calculate(degrees, angle);
@@ -57,6 +57,7 @@ void Shooter::moveToAngle(double angle){
     if(pivotPID.AtSetpoint()){
         pivotMotor.StopMotor();
     }
+    return pivotPID.AtSetpoint();
 }
 double Shooter::GetShooterAngle(){
     return 10.0*pivotMotor.GetPosition().GetValue().value();

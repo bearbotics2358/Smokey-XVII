@@ -1,9 +1,13 @@
 #include <NoteHandler.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 
 // Maybe no : after ()
 NoteHandler::NoteHandler(): 
 a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID)
+a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID),
+a_Climber(CLIMBER_MOTOR_ID),
+a_AmpTrap(ROLLER_ID, ARM_PIVOT_MOTOR_ID, EXTENSION_ID)
 {
  // NWOTE HWANDLWER
 }
@@ -18,7 +22,7 @@ void NoteHandler::setShooterAngleToDefault() {
 }
 
 void NoteHandler::startShooter(double rpm, double angle) {
-    a_Shooter.moveToAngle(angle);
+    //a_Shooter.moveToAngle(angle);
     a_Shooter.setSpeed(rpm);
 }
 
@@ -94,4 +98,30 @@ InterpolationValues NoteHandler::interpolate(double x) {
 
 void NoteHandler::insertToInterpolatingMap(double x, InterpolationValues value) {
     map.insert(x, value);
+}
+void NoteHandler::updateDashboard(){
+    frc::SmartDashboard::PutBoolean("AmpTrap BeamBreak", a_AmpTrap.beamBroken());
+    frc::SmartDashboard::PutBoolean("Indexer BeamBreak", a_Collector.beamBroken());
+    frc::SmartDashboard::PutNumber("Arm Angle", a_AmpTrap.GetArmAngle());
+}
+void NoteHandler::armToPose(double angle){
+    a_AmpTrap.moveToPosition(angle);
+}
+void NoteHandler::setRotPID(double p, double i, double d){
+    a_AmpTrap.setPID(p, i, d);
+}
+void NoteHandler::shootToAmp(){
+    a_AmpTrap.runRoller();
+    a_Shooter.setSpeed(1000);
+    if(a_Shooter.moveToAngle(55.0) && a_AmpTrap.moveToPosition(225.0)){
+        shootNote(-.65);
+        if(a_AmpTrap.beamBroken()){
+            shootToAmpMode = true;
+        }
+        if(shootToAmpMode){
+            if(!a_AmpTrap.beamBroken()){
+                a_AmpTrap.stopRoller();
+            }
+        }
+    }
 }

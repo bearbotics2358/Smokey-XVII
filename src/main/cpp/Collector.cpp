@@ -6,7 +6,7 @@
 Collector::Collector(int collectorMotorID, int indexerMotorID):
 collectorMotor(collectorMotorID),
 indexerMotor(indexerMotorID),
-beamBreak(BEAMBREAK_PORT)
+beamBreak(COLLECTOR_BEAMBREAK_PORT)
 {
     stopCollector();
     stopIndexer();

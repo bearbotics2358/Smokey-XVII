@@ -1,6 +1,8 @@
 #include "AmpTrap.h"
 #include <units/length.h>
 #include "Prefs.h"
+#include <frc/smartdashboard/SmartDashboard.h>
+
 
 AmpTrap::AmpTrap(int rollerMotorID, int extensionMotorID, int rotationMotorID):
 
@@ -8,12 +10,14 @@ rollerMotor(rollerMotorID),
 extensionMotor(extensionMotorID),
 rotationMotor(rotationMotorID),
 extendPID(0.0, 0.0, 0.0),
-rotationPID(0.0, 0.0, 0.0)
+rotationPID(0.0, 0.0, 0.0),
+a_BeamBreak(AMP_BEAM_BREAK_PORT), 
+a_ArmAngle(1)
 {
 
 }
 void AmpTrap::runRoller(){
-    rollerMotor.Set(0.0);
+    rollerMotor.Set(0.10);
 }
 void AmpTrap::stopRoller(){
     rollerMotor.StopMotor();
@@ -37,17 +41,31 @@ double AmpTrap::GetExtensionPosition(){
 void AmpTrap::setPosition(){
     extensionMotor.SetPosition(units::angle::turn_t{0.0});
 }
-void AmpTrap::moveToPosition(){
-    rotationPID.SetSetpoint(0.0);//neeed to change from 0.0
-    double angle = GetRotationPosition();
-    double speed = rotationPID.Calculate(angle, 0.0);
+bool AmpTrap::moveToPosition(double desiredaAngle){
+    rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
+    double angle = GetArmAngle();
+    double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.2, .2);
     rotationMotor.Set(speed);
     if(rotationPID.AtSetpoint()){
         rotationMotor.StopMotor();
     }
+    return rotationPID.AtSetpoint();
 }
-double AmpTrap::GetRotationPosition(){
-    return (10.0*rotationMotor.GetPosition().GetValue().value());
+double AmpTrap::GetArmAngle(){
+    a_ArmAngle.Update();
+    return a_ArmAngle.GetAngle();
 }
+void AmpTrap::update(){
+    frc::SmartDashboard::PutNumber("ArmAnlge", GetArmAngle());
+    frc::SmartDashboard::PutNumber("ExtensionPosition", GetExtensionPosition());
 
+}
+bool AmpTrap::beamBroken(){
+    return a_BeamBreak.beamBroken();
+}
+void AmpTrap::setPID(double p, double i, double d){
+    rotationPID.SetP(p);
+    rotationPID.SetI(i);
+    rotationPID.SetD(d);
+}

@@ -10,7 +10,7 @@ class Shooter{
         Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID);
         void setSpeed(double percent);
         void stopShooter();
-        void moveToAngle(double angle);
+        bool moveToAngle(double angle);
         double getSpeed();
         void setShooterAngle();
         double GetShooterAngle();

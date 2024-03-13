@@ -4,6 +4,9 @@
 #include <Collector.h>
 #include <InterpolatingMap.h>
 #include <InterpolationValues.h>
+#include "Climber.h"
+#include "AmpTrap.h"
+
 
 class NoteHandler {
     public:
@@ -35,12 +38,21 @@ class NoteHandler {
         void dispenseNote();
         bool beamBroken();
 
+        void updateDashboard();
+        bool shootToAmpMode = false;
         // Interpolation
         InterpolationValues interpolate(double x);
         void insertToInterpolatingMap(double x, InterpolationValues value);
 
+        void armToPose(double angle);
+
+        void setRotPID(double p, double i, double d);
+
+        void shootToAmp();
     private:
         Shooter a_Shooter;
         Collector a_Collector;
         InterpolatingMap map;
+        Climber a_Climber;
+        AmpTrap a_AmpTrap;
 };
