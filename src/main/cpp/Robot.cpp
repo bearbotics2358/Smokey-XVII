@@ -13,6 +13,7 @@
 #include "BeamBreak.h"
 #include "SwerveDrive.h"
 #include <frc/GenericHID.h>
+#include "LimelightHelpers.h"
 
 
 /*~~ hi :) ~~ */
@@ -30,7 +31,8 @@ a_NoteHandler(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
-a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
+a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler),
+a_ArnmAngle(1)
 // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
 //  handler("169.254.179.144", "1185", "data"),
 //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
@@ -90,22 +92,28 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
 
+    a_ArnmAngle.Update();
+    frc::SmartDashboard::PutNumber("Encoder Arm Angle", a_ArnmAngle.GetAngle());
+
     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
     if (result.HasTargets()) {
-        frc::SmartDashboard::PutString("HAS_TARGETS", "YES");
+        frc::SmartDashboard::PutString("Has_AprilTags", "YES");
     } else {
-        frc::SmartDashboard::PutString("HAS_TARGETS", "NO");
+        frc::SmartDashboard::PutString("Has_AprilTags", "NO");
     }
+
+    frc::SmartDashboard::PutNumber("Note_Offset", Note_Offset);
 
     frc::SmartDashboard::PutNumber("Shooter Angle", a_NoteHandler.getShooterAngle());
 
     frc::SmartDashboard::PutBoolean("BeamBreak", a_NoteHandler.beamBroken());
 
     a_Gyro.Update();
-    
+
     //a_LED.Update();
-  
+
 
     a_SwerveDrive.updateOdometry();
     // frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
@@ -131,7 +139,7 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("BR Velocity", a_BRModule.getVelocity());
     frc::SmartDashboard::PutNumber("Button Count", a_Gamepad.GetButtonCount());
 
-    
+
 //testing code block for PID tuning
 
     // if(a_DriverXboxController.GetRawButton(3)) {
@@ -207,7 +215,7 @@ void Robot::TeleopPeriodic() {
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
     // EnabledPeriodic();
-    
+
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
     if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
@@ -217,7 +225,7 @@ void Robot::TeleopPeriodic() {
         a_NoteHandler.stopShooter();
     }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
-    
+
     // start collector
     if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
         a_NoteHandler.collectNote(-0.4, true);
@@ -225,7 +233,7 @@ void Robot::TeleopPeriodic() {
         // give note to shooter
         a_NoteHandler.collectNote(-.65, false);
     } else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
-        // drop the note  
+        // drop the note
         a_NoteHandler.dispenseNote();
     } else {
         a_NoteHandler.stopCollection();
@@ -303,7 +311,7 @@ void Robot::TeleopPeriodic() {
 
 
 
-//     photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
 
 //     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
 //         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
@@ -318,8 +326,8 @@ void Robot::TeleopPeriodic() {
 //              double goToYaw = a_Gyro.getAngleClamped() - target_Yaw;
 //              frc::SmartDashboard::PutNumber("GoalYaw", goToYaw);
 //              a_SwerveDrive.turnToAngle(goToYaw, true);
-//          } 
-//         } 
+//          }
+//         }
 //     else {
 //         a_SwerveDrive.stop();
 //     }
@@ -327,15 +335,15 @@ void Robot::TeleopPeriodic() {
 //     if(a_DriverXboxController.GetLeftBumperPressed()){
 //         a_SwerveDrive.zeroPose();
 //     }
-//     if (result.HasTargets()) {
-//         photon::PhotonTrackedTarget target = result.GetBestTarget();
-//         frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
+    if (result.HasTargets()) {
+        photon::PhotonTrackedTarget target = result.GetBestTarget();
+        frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
 
-//         double x_vision = bestCameraToTarget.X().value();
-//         double y_vision = bestCameraToTarget.Y().value();
+        double x_vision = bestCameraToTarget.X().value();
+        double y_vision = bestCameraToTarget.Y().value();
 
-//         frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
-//     }
+        frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
+    }
 }
 
 void Robot::TestInit() {

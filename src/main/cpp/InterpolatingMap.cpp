@@ -11,19 +11,11 @@ void InterpolatingMap::insert(double distance, InterpolationValues value) {
     values_map[distance] = value;
 }
 
-void InterpolatingMap::remove(double distance) {
-    values_map.erase(distance);
-}
-
-void InterpolatingMap::clear() {
-    values_map.clear();
-}
-
 InterpolationValues InterpolatingMap::operator[](double distance) {
     // less than min distance
     double curr_min = values_map.begin()->first;
     if (distance < curr_min) {
-        return( values_map[curr_min] * (distance / curr_min)).clampValues();
+        return (values_map[curr_min] * (distance / curr_min)).clampValues();
     }
     
     // greater than max distance

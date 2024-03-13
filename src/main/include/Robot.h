@@ -3,7 +3,6 @@
 
 #include "Autonomous.h"
 #include "CanHandler.h"
-#include "CompressorController.h"
 #include "Gyro.h"
 #include "LimitSwitch.h"
 #include "SwerveDrive.h" // Swerve kinematics
@@ -19,6 +18,7 @@
 #include <frc/controller/PIDController.h>
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
+#include "ArmAngle.h"
 
 enum class DriveBackState {
     Inactive,
@@ -88,11 +88,9 @@ class Robot : public frc::TimedRobot {
         Autonomous a_Autonomous;
         NoteHandler a_NoteHandler;
 
-        frc::XboxController a_DriverXboxController; // 3D flightstick (Logitech Attack 3?)
+        frc::XboxController a_DriverXboxController;
         frc::XboxController a_OperatorXboxController;
         frc::GenericHID a_Gamepad;
-
-        //CompressorController a_CompressorController;
 
 
         //LED_DIO a_LED;
@@ -128,7 +126,10 @@ class Robot : public frc::TimedRobot {
         const double ANGULAR_D = 0.0;
         frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-        photon::PhotonCamera a_camera{"limelight1"}; //name of camera
+        // Shooter camera
+        photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
 
         enum target_type_enum target_type = target_type_enum::CONE;
+
+        ArmAngle a_ArnmAngle;
 };
