@@ -4,7 +4,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-AmpTrap::AmpTrap(int rollerMotorID, int extensionMotorID, int rotationMotorID):
+AmpTrap::AmpTrap(int rollerMotorID, int rotationMotorID, int extensionMotorID):
 
 rollerMotor(rollerMotorID),
 extensionMotor(extensionMotorID),
@@ -17,7 +17,7 @@ a_ArmAngle(1)
 
 }
 void AmpTrap::runRoller(){
-    rollerMotor.Set(0.10);
+    rollerMotor.Set(-0.10);
 }
 void AmpTrap::stopRoller(){
     rollerMotor.StopMotor();
@@ -46,7 +46,7 @@ bool AmpTrap::moveToPosition(double desiredaAngle){
     double angle = GetArmAngle();
     double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.2, .2);
-    rotationMotor.Set(speed);
+    rotationMotor.Set(-speed);
     if(rotationPID.AtSetpoint()){
         rotationMotor.StopMotor();
     }

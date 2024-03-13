@@ -23,6 +23,9 @@ class Shooter{
         ctre::phoenix6::hardware::TalonFX rightShooterMotor;
         ctre::phoenix6::hardware::TalonFX leftShooterMotor;
         ctre::phoenix6::hardware::TalonFX pivotMotor;
+
+        ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
+    
       
         //LimitSwitch shooterLimitSwitch;
 };

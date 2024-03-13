@@ -32,7 +32,7 @@
 #define PITCH_OFFSET -2;
 
 #define AMP_BEAM_BREAK_PORT 5
-#define COLLECTOR_BEAMBREAK_PORT 9
+#define COLLECTOR_BEAMBREAK_PORT 2
 
 #define LIMIT_SWITCH 0 // change later
 
@@ -143,7 +143,7 @@ static double CANCODER_OFFSETS[] = {
     };
 
 // @todo Measure this offset and update to the actual value
-static const double ARM_ANGLE_OFFSET_DEGREES = 0.0;
+static const double ARM_ANGLE_OFFSET_DEGREES = -50.9;
 
 /* ========== Shuttle constants ====== */
 

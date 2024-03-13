@@ -112,8 +112,8 @@ void NoteHandler::setRotPID(double p, double i, double d){
 }
 void NoteHandler::shootToAmp(){
     a_AmpTrap.runRoller();
-    a_Shooter.setSpeed(1000);
-    if(a_Shooter.moveToAngle(55.0) && a_AmpTrap.moveToPosition(225.0)){
+    a_Shooter.setSpeed(252);
+    if(a_Shooter.moveToAngle(55.0) && a_AmpTrap.moveToPosition(244.0)){
         shootNote(-.65);
         if(a_AmpTrap.beamBroken()){
             shootToAmpMode = true;

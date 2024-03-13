@@ -363,25 +363,25 @@ void Robot::TestInit() {
 
 
 void Robot::TestPeriodic() {
-    if(a_DriverXboxController.GetLeftBumperPressed()){
-        rotP+=.01;
-    }
-    else if(a_DriverXboxController.GetRightBumperPressed()){
-        rotP-=.01;
-    }
-    else if(a_DriverXboxController.GetAButtonPressed()){
-        rotI+=.01;
-    }
-    else if(a_DriverXboxController.GetBButtonPressed()){
-        rotI-=.01;
-    }
-    else if(a_DriverXboxController.GetXButtonPressed()){
-        rotD+=.01;
-    }
-    else if(a_DriverXboxController.GetYButtonPressed()){
-        rotD-=.01;
-    }
-    a_NoteHandler.setRotPID(rotP, rotI, rotD);
+    // if(a_DriverXboxController.GetLeftBumperPressed()){
+    //     rotP+=.0005;
+    // }
+    // else if(a_DriverXboxController.GetRightBumperPressed()){
+    //     rotP-=.0005;
+    // }
+    // else if(a_DriverXboxController.GetAButtonPressed()){
+    //     rotI+=.01;
+    // }
+    // else if(a_DriverXboxController.GetBButtonPressed()){
+    //     rotI-=.01;
+    // }
+    // else if(a_DriverXboxController.GetXButtonPressed()){
+    //     rotD+=.01;
+    // }
+    // else if(a_DriverXboxController.GetYButtonPressed()){
+    //     rotD-=.01;
+    // }
+    // a_NoteHandler.setRotPID(rotP, rotI, rotD);
     
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
@@ -391,24 +391,28 @@ void Robot::TestPeriodic() {
 
     // a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
-    frc::SmartDashboard::PutNumber("pvaluesteer", rotP);
-    frc::SmartDashboard::PutNumber("ivaluesteer", rotI);
-    frc::SmartDashboard::PutNumber("dvaluesteer", rotD);
+    // frc::SmartDashboard::PutNumber("pvaluesteer", rotP);
+    // frc::SmartDashboard::PutNumber("ivaluesteer", rotI);
+    // frc::SmartDashboard::PutNumber("dvaluesteer", rotD);
 
-     if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
-        a_NoteHandler.armToPose(180.0);
+    //  if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
+    //     a_NoteHandler.armToPose(240.0);
         // a_FRModule.steerToAng(0);
         // a_FLModule.steerToAng(0);
         // a_BRModule.steerToAng(0);
         // a_BLModule.steerToAng(0);
-    }
-    else {
-        a_NoteHandler.armToPose(0.0);
+    // }
+    // else {
+    //     a_NoteHandler.armToPose(10.0);
         // a_FRModule.steerToAng(45);
         // a_FLModule.steerToAng(45);
         // a_BRModule.steerToAng(45);
         // a_BLModule.steerToAng(45);
+    //}
+    if(a_DriverXboxController.GetRightTriggerAxis() > .75){
+        a_NoteHandler.shootToAmp();
     }
+
 }
 
 // void Robot::SetTargetType(target_type_enum target) {
