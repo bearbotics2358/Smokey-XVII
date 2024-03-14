@@ -14,6 +14,10 @@ turnAnglePid(0.014, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01),
 a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
         {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
+poseEstimator{a_kinematics, 
+                                                        frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))),
+                                                        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()},
+                                                        frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::radian_t(0.0))},
 xProfiledPid(.5, .1, 0.0, linearConstraints),
 yProfiledPid(.5, .1, 0.0, linearConstraints),
 rotProfiledPid(.5, 0.0, 0.0, rotationalConstraints)
@@ -371,4 +375,26 @@ void SwerveDrive::zeroPose(){
     a_odometry.ResetPosition(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
     {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
     frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
+}
+
+
+
+void SwerveDrive::addVisionPose(frc::Pose2d visPose, units::second_t time){
+    poseEstimator.AddVisionMeasurement(visPose, time);
+}
+void SwerveDrive::updatePoseEstimator(){
+     a_odometry.Update(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
+        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()});
+}
+frc::Pose2d SwerveDrive::getPoseEstimatorPose(){
+    return poseEstimator.GetEstimatedPosition();
+}
+double SwerveDrive::getPoseEstimatorX(){
+    return getPoseEstimatorPose().X().value();
+}
+double SwerveDrive::getPoseEstimatorY(){
+    return getPoseEstimatorPose().Y().value();
+}
+double SwerveDrive::getPoseEstimatorRot(){
+    return getPoseEstimatorPose().Rotation().Degrees().value();
 }

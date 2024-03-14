@@ -135,4 +135,7 @@ class Robot : public frc::TimedRobot {
         enum target_type_enum target_type = target_type_enum::CONE;
 
         ArmAngle a_ArnmAngle;
+        
+        frc::Timer timer{};	
+
 };

@@ -14,6 +14,7 @@
 #include "SwerveDrive.h"
 #include <frc/GenericHID.h>
 #include "LimelightHelpers.h"
+#include <frc/Timer.h>
 
 
 /*~~ hi :) ~~ */
@@ -367,6 +368,7 @@ void Robot::TeleopPeriodic() {
                                                                         units::radian_t(target.GetPitch()), frc::Rotation2d(units::degree_t(-target.GetYaw())), 
                                                                         frc::Rotation2d(units::radian_t(a_Gyro.getAngleClamped())), tagPose2d, 
                                                                         cameraOffset);
+        units::second_t time = timer.GetFPGATimestamp();
     }
 }
 
