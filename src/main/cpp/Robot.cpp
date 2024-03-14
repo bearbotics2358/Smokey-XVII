@@ -220,12 +220,30 @@ void Robot::TeleopPeriodic() {
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
     // EnabledPeriodic();
-    
+
+    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+    double goalYaw;
+
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_DriverXboxController.GetAButton()) {
-        double rpm = 4000;
-        a_NoteHandler.startShooter(rpm, 5.0);
+    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
+        if (result.HasTargets()) {
+            std::span<const photon::PhotonTrackedTarget> targets = result.GetTargets();
+            for (photon::PhotonTrackedTarget target : targets) {
+                int id = target.GetFiducialId();
+                if (id == 4 || id == 7) {
+                    // shoot
+                    goalYaw = a_Gyro.getAngleClamped() - target.GetYaw();
+                } else if (id == 3 || id == 8) {
+                    // shoot
+                }
+            }
+        } else {
+            goalYaw = 0.0;
+        }
+        double rpm = 3500;
+        double angle = 32.5;
+        a_NoteHandler.startShooter(rpm, angle);
     } else {
         a_NoteHandler.stopShooter();
     }
@@ -316,7 +334,7 @@ void Robot::TeleopPeriodic() {
 
 
 
-    photon::PhotonPipelineResult result = a_camera.GetLatestResult();
+
 
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
         a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
@@ -346,6 +364,7 @@ void Robot::TeleopPeriodic() {
     } else {
         frc::SmartDashboard::PutString("HAS_TARGETS", "NO");
     }
+
 
     if (result.HasTargets()) {
         photon::PhotonTrackedTarget target = result.GetBestTarget();
