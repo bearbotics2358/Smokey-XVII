@@ -140,7 +140,7 @@ class Robot : public frc::TimedRobot {
         
         // .0025, .001, .0001
         // .0002, .002, .0025
-        double rotP = 0.0025;
-        double rotI = 0.002;
-        double rotD = 0.0002;
+         double rotP = 0.00275;
+        double rotI = 0.001;
+        double rotD = 0.0001;
 };
