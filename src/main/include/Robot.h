@@ -19,6 +19,7 @@
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
 #include "ArmAngle.h"
+#include <frc/apriltag/AprilTagFields.h>
 
 enum class DriveBackState {
     Inactive,
@@ -128,6 +129,8 @@ class Robot : public frc::TimedRobot {
 
         // Shooter camera
         photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+
+        frc::AprilTagFieldLayout a_AprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
         enum target_type_enum target_type = target_type_enum::CONE;
 

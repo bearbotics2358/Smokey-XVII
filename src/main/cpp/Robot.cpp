@@ -88,6 +88,9 @@ void Robot::RobotInit() {
     //a_LED.Init();
 
     //SetTargetType(target_type_enum::CONE);
+
+    a_AprilTagFieldLayout.SetOrigin(frc::Pose3d(units::meter_t(-0.038), units::meter_t(5.55), units::meter_t(1.45), 
+                                    frc::Rotation3d(units::radian_t(0.0), units::radian_t(90.0), units::radian_t(0.0))));
 }
 
 void Robot::RobotPeriodic() {
@@ -353,6 +356,17 @@ void Robot::TeleopPeriodic() {
         double y_vision = bestCameraToTarget.Y().value();
 
         frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
+
+        frc::Pose3d tagPose = a_AprilTagFieldLayout.GetTagPose(target.GetFiducialId()).value();
+        frc::Pose2d tagPose2d = frc::Pose2d(tagPose.X(), tagPose.Y(), frc::Rotation2d(tagPose.Rotation().Y()));
+
+        frc::Transform2d cameraOffset = frc::Transform2d(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))),  //Fix these values later to represent the real 2d offset
+                                        frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
+
+        frc::Pose2d robotPose = photon::PhotonUtils::EstimateFieldToRobot(CAMERA_HEIGHT, bestCameraToTarget.Z(), CAMERA_PITCH, 
+                                                                        units::radian_t(target.GetPitch()), frc::Rotation2d(units::degree_t(-target.GetYaw())), 
+                                                                        frc::Rotation2d(units::radian_t(a_Gyro.getAngleClamped())), tagPose2d, 
+                                                                        cameraOffset);
     }
 }
 
