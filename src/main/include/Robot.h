@@ -19,6 +19,9 @@
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
 #include "ArmAngle.h"
+#include "Climber.h"
+//#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
 
 enum class DriveBackState {
     Inactive,
@@ -81,12 +84,14 @@ class Robot : public frc::TimedRobot {
         double xnew = 0;
         double ynew = 0;
         double znew = 0;
-        double pvaluesteer = 2.7;
+        double pvaluesteer = 1.8;
         double ivaluesteer = 0.3;
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
         NoteHandler a_NoteHandler;
+        
+        
 
         frc::XboxController a_DriverXboxController;
         frc::XboxController a_OperatorXboxController;
@@ -131,5 +136,11 @@ class Robot : public frc::TimedRobot {
 
         enum target_type_enum target_type = target_type_enum::CONE;
 
-        ArmAngle a_ArnmAngle;
+        frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
+        
+        // .0025, .001, .0001
+        // .0002, .002, .0025
+        double rotP = 0.0025;
+        double rotI = 0.002;
+        double rotD = 0.0002;
 };

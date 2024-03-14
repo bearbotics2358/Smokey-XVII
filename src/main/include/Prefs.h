@@ -31,7 +31,8 @@
 
 #define PITCH_OFFSET -2;
 
-#define BEAMBREAK_PORT 8
+#define AMP_BEAM_BREAK_PORT 5
+#define COLLECTOR_BEAMBREAK_PORT 2
 
 #define LIMIT_SWITCH 0 // change later
 
@@ -41,6 +42,10 @@
 #define INDEXER_MOTOR_ID 33
 #define PIVOT_MOTOR_ID 34
 #define ARM_PIVOT_MOTOR_ID 35
+#define CLIMBER_MOTOR_ID 36
+#define EXTENSION_ID 37
+#define ROLLER_ID 38
+
 
 #define MAX_CLIMB_PERCENT 0.1
 //in m/s
@@ -104,13 +109,13 @@ m = number engraved on module
 #define BR_SWERVE_ABS_ENC_MIN_VOLTS 0.010986
 #define BR_SWERVE_ABS_ENC_MAX_VOLTS 4.963378
 
-#define CANCODER_OFFSET_1 129.5 - 180
+#define CANCODER_OFFSET_1 332.25
 #define CANCODER_OFFSET_2 115.3
 #define CANCODER_OFFSET_3 71.45
 #define CANCODER_OFFSET_4 508.6 - 180 - 180
-#define CANCODER_OFFSET_5 42.2 - 180
-#define CANCODER_OFFSET_6 127.4 - 180
-#define CANCODER_OFFSET_7 278.437 - 180
+#define CANCODER_OFFSET_5 176.1 - 33.27
+#define CANCODER_OFFSET_6 35.77
+#define CANCODER_OFFSET_7 99.22
 #define CANCODER_OFFSET_8 246.2
 #define CANCODER_OFFSET_ARM -318.17
 
@@ -138,7 +143,7 @@ static double CANCODER_OFFSETS[] = {
     };
 
 // @todo Measure this offset and update to the actual value
-static const double ARM_ANGLE_OFFSET_DEGREES = 0.0;
+static const double ARM_ANGLE_OFFSET_DEGREES = -50.9;
 
 /* ========== Shuttle constants ====== */
 

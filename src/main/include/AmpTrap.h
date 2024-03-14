@@ -1,6 +1,8 @@
 #pragma once
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <frc/controller/PIDController.h>
+#include "ArmAngle.h"
+#include "BeamBreak.h"
 
 
 class AmpTrap {
@@ -12,8 +14,11 @@ class AmpTrap {
         double extensionPosition();      
         double GetExtensionPosition(); 
         void setPosition();
-        void moveToPosition();
-        double GetRotationPosition();
+        bool moveToPosition(double desiredaAngle);
+        double GetArmAngle();
+        void update();
+        bool beamBroken();
+        void setPID(double p, double i, double d);
     private:
         
         ctre::phoenix6::hardware::TalonFX rollerMotor;
@@ -22,5 +27,8 @@ class AmpTrap {
 
         frc::PIDController extendPID;
         frc::PIDController rotationPID;
+
+        BeamBreak a_BeamBreak;
+        ArmAngle a_ArmAngle;
         
 };
