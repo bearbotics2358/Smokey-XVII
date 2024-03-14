@@ -138,8 +138,9 @@ class Robot : public frc::TimedRobot {
 
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
         
-        // .002, .0002, .00001
+        // .0025, .001, .0001
+        // .0002, .002, .0025
         double rotP = 0.0025;
-        double rotI = 0.00025;
-        double rotD = 0.00002;
+        double rotI = 0.002;
+        double rotD = 0.0002;
 };

@@ -17,17 +17,17 @@ pivotPID(0.005, 0.0045, 0.0005),
 leftShooterPID(0.0, 0.0, 0.0),
 rightShooterPID(0.0, 0.0, 0.0)
 {
-    pivotPID.SetTolerance(2.0);
-    ctre::phoenix6::configs::TalonFXConfiguration pivot_config_angle{};
-    pivot_config_angle.Feedback.SensorToMechanismRatio = .62;
-    pivotMotor.GetConfigurator().Apply(pivot_config_angle);
-    ctre::phoenix6::configs::MotorOutputConfigs pivot_output_config{};
-    pivot_output_config.Inverted = true;
-    pivotMotor.GetConfigurator().Apply(pivot_output_config);
+    pivotPID.SetTolerance(3.0);
+    // ctre::phoenix6::configs::TalonFXConfiguration pivot_config_angle{};
+    // pivot_config_angle.Feedback.SensorToMechanismRatio = .62;
+    // pivotMotor.GetConfigurator().Apply(pivot_config_angle);
+    // ctre::phoenix6::configs::MotorOutputConfigs pivot_output_config{};
+    // pivot_output_config.Inverted = true;
+    // pivotMotor.GetConfigurator().Apply(pivot_output_config);
     pivotMotor.SetNeutralMode(1);
-    ctre::phoenix6::configs::HardwareLimitSwitchConfigs limitConfig{};
-    limitConfig.ForwardLimitAutosetPositionValue = 0;
-    pivotMotor.GetConfigurator().Apply(limitConfig);
+    // ctre::phoenix6::configs::HardwareLimitSwitchConfigs limitConfig{};
+    // limitConfig.ForwardLimitAutosetPositionValue = 0;
+    // pivotMotor.GetConfigurator().Apply(limitConfig);
 
     ctre::phoenix6::configs::Slot0Configs slot0Configs{};
     slot0Configs.kP = 0.9; // An error of 1 rps results in 0.11 V output
@@ -70,12 +70,15 @@ bool Shooter::moveToAngle(double angle){
     double degrees = GetShooterAngle();
     double speed = pivotPID.Calculate(degrees, angle);
     speed = std::clamp(speed, -.2, .2);
-    pivotMotor.Set(speed);
-    if(pivotPID.AtSetpoint()){
+    pivotMotor.Set(-speed);
+    if (fabs(GetShooterAngle() - angle) <= 3.0){
         pivotMotor.StopMotor();
+        return true;
     }
-    return pivotPID.AtSetpoint();
+    else{
+       return false;
+    }
 }
 double Shooter::GetShooterAngle(){
-    return 10.0*pivotMotor.GetPosition().GetValue().value();
+    return (((-8.876)*pivotMotor.GetPosition().GetValue().value()));
 }

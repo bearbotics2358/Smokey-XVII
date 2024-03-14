@@ -14,10 +14,11 @@ rotationPID(0.0, 0.0, 0.0),
 a_BeamBreak(AMP_BEAM_BREAK_PORT), 
 a_ArmAngle(1)
 {
-
+    rotationPID.SetTolerance(3.0);
+    rotationMotor.SetNeutralMode(1);
 }
 void AmpTrap::runRoller(){
-    rollerMotor.Set(-0.10);
+    rollerMotor.Set(-0.25);
 }
 void AmpTrap::stopRoller(){
     rollerMotor.StopMotor();
@@ -42,15 +43,21 @@ void AmpTrap::setPosition(){
     extensionMotor.SetPosition(units::angle::turn_t{0.0});
 }
 bool AmpTrap::moveToPosition(double desiredaAngle){
+    frc::SmartDashboard::PutNumber("desired arm angle", desiredaAngle);
     rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
     double angle = GetArmAngle();
+    frc::SmartDashboard::PutNumber("PID arm angle", angle);
     double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.2, .2);
-    rotationMotor.Set(-speed);
-    if(rotationPID.AtSetpoint()){
+    frc::SmartDashboard::PutNumber("Calc speed", speed);
+    rotationMotor.Set(speed);
+    if(fabs(angle - desiredaAngle) <= 3.0){
         rotationMotor.StopMotor();
+        return true;
     }
-    return rotationPID.AtSetpoint();
+    else{
+        return false;
+    }
 }
 double AmpTrap::GetArmAngle(){
     a_ArmAngle.Update();

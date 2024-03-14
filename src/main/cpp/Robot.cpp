@@ -159,6 +159,8 @@ void Robot::RobotPeriodic() {
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
+
+    
 }
 
 void Robot::DisabledInit() {
@@ -364,24 +366,24 @@ void Robot::TestInit() {
 
 void Robot::TestPeriodic() {
     // if(a_DriverXboxController.GetLeftBumperPressed()){
-    //     rotP+=.0005;
+    //     rotP+=.001;
     // }
     // else if(a_DriverXboxController.GetRightBumperPressed()){
-    //     rotP-=.0005;
+    //     rotP-=.001;
     // }
     // else if(a_DriverXboxController.GetAButtonPressed()){
-    //     rotI+=.01;
+    //     rotI+=.001;
     // }
     // else if(a_DriverXboxController.GetBButtonPressed()){
-    //     rotI-=.01;
+    //     rotI-=.001;
     // }
     // else if(a_DriverXboxController.GetXButtonPressed()){
-    //     rotD+=.01;
+    //     rotD+=.0001;
     // }
     // else if(a_DriverXboxController.GetYButtonPressed()){
-    //     rotD-=.01;
+    //     rotD-=.0001;
     // }
-    // a_NoteHandler.setRotPID(rotP, rotI, rotD);
+    a_NoteHandler.setRotPID(rotP, rotI, rotD);
     
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
@@ -396,23 +398,32 @@ void Robot::TestPeriodic() {
     // frc::SmartDashboard::PutNumber("dvaluesteer", rotD);
 
     //  if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
-    //     a_NoteHandler.armToPose(240.0);
-        // a_FRModule.steerToAng(0);
-        // a_FLModule.steerToAng(0);
-        // a_BRModule.steerToAng(0);
-        // a_BLModule.steerToAng(0);
+    //     a_NoteHandler.armToPose(120.0);
+    //     a_FRModule.steerToAng(0);
+    //     a_FLModule.steerToAng(0);
+    //     a_BRModule.steerToAng(0);
+    //     a_BLModule.steerToAng(0);
     // }
     // else {
     //     a_NoteHandler.armToPose(10.0);
-        // a_FRModule.steerToAng(45);
-        // a_FLModule.steerToAng(45);
-        // a_BRModule.steerToAng(45);
-        // a_BLModule.steerToAng(45);
-    //}
-    if(a_DriverXboxController.GetRightTriggerAxis() > .75){
-        a_NoteHandler.shootToAmp();
+    //     a_FRModule.steerToAng(45);
+    //     a_FLModule.steerToAng(45);
+    //     a_BRModule.steerToAng(45);
+    //     a_BLModule.steerToAng(45);
+    // }
+    
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
+     
+    if(a_DriverXboxController.GetAButton()){
+        if(a_NoteHandler.armToPose(154.0)){
+            frc::SmartDashboard::PutString("through if?", "YES");
+            a_NoteHandler.runArmRoller();
+        }
+        else{
+            frc::SmartDashboard::PutString("through if?", "NO");
+        }
     }
-
+    
 }
 
 // void Robot::SetTargetType(target_type_enum target) {

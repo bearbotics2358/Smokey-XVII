@@ -7,10 +7,17 @@
 #include "Climber.h"
 #include "AmpTrap.h"
 
+enum AmpLoadState { // Encoders
+            IDLE = 0,
+            LOADING,
+            DONE,
+        };
 
 class NoteHandler {
     public:
         NoteHandler();
+
+        bool released = false;
 
         // Shooter Stuff
         double getShooterAngle();
@@ -44,15 +51,26 @@ class NoteHandler {
         InterpolationValues interpolate(double x);
         void insertToInterpolatingMap(double x, InterpolationValues value);
 
-        void armToPose(double angle);
+        bool armToPose(double angle);
 
         void setRotPID(double p, double i, double d);
 
-        void shootToAmp();
+        void shootToAmp(bool buttonState);
+
+        void feedToAmp(double speed);
+
+        void runArmRoller();
+
+        bool noteShot = false;
     private:
         Shooter a_Shooter;
         Collector a_Collector;
         InterpolatingMap map;
         Climber a_Climber;
         AmpTrap a_AmpTrap;
+
+        AmpLoadState currentAmpLoadState;
+
+        
+
 };
