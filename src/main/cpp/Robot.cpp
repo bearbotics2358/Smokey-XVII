@@ -87,8 +87,9 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
     a_LED.Init();
+    a_LED.SetAngleToNote(0.3);
 
-    a_LED.SetTargetType(LED_STAGE_enum::WHITE);
+    //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
     //InterpolationValues value = {22.5, 3500};
     a_NoteHandler.insertToInterpolatingMap(2.546859, {22.5, 4000});
     a_NoteHandler.insertToInterpolatingMap(4.212965, {9.5, 4000});
@@ -96,6 +97,12 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    if(a_NoteHandler.beamBroken()){
+        a_LED.SetNoteOnBoard();
+    } else {
+        a_LED.SetMSGIdle();
+    }
+
     a_NoteHandler.updateDashboard();
 
 
@@ -219,12 +226,7 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-    if(a_NoteHandler.beamBroken()){
-        a_LED.SetTargetType(LED_STAGE_enum::NOTE_COLLECTED);
-    }
-    else{
-        a_LED.SetTargetType(LED_STAGE_enum::LED_IDLE);
-    }
+    
     //a_Shooter.moveToAngle(20.0);
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
@@ -268,7 +270,12 @@ void Robot::TeleopPeriodic() {
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
+    if(a_DriverXboxController.GetAButton()) {
+        if(a_NoteHandler.armToPose(154.0)){
+            a_NoteHandler.runArmRoller();
+        }
+    } else if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
@@ -281,12 +288,7 @@ void Robot::TeleopPeriodic() {
     }
 
     /* Amp Control*/
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
-    if(a_DriverXboxController.GetAButton()){
-        if(a_NoteHandler.armToPose(154.0)){
-            a_NoteHandler.runArmRoller();
-        }
-    }
+    
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {

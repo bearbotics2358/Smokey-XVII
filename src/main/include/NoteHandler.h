@@ -10,6 +10,7 @@
 enum AmpLoadState { // Encoders
             IDLE = 0,
             LOADING,
+            MOVE_ARM_TO_START,
             DONE,
         };
 

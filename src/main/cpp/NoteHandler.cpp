@@ -140,11 +140,17 @@ void NoteHandler::shootToAmp(bool buttonState){
                         a_AmpTrap.stopRoller();
                         stopAll();
                         shootToAmpMode = false;
-                        currentAmpLoadState = DONE;
+                        currentAmpLoadState = MOVE_ARM_TO_START;
                     }
                 }
             }
             break;
+
+            case MOVE_ARM_TO_START:
+                if(a_AmpTrap.moveToPosition(10.0)){
+                    currentAmpLoadState = DONE;
+                }
+                break;
 
             case DONE:
                 if(!buttonState){
