@@ -104,8 +104,8 @@ double SwerveModule::getRelativeAngle() {
         adjusted += 360; // bounds to 0-360
     }
 
-    frc::SmartDashboard::PutNumber("Position Error", steerPID.GetPositionError());
-    frc::SmartDashboard::PutNumber("Velocity Error", steerPID.GetVelocityError());
+    // frc::SmartDashboard::PutNumber("Position Error", steerPID.GetPositionError());
+    // frc::SmartDashboard::PutNumber("Velocity Error", steerPID.GetVelocityError());
     return adjusted;
 }
 

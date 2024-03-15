@@ -50,13 +50,10 @@ void AmpTrap::setPosition(){
     extensionMotor.SetPosition(units::angle::turn_t{0.0});
 }
 bool AmpTrap::moveToPosition(double desiredaAngle){
-    frc::SmartDashboard::PutNumber("desired arm angle", desiredaAngle);
     rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
     double angle = GetArmAngle();
-    frc::SmartDashboard::PutNumber("PID arm angle", angle);
     double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.2, .2);
-    frc::SmartDashboard::PutNumber("Calc speed", speed);
     rotationMotor.Set(speed);
     if(fabs(angle - desiredaAngle) <= 3.0){
         rotationMotor.StopMotor();

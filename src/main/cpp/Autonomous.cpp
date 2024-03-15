@@ -123,29 +123,29 @@ void Autonomous::PeriodicNoteOne() {
             a_NoteHandler->indexToShoot();
             nextState = kAutoIdle1;
             break;
-        // case kGoTo2ndNote1:
-        //     a_NoteHandler->collectNote(-0.4, false);
-        //     if(a_SwerveDrive -> odometryGoToPose(8.277, -1.912, 0.0)){
-        //         nextState = kShoot2ndNote1;
-        //     }
-        //     break;
-        // case kShoot2ndNote1:
-        //     if(a_SwerveDrive -> odometryGoToPose(3.5, -0.5, 0.0)){
-        //         a_NoteHandler->indexToShoot();
-        //         nextState = kGoTo3rdNote1;
-        //     }
-        //     break;
-        // case kGoTo3rdNote1:
-        //     a_NoteHandler->collectNote(-0.4, false);
-        //     if(a_SwerveDrive -> odometryGoToPose(8.277, -.236, 0.0)){
-        //         nextState = kShoot3rdNote1;
-        //     }
-        //     break;
-        // case kShoot3rdNote1:
-        //      if(a_SwerveDrive -> odometryGoToPose(3.5, -.5, 0.0)){
-        //         a_NoteHandler->indexToShoot();
-        //         nextState = kAutoIdle1;
-        //     }
+        case kGoTo2ndNote1:
+            a_NoteHandler->collectNote(-0.4, false);
+            if(a_SwerveDrive -> odometryGoToPose(8.277, -1.912, 0.0)){
+                nextState = kShoot2ndNote1;
+            }
+            break;
+        case kShoot2ndNote1:
+            if(a_SwerveDrive -> odometryGoToPose(3.5, -0.5, 0.0)){
+                a_NoteHandler->indexToShoot();
+                nextState = kGoTo3rdNote1;
+            }
+            break;
+        case kGoTo3rdNote1:
+            a_NoteHandler->collectNote(-0.4, false);
+            if(a_SwerveDrive -> odometryGoToPose(8.277, -.236, 0.0)){
+                nextState = kShoot3rdNote1;
+            }
+            break;
+        case kShoot3rdNote1:
+             if(a_SwerveDrive -> odometryGoToPose(3.5, -.5, 0.0)){
+                a_NoteHandler->indexToShoot();
+                nextState = kAutoIdle1;
+            }
        }
     a_AutoState1 = nextState;
 }
@@ -376,7 +376,6 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
 bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
     autoDrivePID.SetSetpoint(dist);
     double calcspeed = autoDrivePID.Calculate(a_SwerveDrive->getAvgDistance(), dist);
-    frc::SmartDashboard::PutNumber("calcspeed", calcspeed);
     calcspeed = std::clamp(speed, -.25, .25);
     a_SwerveDrive->driveDirection(calcspeed, angle);    
     if (autoDrivePID.AtSetpoint()) {

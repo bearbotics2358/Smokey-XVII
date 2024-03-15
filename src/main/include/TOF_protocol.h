@@ -28,3 +28,9 @@ enum target_type_enum {
   CONE = 0,
   CUBE = 1,
 } ;
+enum LED_STAGE_enum {
+  WHITE = 0,
+  IDLE,
+  NO_COMMS,
+  NOTE_COLLECTED  
+};

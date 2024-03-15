@@ -299,10 +299,10 @@ void SwerveDrive::swerveUpdateInner(float x, float y, float z, float gyroDegrees
     }*/
 
     // update speeds and angles
-    frc::SmartDashboard::PutNumber("fl output", flSpeed);-
-    frc::SmartDashboard::PutNumber("fr output", frSpeed);
-    frc::SmartDashboard::PutNumber("bl output", blSpeed);
-    frc::SmartDashboard::PutNumber("br output", brSpeed);
+    // frc::SmartDashboard::PutNumber("fl output", flSpeed);-
+    // frc::SmartDashboard::PutNumber("fr output", frSpeed);
+    // frc::SmartDashboard::PutNumber("bl output", blSpeed);
+    // frc::SmartDashboard::PutNumber("br output", brSpeed);
     if (flModule.adjustAngle(flAngle)) {
         flModule.setDrivePercent(-flSpeed);
     } else {
