@@ -23,7 +23,7 @@ void NoteHandler::setShooterAngleToDefault() {
 }
 
 void NoteHandler::startShooter(double rpm, double angle) {
-    //a_Shooter.moveToAngle(angle);
+    a_Shooter.moveToAngle(angle);
     a_Shooter.setSpeed(rpm);
 }
 
@@ -155,4 +155,7 @@ void NoteHandler::shootToAmp(bool buttonState){
 }
 void NoteHandler::runArmRoller(){
     a_AmpTrap.runRoller();
+}
+double NoteHandler::getClimberPosition(){
+    return a_Climber.GetClimberPosition();
 }

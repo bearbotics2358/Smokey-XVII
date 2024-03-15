@@ -5,7 +5,7 @@
 #include <ctre/phoenix6/configs/Configs.hpp>
 #include <ctre/phoenix6/controls/VelocityVoltage.hpp>
 
-Shooter::Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID): //int limitSwitchID):
+Shooter::Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID):
 
 rightShooterMotor(rightShooterMotorID),
 leftShooterMotor(leftShooterMotorID),
@@ -30,15 +30,16 @@ rightShooterPID(0.0, 0.0, 0.0)
     // pivotMotor.GetConfigurator().Apply(limitConfig);
 
     ctre::phoenix6::configs::Slot0Configs slot0Configs{};
-    slot0Configs.kP = 0.9; // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = 0.15; // no output for integrated error
+    slot0Configs.kV = .12;
+    slot0Configs.kP = 0.0; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = 0.0; // no output for integrated error
     slot0Configs.kD = 0.0; // no output for error derivative
     leftShooterMotor.GetConfigurator().Apply(slot0Configs);
     rightShooterMotor.GetConfigurator().Apply(slot0Configs);
 
     ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
     
-
+    
 
     //pivotPID.SetTolerance(5.0);
     stopShooter();
@@ -46,12 +47,12 @@ rightShooterPID(0.0, 0.0, 0.0)
 void Shooter::setSpeed(double rpm){
   
    
-    // rightShooterMotor.SetControl(m_request.WithVelocity(units::angular_velocity::turns_per_second_t{rpm/60.0} ));
-    // leftShooterMotor.SetControl(m_request.WithVelocity(units::angular_velocity::turns_per_second_t{rpm/60.0} ));
+    rightShooterMotor.SetControl(m_request.WithVelocity(units::angular_velocity::turns_per_second_t{3600/60.0} ));
+    leftShooterMotor.SetControl(m_request.WithVelocity(units::angular_velocity::turns_per_second_t{3600/60.0} ));
     
-    double velo = rpm/6000;
-    rightShooterMotor.Set(-velo);
-    leftShooterMotor.Set(-velo);
+    // double velo = rpm/6000;
+    // rightShooterMotor.Set(-velo);
+    // leftShooterMotor.Set(-velo);
  }
 double Shooter::getSpeed(){
     double units = rightShooterMotor.GetVelocity().GetValue().value(); //+ leftShooterMotor.GetVelocity())/2;
