@@ -10,7 +10,7 @@
 Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, NoteHandler *NoteHandler):
 a_Gyro(Gyro),
 a_SwerveDrive(SwerveDrive),
-a_NoteHandler(),
+a_NoteHandler(NoteHandler),
 autoDrivePID(.4, .1, 0) 
 {}
 

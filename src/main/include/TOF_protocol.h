@@ -30,7 +30,7 @@ enum target_type_enum {
 } ;
 enum LED_STAGE_enum {
   WHITE = 0,
-  IDLE,
+  LED_IDLE,
   NO_COMMS,
   NOTE_COLLECTED  
 };

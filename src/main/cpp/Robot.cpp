@@ -179,7 +179,7 @@ void Robot::DisabledPeriodic(){}
 
 
 void Robot::AutonomousInit() {
-    a_SwerveDrive.zeroPose();
+    //a_SwerveDrive.zeroPose();
     if (a_doEnabledInit) {
         EnabledInit();
         a_doEnabledInit = false;
@@ -223,7 +223,7 @@ void Robot::TeleopPeriodic() {
         a_LED.SetTargetType(LED_STAGE_enum::NOTE_COLLECTED);
     }
     else{
-        a_LED.SetTargetType(LED_STAGE_enum::IDLE);
+        a_LED.SetTargetType(LED_STAGE_enum::LED_IDLE);
     }
     //a_Shooter.moveToAngle(20.0);
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
