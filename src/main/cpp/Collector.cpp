@@ -6,7 +6,7 @@
 Collector::Collector(int collectorMotorID, int indexerMotorID):
 collectorMotor(collectorMotorID),
 indexerMotor(indexerMotorID),
-beamBreak(BEAMBREAK_PORT)
+beamBreak(COLLECTOR_BEAMBREAK_PORT)
 {
     stopCollector();
     stopIndexer();
@@ -20,11 +20,14 @@ void Collector::runCollectorback(){
 void Collector::stopCollector() {
     collectorMotor.StopMotor();
 }
+void Collector::indexToCollect(){
+    indexerMotor.Set(-.2);
+}
 void Collector::indexToShoot() {
-    indexerMotor.Set(-0.20);
+    indexerMotor.Set(-0.40);
 }
 void Collector::indexToAmp() {
-    indexerMotor.Set(.25);
+    indexerMotor.Set(-.2);
 }
 void Collector::stopIndexer() {
     indexerMotor.StopMotor();

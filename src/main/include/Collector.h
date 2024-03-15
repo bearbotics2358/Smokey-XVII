@@ -17,6 +17,7 @@ class Collector {
         void runCollectorback();
         double getShooterAngle();
         void setShooterAngle();
+        void indexToCollect();
         BeamBreak beamBreak;
     private:
         // rev::CANSparkMax collectorMotor;
