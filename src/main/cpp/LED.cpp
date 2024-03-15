@@ -28,7 +28,7 @@ void LED::Init()
 	for(i = 0; i < BUFF_SIZE; i++) {
 		rx_buff[i] = 0;
 	}
-	SetTargetType(target_type_enum::CONE);
+	SetTargetType(LED_STAGE_enum::WHITE);
 }
 
 void LED::Update()
@@ -85,7 +85,7 @@ void LED::ProcessReport()
 	// no action needed, no report expected
 }
 
-void LED::SetTargetType(target_type_enum target_type_param)
+void LED::SetTargetType(LED_STAGE_enum target_type_param)
 {
 #ifdef COMP_BOT  // Not available on the practice bot
 	char cmd[10];
@@ -98,7 +98,7 @@ void LED::SetTargetType(target_type_enum target_type_param)
 #endif
 }
 
-target_type_enum LED::GetTargetType()
+LED_STAGE_enum LED::GetTargetType()
 {
 	return target_type;
 }

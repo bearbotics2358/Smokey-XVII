@@ -21,9 +21,9 @@ public:
 	void Update();
 
 	void ProcessReport();
-	enum target_range_enum GetTargetRangeIndicator();
-	void SetTargetType(target_type_enum target_type_param);
-	target_type_enum GetTargetType();
+	enum LED_STAGE_enum GetTargetRangeIndicator();
+	void SetTargetType(LED_STAGE_enum target_type_param);
+	LED_STAGE_enum GetTargetType();
 
 private:
 #ifdef COMP_BOT  // Not available on the practice bot
@@ -31,7 +31,7 @@ private:
 #endif
 	char rx_buff[BUFF_SIZE];
 	int rx_index = 0;
-	target_type_enum target_type = target_type_enum::CONE;
+	LED_STAGE_enum target_type = LED_STAGE_enum::WHITE;
 } ;
 
 #endif

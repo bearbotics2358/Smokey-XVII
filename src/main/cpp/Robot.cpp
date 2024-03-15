@@ -28,6 +28,7 @@ a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_Gamepad(4),
 a_NoteHandler(),
+a_LED(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
@@ -85,9 +86,9 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(eighthNote, eighthNote);
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
-    //a_LED.Init();
+    a_LED.Init();
 
-    //SetTargetType(LED_STAGE_enum::WHITE);
+    a_LED.SetTargetType(LED_STAGE_enum::WHITE);
     //InterpolationValues value = {22.5, 3500};
     a_NoteHandler.insertToInterpolatingMap(2.546859, {22.5, 4000});
     a_NoteHandler.insertToInterpolatingMap(4.212965, {9.5, 4000});
@@ -115,7 +116,7 @@ void Robot::RobotPeriodic() {
 
     a_Gyro.Update();
 
-    //a_LED.Update();
+    a_LED.Update();
 
 
     a_SwerveDrive.updateOdometry();
@@ -218,6 +219,12 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
+    if(a_NoteHandler.beamBroken()){
+        a_LED.SetTargetType(LED_STAGE_enum::NOTE_COLLECTED);
+    }
+    else{
+        a_LED.SetTargetType(LED_STAGE_enum::IDLE);
+    }
     //a_Shooter.moveToAngle(20.0);
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
@@ -475,7 +482,7 @@ void Robot::TestPeriodic() {
         //a_Claw.CubePressure();
 
     //}
-    //a_LED.SetTargetType(LED_STAGE_enum target)
+    //a_LED.SetTargetType(LED_STAGE_enum target);
 //}
 
 int main() { return frc::StartRobot<Robot>(); } // Initiate main loop

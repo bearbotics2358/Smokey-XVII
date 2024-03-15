@@ -22,6 +22,7 @@
 #include "Climber.h"
 //#include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
+#include "LED.h"
 
 enum class DriveBackState {
     Inactive,
@@ -54,7 +55,7 @@ class Robot : public frc::TimedRobot {
         void TestInit();
         void TestPeriodic();
 
-        // void SetTargetType(target_type_enum target);
+        //void SetTargetType(LED_STAGE_enum target);
 
 
 
@@ -99,6 +100,7 @@ class Robot : public frc::TimedRobot {
 
 
         //LED_DIO a_LED;
+        LED a_LED;
 
         double state_time;
         double piston_time;
