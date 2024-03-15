@@ -268,17 +268,19 @@ void Robot::TeleopPeriodic() {
         double rpm = 3500;
         double angle = 35.0;
         a_NoteHandler.startShooter(rpm, angle);
-    } else {
+    } 
+    else {
         a_NoteHandler.stopShooter();
+        a_NoteHandler.moveShooterToAngle(0.0);
     }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
+    // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper());
     if(a_DriverXboxController.GetAButton()) {
-        if(a_NoteHandler.armToPose(154.0)){
-            a_NoteHandler.runArmRoller();
-        }
+        // if(a_NoteHandler.armToPose(154.0)){
+        //     a_NoteHandler.runArmRoller();
+        // }
     } else if (a_Gamepad.GetRawButton(1)) {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
@@ -474,17 +476,17 @@ void Robot::TestPeriodic() {
     //     a_BLModule.steerToAng(45);
     // }
     
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
+    // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
      
-    if(a_DriverXboxController.GetAButton()){
-        if(a_NoteHandler.armToPose(154.0)){
-            //frc::SmartDashboard::PutString("through if?", "YES");
-            a_NoteHandler.runArmRoller();
-        }
-        else{
-           // frc::SmartDashboard::PutString("through if?", "NO");
-        }
-    }
+    // if(a_DriverXboxController.GetAButton()){
+    //     if(a_NoteHandler.armToPose(154.0)){
+    //         //frc::SmartDashboard::PutString("through if?", "YES");
+    //         a_NoteHandler.runArmRoller();
+    //     }
+    //     else{
+    //        // frc::SmartDashboard::PutString("through if?", "NO");
+    //     }
+    // }
     
 }
 

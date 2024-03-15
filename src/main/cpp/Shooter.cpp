@@ -13,7 +13,7 @@ pivotMotor(pivotMotorID),
 // pivotEncoder(pivotMotor),
 shooterLimitSwitch(limitSwitchID),
 // .0067, .006, 0.0
-pivotPID(0.005, 0.0045, 0.0005),
+pivotPID(0.005, 0.0045, 0.00025),
 leftShooterPID(0.0, 0.0, 0.0),
 rightShooterPID(0.0, 0.0, 0.0)
 {
@@ -81,6 +81,7 @@ bool Shooter::moveToAngle(double angle){
     else{
        return false;
     }
+
 }
 double Shooter::GetShooterAngle(){
     return (((-8.876)*pivotMotor.GetPosition().GetValue().value()));

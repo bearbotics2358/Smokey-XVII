@@ -114,22 +114,23 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool buttonState){
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
-            if(buttonState == true){
+            a_AmpTrap.moveToPosition(15.0);
+            if(transferButtonState == true){
                 currentAmpLoadState = LOADING;
             }
             break;
 
         case LOADING:
-            if(!buttonState){
+            if(!transferButtonState){
                 currentAmpLoadState = IDLE;
             }
             a_AmpTrap.runRoller();
             a_Shooter.setSpeed(600);
-            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(243.0)){
+            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(237.0)){
 
                 feedToAmp(-.2);
                 if(a_AmpTrap.beamBroken()){
@@ -140,13 +141,34 @@ void NoteHandler::shootToAmp(bool buttonState){
                         a_AmpTrap.stopRoller();
                         stopAll();
                         shootToAmpMode = false;
-                        currentAmpLoadState = DONE;
+                        currentAmpLoadState = HOLDING;
                     }
                 }
             }
                 break;
+            case HOLDING:
+                if(intoAmpButtonState){
+                    if(armToPose(154.0)){
+                        runArmRoller();
+                        currentAmpLoadState = DONE;
+                    }
+                }
+                if(toDefaultPositionButtonState){
+                    if(armToPose(10.0)){
+                        currentAmpLoadState = TOAMP;
+                    }
+                }
+                break;
+            case TOAMP:
+                if(intoAmpButtonState){
+                    if(armToPose(154.0)){
+                        runArmRoller();
+                        currentAmpLoadState = DONE;
+                    }
+                }
+                break;
             case DONE:
-                if(!buttonState){
+                if(!transferButtonState){
                     currentAmpLoadState = IDLE;
                 }
                 break;
@@ -172,4 +194,7 @@ void NoteHandler::stopClimber(){
 }
 void NoteHandler::pidClimb(){
     a_Climber.extendClimnber();
+}
+void NoteHandler::moveShooterToAngle(double angle){
+    a_Shooter.moveToAngle(0.0);
 }

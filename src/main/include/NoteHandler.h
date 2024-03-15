@@ -10,6 +10,8 @@
 enum AmpLoadState { // Encoders
             IDLE = 0,
             LOADING,
+            HOLDING,
+            TOAMP,
             DONE,
         };
 
@@ -55,11 +57,13 @@ class NoteHandler {
 
         void setRotPID(double p, double i, double d);
 
-        void shootToAmp(bool buttonState);
+        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState);
 
         void feedToAmp(double speed);
 
         void runArmRoller();
+
+        void moveShooterToAngle(double angle);
 
         double getClimberPosition();
         void manualClimberUp();
