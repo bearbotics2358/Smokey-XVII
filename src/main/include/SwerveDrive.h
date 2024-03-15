@@ -81,7 +81,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         double getXPose();
         double getYPose();
         double getRotPose();
-        void zeroPose();
+        void zeroPose(frc::Pose2d pose);
 
     private:
         // called by both crabUpdate and swerveUpdata
