@@ -87,8 +87,8 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(eighthNote, eighthNote);
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
-    a_LED.Init();
-    a_LED.SetAngleToNote(0.3);
+    // a_LED.Init();
+    // a_LED.SetAngleToNote(0.3);
 
     //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
     //InterpolationValues value = {22.5, 3500};
@@ -98,18 +98,23 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    printf("0 %10.6lf\n", Autonomous::gettime_d()); 
+    a_NoteHandler.AmpTrapUpdate();
+    printf("10 %10.6lf\n", Autonomous::gettime_d()); 
     a_NoteHandler.setShooterAngleToDefault();
+    printf("20 %10.6lf\n", Autonomous::gettime_d()); 
+    return;
     a_NoteHandler.setClimberPosition();
     
-    if(a_NoteHandler.beamBroken()){
-        a_LED.SetNoteOnBoard();
-    } else {
-        a_LED.SetMSGIdle();
-    }
-
+    // if(a_NoteHandler.beamBroken()){
+    //     a_LED.SetNoteOnBoard();
+    // } else {
+    //     a_LED.SetMSGIdle();
+    // }
+    
     a_NoteHandler.updateDashboard();
 
-
+    
     // photon::PhotonPipelineResult result = a_camera.GetLatestResult();
     double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
@@ -127,7 +132,7 @@ void Robot::RobotPeriodic() {
 
     a_Gyro.Update();
 
-    a_LED.Update();
+    //a_LED.Update();
 
 
     a_SwerveDrive.updateOdometry();

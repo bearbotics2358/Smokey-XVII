@@ -72,6 +72,8 @@ class NoteHandler {
         void stopClimber();
         void pidClimb();
 
+        void AmpTrapUpdate();
+
         bool noteShot = false;
     private:
         Shooter a_Shooter;

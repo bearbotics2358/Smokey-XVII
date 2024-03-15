@@ -62,7 +62,7 @@ void LED::Update()
 
 			ProcessReport();
 			
-			printf("LED report: rx_buff\n");
+			//printf("LED report: rx_buff\n");
 
 			// reset for next report
 			rx_index = 0;
