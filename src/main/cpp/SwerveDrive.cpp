@@ -367,8 +367,8 @@ double SwerveDrive::getYPose(){
 double SwerveDrive::getRotPose(){
     return getPose().Rotation().Degrees().value();
 }
-void SwerveDrive::zeroPose(){
+void SwerveDrive::zeroPose(frc::Pose2d pose){
     a_odometry.ResetPosition(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
     {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
-    frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
+    pose);
 }

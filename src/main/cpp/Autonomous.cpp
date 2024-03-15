@@ -107,6 +107,7 @@ void Autonomous::PeriodicDoNothing() {
 
 
 void Autonomous::NoteOne() {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(.47), units::meter_t(.79), units::degree_t(60.0)));
     a_AutoState1 = kShoot1stNote1;
     state_time = gettime_d();
 }
