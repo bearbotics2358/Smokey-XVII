@@ -16,7 +16,7 @@ class Climber {
         
         ctre::phoenix6::hardware::TalonFX climberMotor;
 
-        ctre::phoenix6::StatusSignal<units::turn_t> m_climberMotorSignal;
+        //ctre::phoenix6::StatusSignal<units::turn_t> m_climberMotorSignal;
         
         frc::PIDController climberPID;
         //LimitSwitch topLimitSwitch; 

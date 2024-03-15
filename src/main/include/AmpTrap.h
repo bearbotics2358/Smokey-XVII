@@ -25,8 +25,8 @@ class AmpTrap {
         ctre::phoenix6::hardware::TalonFX rotationMotor;
         ctre::phoenix6::hardware::TalonFX extensionMotor;
 
-        ctre::phoenix6::StatusSignal<units::turn_t> m_rotationMotorSignal;
-        ctre::phoenix6::StatusSignal<units::turn_t> m_extensionMotorSignal;
+        // ctre::phoenix6::StatusSignal<units::turn_t> m_rotationMotorSignal;
+        // ctre::phoenix6::StatusSignal<units::turn_t> m_extensionMotorSignal;
 
         frc::PIDController extendPID;
         frc::PIDController rotationPID;

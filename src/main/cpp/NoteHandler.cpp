@@ -157,5 +157,5 @@ void NoteHandler::runArmRoller(){
     a_AmpTrap.runRoller();
 }
 double NoteHandler::getClimberPosition(){
-    a_Climber.GetClimberPosition();
+    return a_Climber.GetClimberPosition();
 }
