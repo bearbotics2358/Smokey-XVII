@@ -160,6 +160,8 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
+    frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
+
     
 }
 
@@ -187,7 +189,7 @@ void Robot::AutonomousInit() {
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-    a_NoteHandler.startShooter(3500.0, 30.0); // change angle later
+    a_NoteHandler.startShooter(1000.0, 10.0); // change angle later
 }
 
 void Robot::AutonomousPeriodic() {
@@ -226,7 +228,7 @@ void Robot::TeleopPeriodic() {
 
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
+    if (a_DriverXboxController.GetAButton()) {
         if (result.HasTargets()) {
             std::span<const photon::PhotonTrackedTarget> targets = result.GetTargets();
             for (photon::PhotonTrackedTarget target : targets) {
@@ -242,7 +244,7 @@ void Robot::TeleopPeriodic() {
             goalYaw = 0.0;
         }
         double rpm = 3500;
-        double angle = 32.5;
+        double angle = 10.5;
         a_NoteHandler.startShooter(rpm, angle);
     } else {
         a_NoteHandler.stopShooter();

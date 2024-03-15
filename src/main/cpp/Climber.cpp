@@ -4,8 +4,10 @@
 Climber::Climber(int climberMotorID)://, int topLimitSwitchPort)://, int topPort, int bottomPort):
 climberMotor(climberMotorID),
 //topLimitSwitch(topLimitSwitchPort),
-climberPID(0.0, 0.0, 0.0)
+climberPID(0.0, 0.0, 0.0),
+m_climberMotorSignal(climberMotor.GetPosition())
 {
+    m_climberMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
     climberMotor.SetNeutralMode(1);
 }
 void Climber::stopClimber(){
@@ -38,7 +40,6 @@ void Climber::retractClimber(){
 }
 double Climber::GetClimberPosition(){
     double rotations = climberMotor.GetPosition().GetValue().value();
-    return rotations * M_PI * CLIMBER_DIAMETER; //need to update climber diameter and double check calculation
 }
 void Climber::setPosition(){
     climberMotor.SetPosition(units::angle::turn_t{0.0});

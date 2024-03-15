@@ -12,10 +12,17 @@ rotationMotor(rotationMotorID),
 extendPID(0.0, 0.0, 0.0),
 rotationPID(0.0, 0.0, 0.0),
 a_BeamBreak(AMP_BEAM_BREAK_PORT), 
+m_rotationMotorSignal(rotationMotor.GetPosition()),
+m_extensionMotorSignal(extensionMotor.GetPosition()),
+
 a_ArmAngle(1)
 {
     rotationPID.SetTolerance(3.0);
     rotationMotor.SetNeutralMode(1);
+
+    m_rotationMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
+    m_extensionMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
+    
 }
 void AmpTrap::runRoller(){
     rollerMotor.Set(-0.25);

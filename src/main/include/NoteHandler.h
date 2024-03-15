@@ -61,6 +61,8 @@ class NoteHandler {
 
         void runArmRoller();
 
+        double getClimberPosition();
+
         bool noteShot = false;
     private:
         Shooter a_Shooter;

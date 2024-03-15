@@ -121,34 +121,35 @@ void Autonomous::PeriodicNoteOne() {
             break;
         case kShoot1stNote1:
             a_NoteHandler->indexToShoot();
-            nextState = kGoTo2ndNote1;
+            nextState = kAutoIdle1;
             break;
-        case kGoTo2ndNote1:
-            a_NoteHandler->collectNote(-0.4, false);
-            if(a_SwerveDrive -> odometryGoToPose(8.277, -1.912, 0.0)){
-                nextState = kShoot2ndNote1;
-            }
-            break;
-        case kShoot2ndNote1:
-            if(a_SwerveDrive -> odometryGoToPose(3.5, -0.5, 0.0)){
-                a_NoteHandler->indexToShoot();
-                nextState = kGoTo3rdNote1;
-            }
-            break;
-        case kGoTo3rdNote1:
-            a_NoteHandler->collectNote(-0.4, false);
-            if(a_SwerveDrive -> odometryGoToPose(8.277, -.236, 0.0)){
-                nextState = kShoot3rdNote1;
-            }
-            break;
-        case kShoot3rdNote1:
-             if(a_SwerveDrive -> odometryGoToPose(3.5, -.5, 0.0)){
-                a_NoteHandler->indexToShoot();
-                nextState = kAutoIdle1;
-            }
+        // case kGoTo2ndNote1:
+        //     a_NoteHandler->collectNote(-0.4, false);
+        //     if(a_SwerveDrive -> odometryGoToPose(8.277, -1.912, 0.0)){
+        //         nextState = kShoot2ndNote1;
+        //     }
+        //     break;
+        // case kShoot2ndNote1:
+        //     if(a_SwerveDrive -> odometryGoToPose(3.5, -0.5, 0.0)){
+        //         a_NoteHandler->indexToShoot();
+        //         nextState = kGoTo3rdNote1;
+        //     }
+        //     break;
+        // case kGoTo3rdNote1:
+        //     a_NoteHandler->collectNote(-0.4, false);
+        //     if(a_SwerveDrive -> odometryGoToPose(8.277, -.236, 0.0)){
+        //         nextState = kShoot3rdNote1;
+        //     }
+        //     break;
+        // case kShoot3rdNote1:
+        //      if(a_SwerveDrive -> odometryGoToPose(3.5, -.5, 0.0)){
+        //         a_NoteHandler->indexToShoot();
+        //         nextState = kAutoIdle1;
+        //     }
        }
     a_AutoState1 = nextState;
 }
+
 
 void Autonomous::NoteTwo() {
     a_AutoState2 = kGoToNote2;   
