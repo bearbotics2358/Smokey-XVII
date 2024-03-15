@@ -118,6 +118,15 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
+            // if (a_Gamepad.GetRawButton(3)) {
+            //     double rpm = 3500;
+            //     double angle = 29.0;
+            //     a_NoteHandler.startShooter(rpm, angle);
+            // } 
+            // else {
+            //     a_NoteHandler.stopShooter();
+            //     a_NoteHandler.moveShooterToAngle(0.0);
+            // }
             a_AmpTrap.moveToPosition(15.0);
             if(transferButtonState == true){
                 currentAmpLoadState = LOADING;
@@ -131,8 +140,8 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             a_AmpTrap.runRoller();
             a_Shooter.setSpeed(600);
             if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(237.0)){
-
                 feedToAmp(-.2);
+
                 if(a_AmpTrap.beamBroken()){
                     shootToAmpMode = true;
                 }

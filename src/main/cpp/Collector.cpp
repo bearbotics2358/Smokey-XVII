@@ -27,6 +27,7 @@ void Collector::indexToShoot() {
     indexerMotor.Set(-0.40);
 }
 void Collector::indexToAmp() {
+    std::cout << "Shooter Angle True?" << std::endl;
     indexerMotor.Set(-.2);
 }
 void Collector::stopIndexer() {

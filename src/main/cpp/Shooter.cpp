@@ -12,8 +12,9 @@ leftShooterMotor(leftShooterMotorID),
 pivotMotor(pivotMotorID),
 // pivotEncoder(pivotMotor),
 shooterLimitSwitch(limitSwitchID),
-// .0067, .006, 0.0
-pivotPID(0.005, 0.0045, 0.00025),
+// .005, .0045, 0.00025
+//0.003, 0.0015, 0.00012
+pivotPID(0.005, 0.000, 0.000),
 leftShooterPID(0.0, 0.0, 0.0),
 rightShooterPID(0.0, 0.0, 0.0)
 {
@@ -61,7 +62,7 @@ double Shooter::getSpeed(){
 }
 void Shooter::setShooterAngle(){ 
     if(shooterLimitSwitch.limitSwitchPressed()){
-        pivotMotor.SetPosition(units::angle::turn_t{units::degree_t{20.0}});
+        pivotMotor.SetPosition(units::angle::turn_t{units::degree_t{0.0}});
     }
 }
 void Shooter::stopShooter(){

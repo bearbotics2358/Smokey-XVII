@@ -115,7 +115,7 @@ void Robot::RobotPeriodic() {
 
     // if (result.HasTargets()) {
     //     frc::SmartDashboard::PutString("Has_AprilTags", "YES");
-    // } else {
+    // } else { 
     //     frc::SmartDashboard::PutString("Has_AprilTags", "NO");
     // }
 
@@ -276,7 +276,7 @@ void Robot::TeleopPeriodic() {
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper());
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper());
     if(a_DriverXboxController.GetAButton()) {
         // if(a_NoteHandler.armToPose(154.0)){
         //     a_NoteHandler.runArmRoller();
