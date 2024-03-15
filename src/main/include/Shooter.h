@@ -7,7 +7,7 @@
 
 class Shooter{
     public:
-        Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID);
+        Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotorID, int limitSwitchID);
         void setSpeed(double percent);
         void stopShooter();
         bool moveToAngle(double angle);
@@ -27,5 +27,5 @@ class Shooter{
         ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
     
       
-        //LimitSwitch shooterLimitSwitch;
+        LimitSwitch shooterLimitSwitch;
 };

@@ -33,6 +33,8 @@
 
 #define AMP_BEAM_BREAK_PORT 5
 #define COLLECTOR_BEAMBREAK_PORT 2
+#define TOP_LIMIT_SWITCH_PORT 0
+#define SHOOTER_LIMIT_SWITCH_PORT 1
 
 #define LIMIT_SWITCH 0 // change later
 

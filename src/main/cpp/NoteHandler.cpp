@@ -5,8 +5,8 @@
 // Maybe no : after ()
 NoteHandler::NoteHandler(): 
 a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID),
-a_Climber(CLIMBER_MOTOR_ID),
+a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID, SHOOTER_LIMIT_SWITCH_PORT),
+a_Climber(CLIMBER_MOTOR_ID, TOP_LIMIT_SWITCH_PORT),
 a_AmpTrap(ROLLER_ID, ARM_PIVOT_MOTOR_ID, EXTENSION_ID),
 currentAmpLoadState(IDLE)
 {
@@ -140,18 +140,11 @@ void NoteHandler::shootToAmp(bool buttonState){
                         a_AmpTrap.stopRoller();
                         stopAll();
                         shootToAmpMode = false;
-                        currentAmpLoadState = MOVE_ARM_TO_START;
+                        currentAmpLoadState = DONE;
                     }
                 }
             }
-            break;
-
-            case MOVE_ARM_TO_START:
-                if(a_AmpTrap.moveToPosition(10.0)){
-                    currentAmpLoadState = DONE;
-                }
                 break;
-
             case DONE:
                 if(!buttonState){
                     currentAmpLoadState = IDLE;
@@ -164,4 +157,19 @@ void NoteHandler::runArmRoller(){
 }
 double NoteHandler::getClimberPosition(){
     return a_Climber.GetClimberPosition();
+}
+void NoteHandler::manualClimberUp(){
+    a_Climber.runClimberUp();
+}
+void NoteHandler::manualClimberDown(){
+    a_Climber.runClimberDown();
+}
+void NoteHandler::setClimberPosition(){
+    a_Climber.setPosition();
+}
+void NoteHandler::stopClimber(){
+    a_Climber.stopClimber();
+}
+void NoteHandler::pidClimb(){
+    a_Climber.extendClimnber();
 }

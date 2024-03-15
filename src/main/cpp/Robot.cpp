@@ -57,6 +57,8 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
     a_BRModule.setDrivePID(pvaluedrive, 0, 0);
     a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
+    a_NoteHandler.setRotPID(rotP, rotI, rotD);
+
     a_SwerveDrive.brakeOnStop();
 }
 
@@ -72,8 +74,7 @@ void Robot::RobotInit() {
     a_Gyro.Init();
     a_Gyro.Zero();
 
-    a_NoteHandler.setShooterAngleToDefault();
-
+    
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(firstNote, firstNote);
@@ -97,6 +98,9 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    a_NoteHandler.setShooterAngleToDefault();
+    a_NoteHandler.setClimberPosition();
+    
     if(a_NoteHandler.beamBroken()){
         a_LED.SetNoteOnBoard();
     } else {
@@ -246,7 +250,7 @@ void Robot::TeleopPeriodic() {
 
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
+    if (a_Gamepad.GetRawButton(3)) {
         // if (result.HasTargets()) {
         //     std::span<const photon::PhotonTrackedTarget> targets = result.GetTargets();
         //     for (photon::PhotonTrackedTarget target : targets) {
@@ -275,7 +279,7 @@ void Robot::TeleopPeriodic() {
         if(a_NoteHandler.armToPose(154.0)){
             a_NoteHandler.runArmRoller();
         }
-    } else if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
+    } else if (a_Gamepad.GetRawButton(1)) {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
@@ -287,6 +291,18 @@ void Robot::TeleopPeriodic() {
         a_NoteHandler.stopCollection();
     }
 
+    if(a_DriverXboxController.GetBButton()){
+        a_NoteHandler.manualClimberDown();
+    }
+    else if(a_DriverXboxController.GetXButton()){
+        a_NoteHandler.manualClimberUp();
+    }
+    else if(a_DriverXboxController.GetYButton()){
+        a_NoteHandler.pidClimb();
+    }
+    else{
+        a_NoteHandler.stopClimber();
+    }
     /* Amp Control*/
     
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
@@ -429,7 +445,7 @@ void Robot::TestPeriodic() {
     // else if(a_DriverXboxController.GetYButtonPressed()){
     //     rotD-=.0001;
     // }
-    a_NoteHandler.setRotPID(rotP, rotI, rotD);
+    
     
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 

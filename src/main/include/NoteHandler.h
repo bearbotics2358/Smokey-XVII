@@ -10,7 +10,6 @@
 enum AmpLoadState { // Encoders
             IDLE = 0,
             LOADING,
-            MOVE_ARM_TO_START,
             DONE,
         };
 
@@ -63,6 +62,11 @@ class NoteHandler {
         void runArmRoller();
 
         double getClimberPosition();
+        void manualClimberUp();
+        void manualClimberDown();
+        void setClimberPosition();
+        void stopClimber();
+        void pidClimb();
 
         bool noteShot = false;
     private:
