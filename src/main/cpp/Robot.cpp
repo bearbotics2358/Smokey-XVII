@@ -205,7 +205,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-    a_NoteHandler.startShooter(3500.0, 35.0); // change angle later
+    a_NoteHandler.startShooter(3500.0, 30.0); // change angle later
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
     a_Autonomous.PeriodicAuto(SelectedRoute);
     EnabledPeriodic();
