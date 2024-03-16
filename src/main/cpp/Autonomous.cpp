@@ -125,16 +125,17 @@ void Autonomous::PeriodicNoteOne() {
             if(gettime_d() > state_time + WAIT_TO_SHOOT) {
                 state_time = gettime_d();
                 a_NoteHandler->indexToShoot();
-                nextState = kAutoIdle1;
+                nextState = kGoTo2ndNote1;
             }
             break;
         case kGoTo2ndNote1:
             if(gettime_d() > state_time + WAIT_TO_SHOOT) {
                 state_time = gettime_d();
                 a_NoteHandler->collectNote(-0.4, false);
-                if(a_SwerveDrive -> odometryGoToPose(2.902, -1.455, 0.0)){
-                    nextState = kAutoIdle1;
-                }
+                a_SwerveDrive->swerveUpdate(.1, .1, 0.0, true);
+            }
+            else{
+                nextState = kAutoIdle1;
             }
             break;
         // case kShoot2ndNote1:
@@ -161,8 +162,9 @@ void Autonomous::PeriodicNoteOne() {
 //BLUE CENTER RED CENTER
 void Autonomous::NoteTwo() {
     a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(1.3), units::meter_t(0.0), units::degree_t(0.0)));
-    a_Gyro->Zero(0.0);
-    a_AutoState2 = kGoToNote2;   
+    //a_Gyro->Zero(0.0);
+    a_Gyro->Zero(300.0);
+    a_AutoState2 = kShootNote2;   
     state_time = gettime_d();
 }
 
@@ -175,19 +177,21 @@ void Autonomous::PeriodicNoteTwo() {
             StopSwerves();
             break;
         case kShootNote2:
-            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
-                state_time = gettime_d();
+            if(gettime_d() > state_time + WAIT_TO_SHOOT){
                 a_NoteHandler->indexToShoot();
-                nextState = kGoToNote2;
+                if(gettime_d() > state_time + 2*(WAIT_TO_SHOOT)) {
+                    state_time = gettime_d();
+                    nextState = kGoToNote2;
+                }
             }
             break;
-         case kGoToNote2:
-            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
-                state_time = gettime_d();
+        case kGoToNote2:
+            if(gettime_d() < state_time + 2*(WAIT_TO_SHOOT)) {
                 a_NoteHandler->collectNote(-0.4, false);
-                if(a_SwerveDrive -> odometryGoToPose(2.9, 0.0, 0.0)){
-                    nextState = kAutoIdle2;
-                }
+                a_SwerveDrive->swerveUpdate(0.0, -0.15, 0.0, true);
+            }
+            else{
+                nextState = kAutoIdle2;
             }
             break;
               
@@ -212,19 +216,21 @@ void Autonomous::PeriodicNoteThree() {
             StopSwerves();
             break;
         case kShootNote3:
-            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
-                state_time = gettime_d();
+            if(gettime_d() > state_time + WAIT_TO_SHOOT){
                 a_NoteHandler->indexToShoot();
-                nextState = kAutoIdle3;
+                if(gettime_d() > state_time + 2*(WAIT_TO_SHOOT)) {
+                    state_time = gettime_d();
+                    nextState = kGoToNote3;
+                }
             }
             break;
         case kGoToNote3:
-            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
-                state_time = gettime_d();
+            if(gettime_d() < state_time + 2*(WAIT_TO_SHOOT)) {
                 a_NoteHandler->collectNote(-0.4, false);
-                if(a_SwerveDrive -> odometryGoToPose(2.9, 1.45, 0.0)){
-                    nextState = kShootNote3;
-                }
+                a_SwerveDrive->swerveUpdate(0.0, -0.15, 0.0, true);
+            }
+            else{
+                nextState = kAutoIdle3;
             }
             break;
         

@@ -134,9 +134,9 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
 
 
-    // frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
-    // frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
-    // frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
+    frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
+    frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
+    frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
 
     // frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
     // frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
