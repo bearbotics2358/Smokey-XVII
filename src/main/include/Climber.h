@@ -5,12 +5,14 @@
 
 class Climber {
     public:
-        Climber(int climberMotorID);//, int topLimitSwitchPort);//,int topPort, int bottomPort);          
+        Climber(int climberMotorID, int topLimitSwitchPort);//, int topLimitSwitchPort);//,int topPort, int bottomPort);          
         void stopClimber();
         void extendClimnber();
         void retractClimber();
         double GetClimberPosition();
         void setPosition();
+        void runClimberUp();
+        void runClimberDown();
 
     private:
         
@@ -19,6 +21,6 @@ class Climber {
         //ctre::phoenix6::StatusSignal<units::turn_t> m_climberMotorSignal;
         
         frc::PIDController climberPID;
-        //LimitSwitch topLimitSwitch; 
+        LimitSwitch topLimitSwitch; 
         
 };

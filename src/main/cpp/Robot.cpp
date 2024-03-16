@@ -57,6 +57,8 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
     a_BRModule.setDrivePID(pvaluedrive, 0, 0);
     a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
+    a_NoteHandler.setRotPID(rotP, rotI, rotD);
+
     a_SwerveDrive.brakeOnStop();
 }
 
@@ -72,8 +74,7 @@ void Robot::RobotInit() {
     a_Gyro.Init();
     a_Gyro.Zero();
 
-    a_NoteHandler.setShooterAngleToDefault();
-
+    
     m_AutoModeSelector.SetDefaultOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(firstNote, firstNote);
@@ -87,8 +88,9 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
     a_LED.Init();
+    a_LED.SetAngleToNote(0.3);
 
-    a_LED.SetTargetType(LED_STAGE_enum::WHITE);
+    //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
     //InterpolationValues value = {22.5, 3500};
     a_NoteHandler.insertToInterpolatingMap(2.546859, {22.5, 4000});
     a_NoteHandler.insertToInterpolatingMap(4.212965, {9.5, 4000});
@@ -96,6 +98,15 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    a_NoteHandler.setShooterAngleToDefault();
+    a_NoteHandler.setClimberPosition();
+    
+    if(a_NoteHandler.beamBroken()){
+        a_LED.SetNoteOnBoard();
+    } else {
+        a_LED.SetMSGIdle();
+    }
+
     a_NoteHandler.updateDashboard();
 
 
@@ -104,7 +115,7 @@ void Robot::RobotPeriodic() {
 
     // if (result.HasTargets()) {
     //     frc::SmartDashboard::PutString("Has_AprilTags", "YES");
-    // } else {
+    // } else { 
     //     frc::SmartDashboard::PutString("Has_AprilTags", "NO");
     // }
 
@@ -186,7 +197,7 @@ void Robot::AutonomousInit() {
     }
 
     a_SwerveDrive.unsetHoldAngle();
-    a_Gyro.Zero(0.0);
+    
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
@@ -219,12 +230,7 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
-    if(a_NoteHandler.beamBroken()){
-        a_LED.SetTargetType(LED_STAGE_enum::NOTE_COLLECTED);
-    }
-    else{
-        a_LED.SetTargetType(LED_STAGE_enum::LED_IDLE);
-    }
+    
     //a_Shooter.moveToAngle(20.0);
     // frc::SmartDashboard::PutNumber("desired angle", pivotAngle);
     // a_Shooter.moveToAngle(pivotAngle);
@@ -244,7 +250,7 @@ void Robot::TeleopPeriodic() {
 
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_Gamepad.GetRawButton(SHOOTER_BUTTON)) {
+    if (a_Gamepad.GetRawButton(3)) {
         // if (result.HasTargets()) {
         //     std::span<const photon::PhotonTrackedTarget> targets = result.GetTargets();
         //     for (photon::PhotonTrackedTarget target : targets) {
@@ -262,13 +268,20 @@ void Robot::TeleopPeriodic() {
         double rpm = 3500;
         double angle = 35.0;
         a_NoteHandler.startShooter(rpm, angle);
-    } else {
+    } 
+    else {
         a_NoteHandler.stopShooter();
+        a_NoteHandler.moveShooterToAngle(0.0);
     }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    if (a_Gamepad.GetRawButton(COLLECTOR_BUTTON)) {
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper());
+    if(a_DriverXboxController.GetAButton()) {
+        // if(a_NoteHandler.armToPose(154.0)){
+        //     a_NoteHandler.runArmRoller();
+        // }
+    } else if (a_Gamepad.GetRawButton(1)) {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
@@ -280,13 +293,20 @@ void Robot::TeleopPeriodic() {
         a_NoteHandler.stopCollection();
     }
 
-    /* Amp Control*/
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
-    if(a_DriverXboxController.GetAButton()){
-        if(a_NoteHandler.armToPose(154.0)){
-            a_NoteHandler.runArmRoller();
-        }
+    if(a_DriverXboxController.GetBButton()){
+        a_NoteHandler.manualClimberDown();
     }
+    else if(a_DriverXboxController.GetXButton()){
+        a_NoteHandler.manualClimberUp();
+    }
+    else if(a_DriverXboxController.GetYButton()){
+        a_NoteHandler.pidClimb();
+    }
+    else{
+        a_NoteHandler.stopClimber();
+    }
+    /* Amp Control*/
+    
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
@@ -427,7 +447,7 @@ void Robot::TestPeriodic() {
     // else if(a_DriverXboxController.GetYButtonPressed()){
     //     rotD-=.0001;
     // }
-    a_NoteHandler.setRotPID(rotP, rotI, rotD);
+    
     
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
@@ -456,17 +476,17 @@ void Robot::TestPeriodic() {
     //     a_BLModule.steerToAng(45);
     // }
     
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
+    // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
      
-    if(a_DriverXboxController.GetAButton()){
-        if(a_NoteHandler.armToPose(154.0)){
-            //frc::SmartDashboard::PutString("through if?", "YES");
-            a_NoteHandler.runArmRoller();
-        }
-        else{
-           // frc::SmartDashboard::PutString("through if?", "NO");
-        }
-    }
+    // if(a_DriverXboxController.GetAButton()){
+    //     if(a_NoteHandler.armToPose(154.0)){
+    //         //frc::SmartDashboard::PutString("through if?", "YES");
+    //         a_NoteHandler.runArmRoller();
+    //     }
+    //     else{
+    //        // frc::SmartDashboard::PutString("through if?", "NO");
+    //     }
+    // }
     
 }
 

@@ -28,7 +28,7 @@ void LED::Init()
 	for(i = 0; i < BUFF_SIZE; i++) {
 		rx_buff[i] = 0;
 	}
-	SetTargetType(LED_STAGE_enum::WHITE);
+	//SetTargetType(LED_STAGE_enum::WHITE);
 }
 
 void LED::Update()
@@ -83,22 +83,75 @@ void LED::ProcessReport()
 {
 	// parse report
 	// no action needed, no report expected
+	
+
 }
 
-void LED::SetTargetType(LED_STAGE_enum target_type_param)
-{
-#ifdef COMP_BOT  // Not available on the practice bot
+// void LED::SetTargetType(LED_STAGE_enum target_type_param)
+// {
+// #ifdef COMP_BOT  // Not available on the practice bot
+// 	char cmd[10];
+// 	strncpy(cmd, "1,1,1\r\n", 8);
+// 	target_type = target_type_param;
+// 	// lazy way to build a message
+// 	cmd[4] = target_type ? '1' : '0';
+// 	m_serial.Write(cmd, strlen(cmd));
+// 	m_serial.Flush();
+// #endif
+// }
+
+// LED_STAGE_enum LED::GetTargetType()
+// {
+// 	return target_type;
+// }
+
+void LED::SetWhite() {
 	char cmd[10];
-	strncpy(cmd, "1,1,1\r\n", 8);
-	target_type = target_type_param;
-	// lazy way to build a message
-	cmd[4] = target_type ? '1' : '0';
+	strncpy(cmd, "0,0\r\n", 8);
 	m_serial.Write(cmd, strlen(cmd));
 	m_serial.Flush();
-#endif
+	
 }
 
-LED_STAGE_enum LED::GetTargetType()
-{
-	return target_type;
+void LED::SetMSGIdle() {
+	char cmd[10];
+	strncpy(cmd, "1,0\r\n", 8);
+	m_serial.Write(cmd, strlen(cmd));
+	m_serial.Flush();
+
 }
+
+void LED::SetNoComms() {
+	char cmd[10];
+	strncpy(cmd, "2,0\r\n", 8);
+	m_serial.Write(cmd, strlen(cmd));
+	m_serial.Flush();
+
+}
+
+void LED::SetNoteOnBoard() {
+	char cmd[10];
+	strncpy(cmd, "3,0\r\n", 8);
+	m_serial.Write(cmd, strlen(cmd));
+	m_serial.Flush();
+
+
+}
+
+void LED::SetAngleToNote(float angle) {
+	char cmd[10];
+	sprintf(cmd, "4,1,%1.2f\r\n", angle);
+	printf("%s\n", cmd);
+	m_serial.Write(cmd, strlen(cmd));
+	m_serial.Flush();
+
+}
+
+void LED::SetShooterReady() {
+	char cmd[10];
+	strncpy(cmd, "5,0\r\n", 8);
+	m_serial.Write(cmd, strlen(cmd));
+	m_serial.Flush();
+
+}
+
