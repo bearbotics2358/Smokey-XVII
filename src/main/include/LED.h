@@ -5,10 +5,17 @@
 #ifndef H_LED
 #define H_LED
 
-#include "TOF_protocol.h" //yay i can use CONE and CUBE
+#include "Protocol.h" //yay i can use CONE and CUBE
 #include <frc/SerialPort.h>
 
 #define BUFF_SIZE 256
+
+// enum LED_STAGE_enum {
+//   WHITE = 0,
+//   LED_IDLE,
+//   NO_COMMS,
+//   NOTE_COLLECTED  
+// };
 
 class LED
 {
@@ -20,18 +27,24 @@ public:
 	void Init();
 	void Update();
 
+	void SetWhite();
+	void SetMSGIdle();
+	void SetNoComms();
+	void SetNoteOnBoard();
+	void SetAngleToNote(float angle);
+	void SetShooterReady();
+
 	void ProcessReport();
-	enum target_range_enum GetTargetRangeIndicator();
-	void SetTargetType(target_type_enum target_type_param);
-	target_type_enum GetTargetType();
+	//enum LED_STAGE_enum GetTargetRangeIndicator();
+	//void SetTargetType(LED_STAGE_enum target_type_param);
+	//LED_STAGE_enum GetTargetType();
 
 private:
-#ifdef COMP_BOT  // Not available on the practice bot
+	
 	frc::SerialPort m_serial;
-#endif
 	char rx_buff[BUFF_SIZE];
 	int rx_index = 0;
-	target_type_enum target_type = target_type_enum::CONE;
+	//LED_STAGE_enum target_type = LED_STAGE_enum::WHITE;
 } ;
 
 #endif

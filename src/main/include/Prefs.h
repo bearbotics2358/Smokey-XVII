@@ -19,7 +19,7 @@
 #define INVERSE_COLLECTOR_BUTTON 4
 #define SHOOTER_BUTTON 6
 //#define DEFAULT_SHOOTER_ANGLE 36.0
-
+#define WAIT_TO_SHOOT 3.0
 // For the competition bot, this line *MUST* be enabled. For the practice bot, comment out this line.
 #define COMP_BOT
 
@@ -33,6 +33,8 @@
 
 #define AMP_BEAM_BREAK_PORT 5
 #define COLLECTOR_BEAMBREAK_PORT 2
+#define TOP_LIMIT_SWITCH_PORT 0
+#define SHOOTER_LIMIT_SWITCH_PORT 1
 
 #define LIMIT_SWITCH 0 // change later
 

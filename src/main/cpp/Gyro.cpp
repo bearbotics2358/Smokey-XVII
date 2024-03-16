@@ -36,7 +36,7 @@ void Gyro::Cal() {
 
 void Gyro::Update() {
 
-    frc::SmartDashboard::PutNumber("gyro angle: ", getAngle());
+    //frc::SmartDashboard::PutNumber("gyro angle: ", getAngle());
     frc::SmartDashboard::PutNumber("gyro angle clamped: ", getAngleClamped());
 }
 

@@ -5,8 +5,8 @@
 // Maybe no : after ()
 NoteHandler::NoteHandler(): 
 a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
-a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID),
-a_Climber(CLIMBER_MOTOR_ID),
+a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID, SHOOTER_LIMIT_SWITCH_PORT),
+a_Climber(CLIMBER_MOTOR_ID, TOP_LIMIT_SWITCH_PORT),
 a_AmpTrap(ROLLER_ID, ARM_PIVOT_MOTOR_ID, EXTENSION_ID),
 currentAmpLoadState(IDLE)
 {
@@ -114,24 +114,34 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool buttonState){
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
-            if(buttonState == true){
+            // if (a_Gamepad.GetRawButton(3)) {
+            //     double rpm = 3500;
+            //     double angle = 29.0;
+            //     a_NoteHandler.startShooter(rpm, angle);
+            // } 
+            // else {
+            //     a_NoteHandler.stopShooter();
+            //     a_NoteHandler.moveShooterToAngle(0.0);
+            // }
+            a_AmpTrap.moveToPosition(15.0);
+            if(transferButtonState == true){
                 currentAmpLoadState = LOADING;
             }
             break;
 
         case LOADING:
-            if(!buttonState){
+            if(!transferButtonState){
                 currentAmpLoadState = IDLE;
             }
             a_AmpTrap.runRoller();
             a_Shooter.setSpeed(600);
-            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(243.0)){
-
+            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(237.0)){
                 feedToAmp(-.2);
+
                 if(a_AmpTrap.beamBroken()){
                     shootToAmpMode = true;
                 }
@@ -140,14 +150,34 @@ void NoteHandler::shootToAmp(bool buttonState){
                         a_AmpTrap.stopRoller();
                         stopAll();
                         shootToAmpMode = false;
-                        currentAmpLoadState = DONE;
+                        currentAmpLoadState = HOLDING;
                     }
                 }
             }
-            break;
-
+                break;
+            case HOLDING:
+                if(intoAmpButtonState){
+                    if(armToPose(154.0)){
+                        runArmRoller();
+                        currentAmpLoadState = DONE;
+                    }
+                }
+                if(toDefaultPositionButtonState){
+                    if(armToPose(10.0)){
+                        currentAmpLoadState = TOAMP;
+                    }
+                }
+                break;
+            case TOAMP:
+                if(intoAmpButtonState){
+                    if(armToPose(154.0)){
+                        runArmRoller();
+                        currentAmpLoadState = DONE;
+                    }
+                }
+                break;
             case DONE:
-                if(!buttonState){
+                if(!transferButtonState){
                     currentAmpLoadState = IDLE;
                 }
                 break;
@@ -158,4 +188,22 @@ void NoteHandler::runArmRoller(){
 }
 double NoteHandler::getClimberPosition(){
     return a_Climber.GetClimberPosition();
+}
+void NoteHandler::manualClimberUp(){
+    a_Climber.runClimberUp();
+}
+void NoteHandler::manualClimberDown(){
+    a_Climber.runClimberDown();
+}
+void NoteHandler::setClimberPosition(){
+    a_Climber.setPosition();
+}
+void NoteHandler::stopClimber(){
+    a_Climber.stopClimber();
+}
+void NoteHandler::pidClimb(){
+    a_Climber.extendClimnber();
+}
+void NoteHandler::moveShooterToAngle(double angle){
+    a_Shooter.moveToAngle(0.0);
 }

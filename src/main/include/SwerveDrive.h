@@ -81,7 +81,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         double getXPose();
         double getYPose();
         double getRotPose();
-        void zeroPose();
+        void zeroPose(frc::Pose2d pose);
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -143,7 +143,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         frc::ProfiledPIDController<units::meters> xProfiledPid;
         frc::ProfiledPIDController<units::meters> yProfiledPid;
 
-        frc::TrapezoidProfile<units::radian>::Constraints rotationalConstraints{units::radians_per_second_t(4.0), units::radians_per_second_squared_t(4.0)};
+        frc::TrapezoidProfile<units::radian>::Constraints rotationalConstraints{units::radians_per_second_t(2.0), units::radians_per_second_squared_t(2.0)};
         frc::ProfiledPIDController<units::radian> rotProfiledPid;
 
 };

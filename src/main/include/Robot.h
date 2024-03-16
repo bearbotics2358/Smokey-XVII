@@ -14,7 +14,6 @@
 #include "photon/PhotonCamera.h"
 #include "photon/PhotonUtils.h"
 #include <frc/smartdashboard/SendableChooser.h>
-#include "LED_DIO.h"
 #include <frc/controller/PIDController.h>
 #include <frc/GenericHID.h>
 #include "NoteHandler.h"
@@ -22,6 +21,7 @@
 #include "Climber.h"
 //#include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
+#include "LED.h"
 
 enum class DriveBackState {
     Inactive,
@@ -54,7 +54,7 @@ class Robot : public frc::TimedRobot {
         void TestInit();
         void TestPeriodic();
 
-        // void SetTargetType(target_type_enum target);
+        //void SetTargetType(LED_STAGE_enum target);
 
 
 
@@ -99,6 +99,7 @@ class Robot : public frc::TimedRobot {
 
 
         //LED_DIO a_LED;
+        LED a_LED;
 
         double state_time;
         double piston_time;
@@ -134,13 +135,11 @@ class Robot : public frc::TimedRobot {
         // Shooter camera
         photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
 
-        enum target_type_enum target_type = target_type_enum::CONE;
-
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
         
         // .0025, .001, .0001
         // .0002, .002, .0025
-         double rotP = 0.00275;
+        double rotP = 0.00275;
         double rotI = 0.001;
         double rotD = 0.0001;
 };

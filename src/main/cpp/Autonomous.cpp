@@ -10,7 +10,7 @@
 Autonomous::Autonomous(Gyro *Gyro, SwerveDrive *SwerveDrive, NoteHandler *NoteHandler):
 a_Gyro(Gyro),
 a_SwerveDrive(SwerveDrive),
-a_NoteHandler(),
+a_NoteHandler(NoteHandler),
 autoDrivePID(.4, .1, 0) 
 {}
 
@@ -105,8 +105,10 @@ void Autonomous::PeriodicDoNothing() {
     a_AutoState0 = nextState;
 }
 
-
+//BLUE LEFT RED LEFT
 void Autonomous::NoteOne() {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(.47), units::meter_t(-.79), units::degree_t(60.0)));
+    a_Gyro->Zero(60.0);
     a_AutoState1 = kShoot1stNote1;
     state_time = gettime_d();
 }
@@ -120,15 +122,21 @@ void Autonomous::PeriodicNoteOne() {
             StopSwerves();
             break;
         case kShoot1stNote1:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle1;
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->indexToShoot();
+                nextState = kAutoIdle1;
+            }
             break;
-        // case kGoTo2ndNote1:
-        //     a_NoteHandler->collectNote(-0.4, false);
-        //     if(a_SwerveDrive -> odometryGoToPose(8.277, -1.912, 0.0)){
-        //         nextState = kShoot2ndNote1;
-        //     }
-        //     break;
+        case kGoTo2ndNote1:
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->collectNote(-0.4, false);
+                if(a_SwerveDrive -> odometryGoToPose(2.902, -1.455, 0.0)){
+                    nextState = kAutoIdle1;
+                }
+            }
+            break;
         // case kShoot2ndNote1:
         //     if(a_SwerveDrive -> odometryGoToPose(3.5, -0.5, 0.0)){
         //         a_NoteHandler->indexToShoot();
@@ -150,8 +158,10 @@ void Autonomous::PeriodicNoteOne() {
     a_AutoState1 = nextState;
 }
 
-
+//BLUE CENTER RED CENTER
 void Autonomous::NoteTwo() {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(1.3), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
     a_AutoState2 = kGoToNote2;   
     state_time = gettime_d();
 }
@@ -161,25 +171,36 @@ void Autonomous::PeriodicNoteTwo() {
     AutoState2 nextState = a_AutoState2;
 
     switch (a_AutoState2) {
-       case kAutoIdle2:
+        case kAutoIdle2:
             StopSwerves();
             break;
-         case kGoToNote2:
-            a_SwerveDrive -> odometryGoToPose(2.9, -1.45, 0.0);
-            nextState = kShootNote2;
-            break;
         case kShootNote2:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle2;
-            break;      
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->indexToShoot();
+                nextState = kGoToNote2;
+            }
+            break;
+         case kGoToNote2:
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->collectNote(-0.4, false);
+                if(a_SwerveDrive -> odometryGoToPose(2.9, 0.0, 0.0)){
+                    nextState = kAutoIdle2;
+                }
+            }
+            break;
+              
     }
     a_AutoState2 = nextState;
 }
 
-
+//BLUE RIGHT RED RIGHT
 void Autonomous::NoteThree() 
 {
-    a_AutoState3 =   kGoToNote3;
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(.47), units::meter_t(0.79), units::degree_t(0.0)));
+    a_Gyro->Zero(300.0);
+    a_AutoState3 =  kGoToNote3;
     state_time = gettime_d();
 }
 
@@ -190,19 +211,30 @@ void Autonomous::PeriodicNoteThree() {
          case kAutoIdle3:
             StopSwerves();
             break;
-        case kGoToNote3:
-            a_SwerveDrive -> odometryGoToPose(2.9, 1.45, 0.0);
-            nextState = kShootNote3;
-            break;
         case kShootNote3:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle3;
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->indexToShoot();
+                nextState = kAutoIdle3;
+            }
             break;
+        case kGoToNote3:
+            if(gettime_d() > state_time + WAIT_TO_SHOOT) {
+                state_time = gettime_d();
+                a_NoteHandler->collectNote(-0.4, false);
+                if(a_SwerveDrive -> odometryGoToPose(2.9, 1.45, 0.0)){
+                    nextState = kShootNote3;
+                }
+            }
+            break;
+        
     }
     a_AutoState3 = nextState;
 }
-
+//RED LEFT
 void Autonomous::NoteFour(){
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(.47), units::meter_t(0.79), units::degree_t(0.0)));
+    a_Gyro->Zero(300.0);
     a_AutoState4 = kGoToNote4;
     state_time = gettime_d();
 }
@@ -376,7 +408,6 @@ bool Autonomous::TurnToAngle(float angle, bool positive) { // rotates bot in pla
 bool Autonomous::DriveDirection(double dist, double angle, double speed, bool fieldOriented) { // true is done, false is not done
     autoDrivePID.SetSetpoint(dist);
     double calcspeed = autoDrivePID.Calculate(a_SwerveDrive->getAvgDistance(), dist);
-    frc::SmartDashboard::PutNumber("calcspeed", calcspeed);
     calcspeed = std::clamp(speed, -.25, .25);
     a_SwerveDrive->driveDirection(calcspeed, angle);    
     if (autoDrivePID.AtSetpoint()) {
