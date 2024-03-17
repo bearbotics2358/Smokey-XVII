@@ -148,7 +148,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
             a_AmpTrap.runRoller();
             a_Shooter.setSpeed(600);
-            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(237.0)){
+            if(a_Shooter.moveToAngle(53.0) && a_AmpTrap.moveToPosition(237.0)){
                 feedToAmp(-.2);
 
                 if(a_AmpTrap.beamBroken()){
