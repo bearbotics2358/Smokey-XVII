@@ -99,7 +99,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_NoteHandler.setShooterAngleToDefault();
-    a_NoteHandler.setClimberPosition();
+    // a_NoteHandler.setClimberPosition();
     
     // if(a_NoteHandler.beamBroken()){
     //     a_LED.SetNoteOnBoard();
@@ -111,7 +111,7 @@ void Robot::RobotPeriodic() {
 
 
     // photon::PhotonPipelineResult result = a_camera.GetLatestResult();
-    double Note_Offset = LimelightHelpers::getTX("limelight-notes");
+    // double Note_Offset = LimelightHelpers::getTX("limelight-notes");
 
     // if (result.HasTargets()) {
     //     frc::SmartDashboard::PutString("Has_AprilTags", "YES");
@@ -131,12 +131,12 @@ void Robot::RobotPeriodic() {
 
 
     a_SwerveDrive.updateOdometry();
-    // frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
+    //frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
 
 
-    frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
-    frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
-    frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
+    // frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
+    // frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
+    // frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
 
     // frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
     // frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
@@ -172,7 +172,7 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     // frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
-    frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
+    //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
 
     
 }
