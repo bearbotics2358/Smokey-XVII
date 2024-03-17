@@ -227,7 +227,7 @@ void Autonomous::PeriodicNoteThree() {
         case kGoToNote3:
             if(gettime_d() < state_time + 2*(WAIT_TO_SHOOT)) {
                 a_NoteHandler->collectNote(-0.4, false);
-                a_SwerveDrive->swerveUpdate(0.0, -0.15, 0.0, true);
+                a_SwerveDrive->swerveUpdate(-0.1, -0.15, 0.0, true);
             }
             else{
                 nextState = kAutoIdle3;
