@@ -114,10 +114,19 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState) {
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
+            if (shooterButtonState) {
+            double rpm = 3500;
+            double angle = 35.0;
+            startShooter(rpm, angle);
+            } 
+            else {
+                stopShooter();
+                moveShooterToAngle(0.0);
+            }
             // if (a_Gamepad.GetRawButton(3)) {
             //     double rpm = 3500;
             //     double angle = 29.0;
@@ -156,6 +165,8 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
                 break;
             case HOLDING:
+                stopShooter();
+                moveShooterToAngle(0.0);
                 if(intoAmpButtonState){
                     if(armToPose(154.0)){
                         runArmRoller();
@@ -169,6 +180,8 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 }
                 break;
             case TOAMP:
+                stopShooter();
+                moveShooterToAngle(0.0);
                 if(intoAmpButtonState){
                     if(armToPose(154.0)){
                         runArmRoller();
@@ -177,6 +190,8 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 }
                 break;
             case DONE:
+                stopShooter();
+                moveShooterToAngle(0.0);
                 if(!transferButtonState){
                     currentAmpLoadState = IDLE;
                 }

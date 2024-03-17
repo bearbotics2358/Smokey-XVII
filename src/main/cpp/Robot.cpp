@@ -251,8 +251,8 @@ void Robot::TeleopPeriodic() {
 
     /* =-=-=-=-=-=-=-=-=-=-= Shooter Controls =-=-=-=-=-=-=-=-=-=-= */
     // getting shooter up to speeed
-    if (a_Gamepad.GetRawButton(3)) {
-        // if (result.HasTargets()) {
+    // if (a_OperatorXboxController.GetRightTriggerAxis() > .75) {
+    //     // if (result.HasTargets()) {
         //     std::span<const photon::PhotonTrackedTarget> targets = result.GetTargets();
         //     for (photon::PhotonTrackedTarget target : targets) {
         //         int id = target.GetFiducialId();
@@ -266,31 +266,34 @@ void Robot::TeleopPeriodic() {
         // } else {
         //     goalYaw = 0.0;
         // }
-        double rpm = 3500;
-        double angle = 35.0;
-        a_NoteHandler.startShooter(rpm, angle);
-    } 
-    else {
-        a_NoteHandler.stopShooter();
-        a_NoteHandler.moveShooterToAngle(0.0);
-    }
+    //     double rpm = 3500;
+    //     double angle = 35.0;
+    //     a_NoteHandler.startShooter(rpm, angle);
+    // } 
+    // else {
+    //     a_NoteHandler.stopShooter();
+    //     a_NoteHandler.moveShooterToAngle(0.0);
+    // }
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    //a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper());
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75);
     // if(a_DriverXboxController.GetAButton()) {
         // if(a_NoteHandler.armToPose(154.0)){
         //     a_NoteHandler.runArmRoller();
         // }
-    if (a_Gamepad.GetRawButton(1)) {
+    if (a_OperatorXboxController.GetLeftTriggerAxis() > .75) {
         a_NoteHandler.collectNote(-0.4, true);
     } else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
         a_NoteHandler.shootNote(-.65);
-    } else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
-        // drop the note
-        a_NoteHandler.dispenseNote();
-    } else {
+    } 
+    // else if (a_Gamepad.GetRawButton(INVERSE_COLLECTOR_BUTTON)) {
+    //     // drop the note
+    //     a_NoteHandler.dispenseNote();
+    //}
+    
+    else {
         a_NoteHandler.stopCollection();
     }
 

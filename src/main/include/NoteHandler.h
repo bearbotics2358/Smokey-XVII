@@ -57,7 +57,7 @@ class NoteHandler {
 
         void setRotPID(double p, double i, double d);
 
-        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState);
+        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState);
 
         void feedToAmp(double speed);
 
