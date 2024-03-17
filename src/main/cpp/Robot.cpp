@@ -491,6 +491,8 @@ void Robot::TestPeriodic() {
     //        // frc::SmartDashboard::PutString("through if?", "NO");
     //     }
     // }
+    frc::SmartDashboard::PutNumber("Current State", a_NoteHandler.currentAmpLoadState);
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75);
     
 }
 

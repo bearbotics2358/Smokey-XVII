@@ -13,7 +13,7 @@ enum AmpLoadState { // Encoders
             HOLDING,
             TOAMP,
             DONE,
-        };
+};
 
 class NoteHandler {
     public:
@@ -73,6 +73,11 @@ class NoteHandler {
         void pidClimb();
 
         bool noteShot = false;
+
+        double state_time = 0.0;
+
+        AmpLoadState currentAmpLoadState;
+
     private:
         Shooter a_Shooter;
         Collector a_Collector;
@@ -80,8 +85,7 @@ class NoteHandler {
         Climber a_Climber;
         AmpTrap a_AmpTrap;
 
-        AmpLoadState currentAmpLoadState;
-
+        
         
 
 };

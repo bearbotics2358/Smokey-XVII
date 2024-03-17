@@ -21,6 +21,7 @@ void Collector::stopCollector() {
     collectorMotor.StopMotor();
 }
 void Collector::indexToCollect(){
+    frc::SmartDashboard::PutString("got to indexToCollect()", "YES");
     indexerMotor.Set(-.2);
 }
 void Collector::indexToShoot() {
