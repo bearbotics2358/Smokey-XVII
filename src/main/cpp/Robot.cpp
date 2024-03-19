@@ -88,7 +88,7 @@ void Robot::RobotInit() {
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
     a_LED.Init();
-    a_LED.SetAngleToNote(0.3);
+    a_LED.SetNoComms();
 
     //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
     //InterpolationValues value = {22.5, 3500};
@@ -100,12 +100,14 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
     a_NoteHandler.setShooterAngleToDefault();
     a_NoteHandler.setClimberPosition();
+
+    a_LED.Update();
     
-    if(a_NoteHandler.beamBroken()){
-        a_LED.SetNoteOnBoard();
-    } else {
-        a_LED.SetMSGIdle();
-    }
+    // if(a_NoteHandler.beamBroken()){
+    //     a_LED.SetNoteOnBoard();
+    // } else {
+    //     a_LED.SetMSGIdle();
+    // }
 
     a_NoteHandler.updateDashboard();
 
