@@ -277,14 +277,15 @@ void Robot::TeleopPeriodic() {
     /* =-=-=-=-=-=-=-=-=-=-= Collector/Indexer Controls =-=-=-=-=-=-=-=-=-=-= */
 
     // start collector
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75);
+    //a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75);
     // if(a_DriverXboxController.GetAButton()) {
         // if(a_NoteHandler.armToPose(154.0)){
         //     a_NoteHandler.runArmRoller();
         // }
     if (a_OperatorXboxController.GetLeftTriggerAxis() > .75) {
         a_NoteHandler.collectNote(-0.4, true);
-    } else if (a_DriverXboxController.GetRightBumper()) {
+    } 
+    else if (a_DriverXboxController.GetRightBumper()) {
         // give note to shooter
         a_NoteHandler.shootNote(-.65);
     } 
@@ -491,8 +492,7 @@ void Robot::TestPeriodic() {
     //        // frc::SmartDashboard::PutString("through if?", "NO");
     //     }
     // }
-    frc::SmartDashboard::PutNumber("Current State", a_NoteHandler.currentAmpLoadState);
-    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75);
+    a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetAButton(), a_DriverXboxController.GetLeftBumper(), a_OperatorXboxController.GetRightTriggerAxis() > .75, a_DriverXboxController.GetRightBumper());
     
 }
 
