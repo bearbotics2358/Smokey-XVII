@@ -1,5 +1,6 @@
 #include <NoteHandler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "misc.h"
 
 
 // Maybe no : after ()
@@ -75,7 +76,9 @@ void NoteHandler::collectNote(double speed, bool doNotIgnoreBeamBreak) {
         stopCollection();
         return;
     }
+
     startCollector(speed);
+    frc::SmartDashboard::PutString("got to indexToCollect()", "YES");
     indexToCollect();
 }
 void NoteHandler::shootNote(double speed){
@@ -114,39 +117,52 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState) {
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
-            // if (a_Gamepad.GetRawButton(3)) {
-            //     double rpm = 3500;
-            //     double angle = 29.0;
-            //     a_NoteHandler.startShooter(rpm, angle);
-            // } 
-            // else {
-            //     a_NoteHandler.stopShooter();
-            //     a_NoteHandler.moveShooterToAngle(0.0);
-            // }
-            a_AmpTrap.moveToPosition(15.0);
+            if (shooterButtonState) {
+                double rpm = 3500;
+                double angle = 40.0;
+                startShooter(rpm, angle);
+            } 
+            else {
+                stopShooter();
+                moveShooterToAngle(0.0);
+            }
+            if(driverShootNote){
+                shootNote(-.25);
+            }
+            else{
+                stopCollector();
+                stopIndexer();
+            }
+           
+            a_AmpTrap.moveToPosition(7.5);
             if(transferButtonState == true){
+                state_time = misc::gettime_d();
                 currentAmpLoadState = LOADING;
             }
             break;
 
         case LOADING:
             if(!transferButtonState){
+                state_time = misc::gettime_d();
                 currentAmpLoadState = IDLE;
             }
             a_AmpTrap.runRoller();
-            a_Shooter.setSpeed(600);
-            if(a_Shooter.moveToAngle(50.0) && a_AmpTrap.moveToPosition(237.0)){
-                feedToAmp(-.2);
-
+            a_Shooter.setSpeed(700);
+            if(a_Shooter.moveToAngle(53.0) && a_AmpTrap.moveToPosition(240.0)){
+                
+                shootNote(-.2);
                 if(a_AmpTrap.beamBroken()){
+                    state_time = misc::gettime_d();
                     shootToAmpMode = true;
                 }
                 if(shootToAmpMode){
                     if(!a_AmpTrap.beamBroken()){
+                        state_time = misc::gettime_d();
+                        
                         a_AmpTrap.stopRoller();
                         stopAll();
                         shootToAmpMode = false;
@@ -156,28 +172,47 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
                 break;
             case HOLDING:
-                if(intoAmpButtonState){
-                    if(armToPose(154.0)){
-                        runArmRoller();
-                        currentAmpLoadState = DONE;
-                    }
-                }
+                stopShooter();
+                moveShooterToAngle(0.0);
                 if(toDefaultPositionButtonState){
                     if(armToPose(10.0)){
+                        state_time = misc::gettime_d();
                         currentAmpLoadState = TOAMP;
+                    }
+                }
+                else if(intoAmpButtonState){
+                    if(armToPose(154.0)){
+                        if(misc::gettime_d() > state_time + 2.0) {
+                            state_time = misc::gettime_d();
+                            frc::SmartDashboard::PutString("waited", "auisgvb;ai F");
+                            runArmRoller();
+                            if(misc::gettime_d() > state_time + 1.0){
+                                a_AmpTrap.stopRoller();
+                                currentAmpLoadState = DONE;
+                            }
+                        }
                     }
                 }
                 break;
             case TOAMP:
+                stopShooter();
+                moveShooterToAngle(0.0);
                 if(intoAmpButtonState){
                     if(armToPose(154.0)){
-                        runArmRoller();
-                        currentAmpLoadState = DONE;
+                        if(misc::gettime_d() > state_time + 2.0) {
+                            runArmRoller();
+                            state_time = misc::gettime_d();
+                            currentAmpLoadState = DONE;
+                        }
                     }
                 }
                 break;
             case DONE:
+                stopShooter();
+                a_AmpTrap.stopRoller();
+                moveShooterToAngle(10.0);
                 if(!transferButtonState){
+                    state_time = misc::gettime_d();
                     currentAmpLoadState = IDLE;
                 }
                 break;

@@ -139,7 +139,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         frc::SwerveDriveOdometry<4> a_odometry;
 
         
-        frc::TrapezoidProfile<units::meters>::Constraints linearConstraints{units::meters_per_second_t(1.0), units::meters_per_second_squared_t(1.0)};
+        frc::TrapezoidProfile<units::meters>::Constraints linearConstraints{units::meters_per_second_t(0.5), units::meters_per_second_squared_t(0.5)};
         frc::ProfiledPIDController<units::meters> xProfiledPid;
         frc::ProfiledPIDController<units::meters> yProfiledPid;
 

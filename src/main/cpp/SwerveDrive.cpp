@@ -347,7 +347,7 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(yDesired)), -.25, .25);
         double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
 
-        swerveUpdate(xSpeed, ySpeed, -rotSpeed, true);
+        swerveUpdate(xSpeed, ySpeed, 0.0, true);
 
         return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());     
 }
