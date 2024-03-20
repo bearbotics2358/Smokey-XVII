@@ -55,7 +55,7 @@ bool AmpTrap::moveToPosition(double desiredaAngle){
     double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.2, .2);
     rotationMotor.Set(speed);
-    if(fabs(angle - desiredaAngle) <= 3.0){
+    if(fabs(angle - desiredaAngle) <= 6.0){
         rotationMotor.StopMotor();
         return true;
     }

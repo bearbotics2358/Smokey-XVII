@@ -29,6 +29,8 @@ double degreesDiff(double a, double b);
 // gets seconds elapsed since the epoch of the system clock
 double getSeconds();
 
+double gettime_d();
+
 
 //Provide IDs for Swerve Modules, making for easier module switching at comp
 int GetFLDrive();
