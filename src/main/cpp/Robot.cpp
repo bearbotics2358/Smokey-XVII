@@ -98,10 +98,13 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    // a_LED.Update();
+    a_LED.SetNoComms();
+    return;
+
     a_NoteHandler.setShooterAngleToDefault();
     a_NoteHandler.setClimberPosition();
 
-    a_LED.Update();
     
     // if(a_NoteHandler.beamBroken()){
     //     a_LED.SetNoteOnBoard();

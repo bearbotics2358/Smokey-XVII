@@ -24,6 +24,20 @@ void LED::Init()
 {
 	int i;
 
+	/*/
+	sport = new SerialPort(baud);
+	sport->DisableTermination();
+	sport->SetWriteBufferMode(SerialPort::kFlushOnAccess);
+	sport->SetFlowControl(SerialPort::kFlowControl_None);
+	sport->SetReadBufferSize(0);
+	*/
+
+	m_serial.DisableTermination();
+	m_serial.SerialPort::kFlushOnAccess;
+	m_serial.SetFlowControl(frc::SerialPort::kFlowControl_None);
+	m_serial.SetReadBufferSize(0);
+
+
 	rx_index = 0;
 	for(i = 0; i < BUFF_SIZE; i++) {
 		rx_buff[i] = 0;
@@ -42,6 +56,8 @@ void LED::Update()
 	// and add to rx buffer
 	// when '\r' (or '\t') found, process reading
 	
+	printf("Hi there\n");
+
 	while (m_serial.GetBytesReceived() > 0) {
 		m_serial.Read(&rx_buff[rx_index], 1);
 
@@ -122,10 +138,17 @@ void LED::SetMSGIdle() {
 }
 
 void LED::SetNoComms() {
+	int ret = 0;
+
+	printf("in SetNoComms\n");
 	char cmd[10];
 	strncpy(cmd, "2,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
+	printf("about to Write\n");
+	ret = m_serial.Write(cmd, strlen(cmd));
+	printf("written: %d characters\n", ret);
+	printf("about to Flush\n");
 	m_serial.Flush();
+	printf("flushed\n\n");
 
 }
 
