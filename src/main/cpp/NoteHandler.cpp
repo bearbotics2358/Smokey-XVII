@@ -110,6 +110,7 @@ void NoteHandler::updateDashboard(){
     frc::SmartDashboard::PutBoolean("AmpTrap BeamBreak", a_AmpTrap.beamBroken());
     frc::SmartDashboard::PutBoolean("Indexer BeamBreak", a_Collector.beamBroken());
     frc::SmartDashboard::PutNumber("Arm Angle", a_AmpTrap.GetArmAngle());
+    frc::SmartDashboard::PutNumber("Extension Position", a_AmpTrap.GetExtensionPosition());
 }
 bool NoteHandler::armToPose(double angle){
     return a_AmpTrap.moveToPosition(angle);
@@ -117,10 +118,11 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote) {
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
+            a_AmpTrap.stopRoller();
             if (shooterButtonState) {
                 double rpm = 3500;
                 double angle = 40.0;
@@ -130,15 +132,19 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 stopShooter();
                 moveShooterToAngle(0.0);
             }
-            if(driverShootNote){
-                shootNote(-.25);
-            }
-            else{
-                stopCollector();
-                stopIndexer();
+            if (collectorButton) {
+                collectNote(-0.4, true);
+            } 
+            else if (driverShootNote) {
+        // give note to shooter
+                shootNote(-.65);
+            } 
+            else {
+                stopCollection();
             }
            
             a_AmpTrap.moveToPosition(7.5);
+            a_AmpTrap.extendExtender(.03);
             if(transferButtonState == true){
                 state_time = misc::gettime_d();
                 currentAmpLoadState = LOADING;
@@ -152,7 +158,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
             a_AmpTrap.runRoller();
             a_Shooter.setSpeed(700);
-            if(a_Shooter.moveToAngle(53.0) && a_AmpTrap.moveToPosition(240.0)){
+            if(a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(54.0)){
                 
                 shootNote(-.2);
                 if(a_AmpTrap.beamBroken()){
@@ -175,36 +181,59 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 stopShooter();
                 moveShooterToAngle(0.0);
                 if(toDefaultPositionButtonState){
-                    if(armToPose(10.0)){
+                    if(armToPose(5.0)){
                         state_time = misc::gettime_d();
                         currentAmpLoadState = TOAMP;
                     }
                 }
                 else if(intoAmpButtonState){
-                    if(armToPose(154.0)){
-                        if(misc::gettime_d() > state_time + 2.0) {
-                            state_time = misc::gettime_d();
-                            frc::SmartDashboard::PutString("waited", "auisgvb;ai F");
+                    if(a_AmpTrap.extendExtender(2.88) && armToPose(125.0)){
+                        //if(misc::gettime_d() > state_time + 2.0) {
                             runArmRoller();
-                            if(misc::gettime_d() > state_time + 1.0){
-                                a_AmpTrap.stopRoller();
-                                currentAmpLoadState = DONE;
-                            }
-                        }
+                            state_time = misc::gettime_d();
+                            currentAmpLoadState = SCORE;
+                        //}
                     }
+                    // if(a_AmpTrap.extendExtender(2.88) && armToPose(140.0)){
+                    //     if(misc::gettime_d() > state_time + 2.0) {
+
+                    //         runArmRoller();
+                    //         if(misc::gettime_d() > state_time + 2.0){
+                    //             state_time = misc::gettime_d();
+                    //             a_AmpTrap.stopRoller();
+                    //             currentAmpLoadState = DONE;
+                    //         }
+                    //     }
+                    //     }
                 }
                 break;
             case TOAMP:
                 stopShooter();
                 moveShooterToAngle(0.0);
                 if(intoAmpButtonState){
-                    if(armToPose(154.0)){
+                    //
+                    if(a_AmpTrap.extendExtender(2.88) && armToPose(150.0)){
                         if(misc::gettime_d() > state_time + 2.0) {
                             runArmRoller();
                             state_time = misc::gettime_d();
                             currentAmpLoadState = DONE;
                         }
                     }
+                }
+                break;
+            case SCORE:
+                if(misc::gettime_d() > state_time + 1.0){
+                                state_time = misc::gettime_d();
+                                a_AmpTrap.stopRoller();
+                                currentAmpLoadState = AWAYFROMAMP;
+                }
+                break;
+            case AWAYFROMAMP:
+                if(toDefaultPositionButtonState){
+                    a_AmpTrap.moveToPosition(7.5);
+                    state_time = misc::gettime_d();
+                    currentAmpLoadState = DONE;
+
                 }
                 break;
             case DONE:
@@ -241,4 +270,10 @@ void NoteHandler::pidClimb(){
 }
 void NoteHandler::moveShooterToAngle(double angle){
     a_Shooter.moveToAngle(0.0);
+}
+void NoteHandler::setExtensionPosition(){
+    a_AmpTrap.setPosition();
+}
+void NoteHandler::runExtension(){
+    a_AmpTrap.extendExtender(1.0);
 }
