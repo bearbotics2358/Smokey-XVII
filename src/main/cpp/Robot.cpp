@@ -382,7 +382,7 @@ void Robot::TeleopPeriodic() {
     //     a_DriverXboxController.GetRightBumper(), //shoot note
     //     a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
     if(a_DriverXboxController.GetRightTriggerAxis() > .5){
-        a_SwerveDrive.odometryGoToPose(0.0, 0.0, M_PI/2);
+        a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI/2);
     }
     else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);

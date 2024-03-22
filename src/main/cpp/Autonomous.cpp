@@ -218,10 +218,9 @@ void Autonomous::PeriodicNoteTwo() {
 //BLUE RIGHT RED RIGHT
 void Autonomous::NoteThree() 
 {
-   a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(.47), units::meter_t(-0.79), units::degree_t(0.0)));
-    //a_Gyro->Zero(0.0);
-    a_Gyro->setYaw(60.0);
-    a_AutoState3 = kShootFirstNote3;   
+   a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(1.3), units::meter_t(-0.79), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState3 = kRotateToShoot3;   
     state_time = misc::gettime_d();
 }
 
@@ -233,6 +232,11 @@ void Autonomous::PeriodicNoteThree() {
         case kAutoIdle3:
             StopSwerves();
             break;
+        case kRotateToShoot3:
+            if(a_SwerveDrive->odometryGoToPose(.47, -.79, 60.0)){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle3;
+            }
         case kShootFirstNote3:
             
             if(misc::gettime_d() > state_time + 1.0){

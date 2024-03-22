@@ -48,6 +48,7 @@ enum AutoState2 { // T.O.F and Encoders
 // states for 3 ball auto
 enum AutoState3 {
     kAutoIdle3,
+    kRotateToShoot3,
     kShootFirstNote3,
     kGoToSecondNote3,
     kGoToSpeaker3,
