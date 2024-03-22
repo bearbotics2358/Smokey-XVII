@@ -135,9 +135,9 @@ void Robot::RobotPeriodic() {
     //frc::SmartDashboard::PutNumber("Shooter Angle", a_Shooter.GetShooterAngle().value());
 
 
-    // frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
-    // frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
-    // frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
+    frc::SmartDashboard::PutNumber("xPose", (a_SwerveDrive.getXPose()));
+    frc::SmartDashboard::PutNumber("yPose", (a_SwerveDrive.getYPose()));
+    frc::SmartDashboard::PutNumber("degreePose", (a_SwerveDrive.getRotPose()));
 
     // frc::SmartDashboard::PutNumber("FL radians", a_FLModule.getAngle());
     // frc::SmartDashboard::PutNumber("FR Radians", a_FRModule.getAngle());
@@ -174,7 +174,6 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
     //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
-
     
 }
 
@@ -206,10 +205,11 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-    a_NoteHandler.startShooter(3500.0, 30.0); // change angle later
+    //a_NoteHandler.startShooter(3500.0, 30.0); // change angle later
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
     a_Autonomous.PeriodicAuto(SelectedRoute);
     EnabledPeriodic();
+    a_NoteHandler.startShooter(3500, 40.0);
 }
 
 void Robot::TeleopInit() {
@@ -373,20 +373,21 @@ void Robot::TeleopPeriodic() {
 
 
 
-    // if(a_DriverXboxController.GetRightTriggerAxis() > .5){
-    //     a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI);
-    // }
-    a_NoteHandler.shootToAmp(
-        a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
-        a_DriverXboxController.GetAButton(), //shoot into amp
-        a_DriverXboxController.GetLeftBumper(), //bring to default amp
-        a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
-        a_DriverXboxController.GetRightBumper(), //shoot note
-        a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
     
-    if (!inDeadzone) {
+    // a_NoteHandler.shootToAmp(
+    //     a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
+    //     a_DriverXboxController.GetAButton(), //shoot into amp
+    //     a_DriverXboxController.GetLeftBumper(), //bring to default amp
+    //     a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
+    //     a_DriverXboxController.GetRightBumper(), //shoot note
+    //     a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
+    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+        a_SwerveDrive.odometryGoToPose(0.0, 0.0, M_PI/2);
+    }
+    else if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-}   //else if(a_DriverXboxController.GetRightBumper()) //{
+    }   
+    //else if(a_DriverXboxController.GetRightBumper()) //{
 
         //  if (result.HasTargets()) {
         //      photon::PhotonTrackedTarget target = result.GetBestTarget();
@@ -400,9 +401,9 @@ void Robot::TeleopPeriodic() {
         a_SwerveDrive.stop();
     }
 
-    // if(a_DriverXboxController.GetLeftBumperPressed()){
-    //     a_SwerveDrive.zeroPose();
-    // }
+    if(a_DriverXboxController.GetLeftBumperPressed()){
+        a_SwerveDrive.zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
+    }
    
     // if (result.HasTargets()) {
     //     frc::SmartDashboard::PutString("HAS_TARGETS", "YES");

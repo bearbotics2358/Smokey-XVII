@@ -39,16 +39,20 @@ enum AutoState1 { // Encoders
 
 enum AutoState2 { // T.O.F and Encoders
     kAutoIdle2,
-    kGoToNote2,
-    kShootNote2
+    kShootFirstNote2,
+    kGoToSecondNote2,
+    kGoToSpeaker2,
+    kShootSecondNote2
     };
 
 // states for 3 ball auto
 enum AutoState3 {
     kAutoIdle3,
-    kGoToNote3,
-    kShootNote3
-};
+    kShootFirstNote3,
+    kGoToSecondNote3,
+    kGoToSpeaker3,
+    kShootSecondNote3
+    };
 
 enum AutoState4 {
     kAutoIdle4,
