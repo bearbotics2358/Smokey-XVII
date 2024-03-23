@@ -24,6 +24,8 @@ public:
 	LED();
 	virtual ~LED() = default;
 
+
+
 	void Init();
 	void Update();
 
@@ -41,10 +43,19 @@ public:
 
 private:
 	
-	frc::SerialPort m_serial;
+	frc::SerialPort* m_pserial;
 	char rx_buff[BUFF_SIZE];
 	int rx_index = 0;
+	float valAngle  = 0;
 	//LED_STAGE_enum target_type = LED_STAGE_enum::WHITE;
+	RIO_msgs_enum LED_prevCommand = RIO_msgs_enum::MSG_IDLE;
+	RIO_msgs_enum LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+	void SendWhiteMSG();
+	void SendIdleMSG();
+	void SendNoCommsMSG();
+	void SendNoteOnBoardMSG();
+	void SendAngleToNoteMSG(float angle);
+	void SendShooterReadyMSG();
 } ;
 
 #endif

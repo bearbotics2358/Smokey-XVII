@@ -9,8 +9,8 @@
 
 LED::LED()
 #ifdef COMP_BOT  // Not available on the practice bot
-:
-	m_serial(BAUD_RATE_ARDUINO, USB_PORT_ARDUINO, DATA_BITS_ARDUINO, PARITY_ARDUINO, STOP_BITS_ARDUINO)
+// :
+	// m_serial(BAUD_RATE_ARDUINO, USB_PORT_ARDUINO, DATA_BITS_ARDUINO, PARITY_ARDUINO, STOP_BITS_ARDUINO)
 #endif
 	// comments from 2018:
 	// USB1 is the onboard port closest to the center of the rio
@@ -23,6 +23,23 @@ LED::LED()
 void LED::Init()
 {
 	int i;
+	LED_prevCommand = LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+
+	/*
+	sport = new SerialPort(baud);
+	sport->DisableTermination();
+	sport->SetWriteBufferMode(SerialPort::kFlushOnAccess);
+	sport->SetFlowControl(SerialPort::kFlowControl_None);
+	sport->SetReadBufferSize(0);
+	*/
+
+	m_pserial = new frc::SerialPort(BAUD_RATE_ARDUINO, USB_PORT_ARDUINO, DATA_BITS_ARDUINO, PARITY_ARDUINO, STOP_BITS_ARDUINO);
+	m_pserial->DisableTermination();
+	m_pserial->frc::SerialPort::kFlushOnAccess;
+	m_pserial->SetFlowControl(frc::SerialPort::kFlowControl_None);
+	m_pserial->SetReadBufferSize(0);
+	m_pserial->SetWriteBufferMode(frc::SerialPort::kFlushOnAccess);
+
 
 	rx_index = 0;
 	for(i = 0; i < BUFF_SIZE; i++) {
@@ -42,8 +59,10 @@ void LED::Update()
 	// and add to rx buffer
 	// when '\r' (or '\t') found, process reading
 	
-	while (m_serial.GetBytesReceived() > 0) {
-		m_serial.Read(&rx_buff[rx_index], 1);
+	// printf("LED: in Update, attempting to receive\n");
+
+	while (m_pserial->GetBytesReceived() > 0) {
+		m_pserial->Read(&rx_buff[rx_index], 1);
 
 		//printf("LED LED LED LED: %c\n", rx_buff[rx_index]);
  
@@ -60,9 +79,13 @@ void LED::Update()
 			// terminate the report string
 			rx_buff[rx_index] = 0;
 
+			// print the report:
+			printf("RX: %s\n", rx_buff);
+			m_pserial->Flush();
+
 			ProcessReport();
 			
-			printf("LED report: rx_buff\n");
+			// printf("LED report: rx_buff\n");
 
 			// reset for next report
 			rx_index = 0;
@@ -71,6 +94,40 @@ void LED::Update()
 			if(rx_index < BUFF_SIZE - 1) {
 				rx_index++;
 			}
+		}
+	}
+
+	if(LED_currentCommand != LED_prevCommand){
+		LED_prevCommand = LED_currentCommand;
+		switch (LED_currentCommand)
+		{
+		case RIO_msgs_enum::WHITE:
+			SendWhiteMSG();
+			break;
+
+	    case RIO_msgs_enum::MSG_IDLE:
+			SendIdleMSG();
+			break;
+
+
+        case RIO_msgs_enum::NO_COMMS:
+			SendNoCommsMSG();
+			break;
+
+ 		 case RIO_msgs_enum::NOTE_ON_BOARD:
+			SendNoteOnBoardMSG();
+			break;	
+
+ 		 case RIO_msgs_enum::ANGLE_TO_NOTE:
+			SendAngleToNoteMSG(valAngle);
+			break;	
+
+		 case RIO_msgs_enum::SHOOTER_READY:
+			SendShooterReadyMSG();
+			break;	
+
+		default: 
+			break;
 		}
 	}
 #endif
@@ -106,52 +163,99 @@ void LED::ProcessReport()
 // }
 
 void LED::SetWhite() {
+
+	LED_currentCommand = RIO_msgs_enum::WHITE;
+
+}
+
+
+void LED::SendWhiteMSG() {
 	char cmd[10];
 	strncpy(cmd, "0,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	m_pserial->Write(cmd, strlen(cmd));
+	m_pserial->Flush();
 	
 }
 
-void LED::SetMSGIdle() {
+
+void LED::SetMSGIdle(){
+
+	LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+}
+
+
+void LED::SendIdleMSG() {
 	char cmd[10];
 	strncpy(cmd, "1,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	m_pserial->Write(cmd, strlen(cmd));
+	m_pserial->Flush();
 
 }
 
-void LED::SetNoComms() {
+void LED::SetNoComms(){
+
+LED_currentCommand = RIO_msgs_enum::NO_COMMS;
+}
+
+
+void LED::SendNoCommsMSG() {
+	int ret = 0;
+
+	printf("in SetNoComms\n");
 	char cmd[10];
 	strncpy(cmd, "2,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	printf("about to Write: %s\n", cmd);
+	ret = m_pserial->Write(cmd, strlen(cmd));
+	printf("written: %d characters\n", ret);
+	printf("about to Flush\n");
+	m_pserial->Flush();
+	printf("flushed\n\n");
 
 }
 
-void LED::SetNoteOnBoard() {
+
+void LED::SetNoteOnBoard(){
+LED_currentCommand = RIO_msgs_enum::NOTE_ON_BOARD;
+}
+
+
+
+void LED::SendNoteOnBoardMSG() {
 	char cmd[10];
 	strncpy(cmd, "3,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	m_pserial->Write(cmd, strlen(cmd));
+	m_pserial->Flush();
 
 
 }
 
-void LED::SetAngleToNote(float angle) {
+
+void LED::SetAngleToNote(float inputAngle){
+valAngle = inputAngle;
+LED_currentCommand = RIO_msgs_enum::ANGLE_TO_NOTE;
+}
+
+
+
+void LED::SendAngleToNoteMSG(float angle) {
 	char cmd[10];
 	sprintf(cmd, "4,1,%1.2f\r\n", angle);
 	printf("%s\n", cmd);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	m_pserial->Write(cmd, strlen(cmd));
+	m_pserial->Flush();
 
 }
 
-void LED::SetShooterReady() {
+void LED::SetShooterReady(){
+
+LED_currentCommand = RIO_msgs_enum::SHOOTER_READY;
+}
+
+void LED::SendShooterReadyMSG() {
 	char cmd[10];
 	strncpy(cmd, "5,0\r\n", 8);
-	m_serial.Write(cmd, strlen(cmd));
-	m_serial.Flush();
+	m_pserial->Write(cmd, strlen(cmd));
+	m_pserial->Flush();
 
 }
 

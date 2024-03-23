@@ -28,7 +28,6 @@ a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_Gamepad(4),
 a_NoteHandler(),
-//a_LED(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
@@ -99,8 +98,12 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    a_LED.Update();
+
     a_NoteHandler.setShooterAngleToDefault();
+
     // a_NoteHandler.setClimberPosition();
+
     
     // if(a_NoteHandler.beamBroken()){
     //     a_LED.SetNoteOnBoard();

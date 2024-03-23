@@ -218,10 +218,10 @@ constexpr units::angle::radian_t TARGET_PITCH = units::angle::radian_t(0.0);
 /* ============= Arduino ============= */
 
 #define BAUD_RATE_ARDUINO 115200
-#define USB_PORT_ARDUINO frc::SerialPort::kOnboard
+#define USB_PORT_ARDUINO frc::SerialPort::kUSB
 #define DATA_BITS_ARDUINO 8
 #define PARITY_ARDUINO frc::SerialPort::kParity_None
-#define STOP_BITS_ARDUINO frc::SerialPort::kStopBits_One
+#define STOP_BITS_ARDUINO frc::SerialPort::kStopBits_Two
 
 #define ARDUINO_DIO_PIN 1
 
