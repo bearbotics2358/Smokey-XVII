@@ -19,7 +19,7 @@
 #include "NoteHandler.h"
 #include "ArmAngle.h"
 #include "Climber.h"
-//#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
 #include "LED.h"
 
@@ -34,7 +34,6 @@ class Robot : public frc::TimedRobot {
         Robot();
         void RobotInit();
         void RobotPeriodic();
-
         void DisabledInit();
         void DisabledPeriodic();
 
@@ -99,9 +98,9 @@ class Robot : public frc::TimedRobot {
 
 
         //LED_DIO a_LED;
+
         LED a_LED;
-        double LED_state_t = 0;
-        int LED_blink_state = 0;
+
 
 
         double state_time;
@@ -143,6 +142,6 @@ class Robot : public frc::TimedRobot {
         // .0025, .001, .0001
         // .0002, .002, .0025
         double rotP = 0.00275;
-        double rotI = 0.001;
+        double rotI = 0.00;
         double rotD = 0.0001;
 };

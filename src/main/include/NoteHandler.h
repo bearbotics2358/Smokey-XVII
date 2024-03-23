@@ -11,9 +11,11 @@ enum AmpLoadState { // Encoders
             IDLE = 0,
             LOADING,
             HOLDING,
+            SCORE,
             TOAMP,
+            AWAYFROMAMP,
             DONE,
-        };
+};
 
 class NoteHandler {
     public:
@@ -57,7 +59,7 @@ class NoteHandler {
 
         void setRotPID(double p, double i, double d);
 
-        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState);
+        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton);
 
         void feedToAmp(double speed);
 
@@ -72,7 +74,16 @@ class NoteHandler {
         void stopClimber();
         void pidClimb();
 
+        void setExtensionPosition();
+
+        void runExtension();
+
         bool noteShot = false;
+
+        double state_time = 0.0;
+
+        AmpLoadState currentAmpLoadState;
+
     private:
         Shooter a_Shooter;
         Collector a_Collector;
@@ -80,8 +91,7 @@ class NoteHandler {
         Climber a_Climber;
         AmpTrap a_AmpTrap;
 
-        AmpLoadState currentAmpLoadState;
-
+        
         
 
 };

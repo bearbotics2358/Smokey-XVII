@@ -28,4 +28,7 @@ class Shooter{
     
       
         LimitSwitch shooterLimitSwitch;
+
+        units::angle::turn_t zeroShooter{units::degree_t{0.0}};
+        bool shooterAlreadyZeroed = false;
 };

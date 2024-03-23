@@ -10,7 +10,7 @@ class AmpTrap {
         AmpTrap(int rollerMotorID, int rotationMotorID, int extensionMotorID); 
         void runRoller();
         void stopRoller();
-        void extendExtender();  
+        bool extendExtender(double goal);  
         double extensionPosition();      
         double GetExtensionPosition(); 
         void setPosition();

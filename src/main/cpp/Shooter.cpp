@@ -62,7 +62,12 @@ double Shooter::getSpeed(){
 }
 void Shooter::setShooterAngle(){ 
     if(shooterLimitSwitch.limitSwitchPressed()){
-        pivotMotor.SetPosition(units::angle::turn_t{units::degree_t{0.0}});
+        if(!shooterAlreadyZeroed){
+            pivotMotor.SetPosition(zeroShooter);
+            shooterAlreadyZeroed = true;
+        }
+    } else{
+        shooterAlreadyZeroed = false;
     }
 }
 void Shooter::stopShooter(){
