@@ -7,7 +7,7 @@ class Climber {
     public:
         Climber(int climberMotorID, int topLimitSwitchPort);//, int topLimitSwitchPort);//,int topPort, int bottomPort);          
         void stopClimber();
-        void extendClimnber();
+        bool extendClimnber(double position);
         void retractClimber();
         double GetClimberPosition();
         void setPosition();

@@ -9,7 +9,8 @@ a_Collector(COLLECTOR_MOTOR_ID, INDEXER_MOTOR_ID),
 a_Shooter(SHOOTER_LEFT_MOTOR_ID, SHOOTER_RIGHT_MOTOR_ID, PIVOT_MOTOR_ID, SHOOTER_LIMIT_SWITCH_PORT),
 a_Climber(CLIMBER_MOTOR_ID, TOP_LIMIT_SWITCH_PORT),
 a_AmpTrap(ROLLER_ID, ARM_PIVOT_MOTOR_ID, EXTENSION_ID),
-currentAmpLoadState(IDLE)
+currentAmpLoadState(IDLE),
+currentClimbState(CLIMBIDLE)
 {
  // NWOTE HWANDLWER
 }
@@ -156,95 +157,148 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 state_time = misc::gettime_d();
                 currentAmpLoadState = IDLE;
             }
-            a_AmpTrap.runRoller();
-            a_Shooter.setSpeed(700);
-            if(a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(54.0)){
-                
-                shootNote(-.2);
-                if(a_AmpTrap.beamBroken()){
+            if(transferToAmp()) {
+                state_time = misc::gettime_d();
+                currentAmpLoadState = HOLDING;
+            }
+           break;
+        case HOLDING:
+            stopShooter();
+            moveShooterToAngle(0.0);
+            if(toDefaultPositionButtonState){
+                if(armToPose(5.0)){
                     state_time = misc::gettime_d();
-                    shootToAmpMode = true;
+                    currentAmpLoadState = TOAMP;
                 }
-                if(shootToAmpMode){
-                    if(!a_AmpTrap.beamBroken()){
+            } else if(intoAmpButtonState){
+                if(a_AmpTrap.extendExtender(2.88) && armToPose(125.0)){
+                    //if(misc::gettime_d() > state_time + 2.0) {
+                        runArmRoller();
                         state_time = misc::gettime_d();
-                        
-                        a_AmpTrap.stopRoller();
-                        stopAll();
-                        shootToAmpMode = false;
-                        currentAmpLoadState = HOLDING;
+                        currentAmpLoadState = SCORE;
+                    //}
+                }
+                // if(a_AmpTrap.extendExtender(2.88) && armToPose(140.0)){
+                //     if(misc::gettime_d() > state_time + 2.0) {
+
+                //         runArmRoller();
+                //         if(misc::gettime_d() > state_time + 2.0){
+                //             state_time = misc::gettime_d();
+                //             a_AmpTrap.stopRoller();
+                //             currentAmpLoadState = DONE;
+                //         }
+                //     }
+                //     }
+            }
+                break;
+        case TOAMP:
+            stopShooter();
+            moveShooterToAngle(0.0);
+            if(intoAmpButtonState){
+                //
+                if(a_AmpTrap.extendExtender(2.88) && armToPose(150.0)){
+                    if(misc::gettime_d() > state_time + 2.0) {
+                        runArmRoller();
+                        state_time = misc::gettime_d();
+                        currentAmpLoadState = DONE;
                     }
                 }
             }
-                break;
-            case HOLDING:
-                stopShooter();
-                moveShooterToAngle(0.0);
-                if(toDefaultPositionButtonState){
-                    if(armToPose(5.0)){
-                        state_time = misc::gettime_d();
-                        currentAmpLoadState = TOAMP;
-                    }
-                }
-                else if(intoAmpButtonState){
-                    if(a_AmpTrap.extendExtender(2.88) && armToPose(125.0)){
-                        //if(misc::gettime_d() > state_time + 2.0) {
-                            runArmRoller();
+            break;
+        case SCORE:
+            if(misc::gettime_d() > state_time + 1.0){
                             state_time = misc::gettime_d();
-                            currentAmpLoadState = SCORE;
-                        //}
-                    }
-                    // if(a_AmpTrap.extendExtender(2.88) && armToPose(140.0)){
-                    //     if(misc::gettime_d() > state_time + 2.0) {
+                            a_AmpTrap.stopRoller();
+                            currentAmpLoadState = AWAYFROMAMP;
+            }
+            break;
+        case AWAYFROMAMP:
+            if(toDefaultPositionButtonState){
+                a_AmpTrap.moveToPosition(7.5);
+                state_time = misc::gettime_d();
+                currentAmpLoadState = DONE;
 
-                    //         runArmRoller();
-                    //         if(misc::gettime_d() > state_time + 2.0){
-                    //             state_time = misc::gettime_d();
-                    //             a_AmpTrap.stopRoller();
-                    //             currentAmpLoadState = DONE;
-                    //         }
-                    //     }
-                    //     }
-                }
-                break;
-            case TOAMP:
-                stopShooter();
-                moveShooterToAngle(0.0);
-                if(intoAmpButtonState){
-                    //
-                    if(a_AmpTrap.extendExtender(2.88) && armToPose(150.0)){
-                        if(misc::gettime_d() > state_time + 2.0) {
-                            runArmRoller();
-                            state_time = misc::gettime_d();
-                            currentAmpLoadState = DONE;
-                        }
-                    }
-                }
-                break;
-            case SCORE:
-                if(misc::gettime_d() > state_time + 1.0){
-                                state_time = misc::gettime_d();
-                                a_AmpTrap.stopRoller();
-                                currentAmpLoadState = AWAYFROMAMP;
-                }
-                break;
-            case AWAYFROMAMP:
-                if(toDefaultPositionButtonState){
-                    a_AmpTrap.moveToPosition(7.5);
-                    state_time = misc::gettime_d();
-                    currentAmpLoadState = DONE;
-
-                }
-                break;
-            case DONE:
-                stopShooter();
-                a_AmpTrap.stopRoller();
-                moveShooterToAngle(10.0);
-                if(!transferButtonState){
-                    state_time = misc::gettime_d();
-                    currentAmpLoadState = IDLE;
-                }
-                break;
+            }
+            break;
+        case DONE:
+            stopShooter();
+            a_AmpTrap.stopRoller();
+            moveShooterToAngle(10.0);
+            if(!transferButtonState){
+                state_time = misc::gettime_d();
+                currentAmpLoadState = IDLE;
+            }
+            break;
+    }
+}
+void NoteHandler::climbControl(bool climbButton){
+    frc::SmartDashboard::PutNumber("Current Climb State", currentClimbState);
+    switch(currentClimbState){
+        case CLIMBIDLE:
+            if(climbButton){
+                printf("in CLIMBIDLE\n");
+                state_time = misc::gettime_d();
+                currentClimbState = BRINGCLIMBERSUP;
+            }
+            break;
+        case BRINGCLIMBERSUP:
+            if(a_Climber.extendClimnber(4.0)){
+                printf("in BRINGCLIMBERSUP\n");
+                state_time = misc::gettime_d();
+                currentClimbState = TRANSFERNOTE;
+            }
+            break;
+        case TRANSFERNOTE:
+            if(transferToAmp()){
+                state_time = misc::gettime_d();
+                currentClimbState = EXTENSION;
+            }
+            break;
+        case EXTENSION:
+            // 2.88 in what units?
+            if(a_AmpTrap.extendExtender(15.75)){
+                state_time = misc::gettime_d();
+                currentClimbState = CLIMB;
+            }
+            break;
+        case CLIMB:
+            // Climnber???
+            a_AmpTrap.extendExtender(15.75);
+            if(a_Climber.extendClimnber(18.0)){
+                state_time = misc::gettime_d();
+                currentClimbState = MOVEARM;
+            }
+            break;
+        case MOVEARM:
+            a_AmpTrap.extendExtender(15.75);
+            if(a_AmpTrap.moveToPosition(240.0)){
+                state_time = misc::gettime_d();
+                currentClimbState = TRAP;
+            }
+            break;
+        case TRAP:
+            a_AmpTrap.extendExtender(15.75);
+            a_AmpTrap.moveToPosition(240.0);
+            runArmRoller();
+            if(misc::gettime_d() > state_time + 0.5){
+                state_time = misc::gettime_d();
+                currentClimbState = HITNOTE;
+            }
+            break;
+        case HITNOTE:
+            a_AmpTrap.moveToPosition(163.0);
+            if(misc::gettime_d() > state_time + 1.0 && a_AmpTrap.moveToPosition(240.0)) {
+                state_time = misc::gettime_d();
+                currentClimbState = DONECLIMBING;
+            }
+            break;
+        case DONECLIMBING:
+            a_AmpTrap.stopRoller();
+            stopAll();
+            a_AmpTrap.stopArm();
+            a_AmpTrap.stopExtension();
+            a_Climber.stopClimber();
+            break;
     }
 }
 void NoteHandler::runArmRoller(){
@@ -266,14 +320,39 @@ void NoteHandler::stopClimber(){
     a_Climber.stopClimber();
 }
 void NoteHandler::pidClimb(){
-    a_Climber.extendClimnber();
+    a_Climber.extendClimnber(18.0);
 }
-void NoteHandler::moveShooterToAngle(double angle){
-    a_Shooter.moveToAngle(0.0);
+bool NoteHandler::moveShooterToAngle(double angle){
+    return a_Shooter.moveToAngle(0.0);
 }
 void NoteHandler::setExtensionPosition(){
     a_AmpTrap.setPosition();
 }
-void NoteHandler::runExtension(){
-    a_AmpTrap.extendExtender(1.0);
+void NoteHandler::runExtension(double position){
+    a_AmpTrap.extendExtender(position);
+}
+
+bool NoteHandler::transferToAmp() {
+    a_AmpTrap.runRoller();
+    a_Shooter.setSpeed(750);
+    if (a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(54.0)) {
+        
+        shootNote(-.2);
+        if (a_AmpTrap.beamBroken()) {
+            state_time = misc::gettime_d();
+            shootToAmpMode = true;
+        }
+        if (shootToAmpMode) {
+            if (!a_AmpTrap.beamBroken()) {
+                a_AmpTrap.stopRoller();
+                stopAll();
+                a_Shooter.stopShooter();
+                shootToAmpMode = false;
+                return true;
+            }
+        }
+        
+        
+    }
+    return false;
 }

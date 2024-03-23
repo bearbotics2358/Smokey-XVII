@@ -73,6 +73,7 @@ void Shooter::setShooterAngle(){
 void Shooter::stopShooter(){
    rightShooterMotor.StopMotor();
    leftShooterMotor.StopMotor();
+   pivotMotor.StopMotor();
 }
 bool Shooter::moveToAngle(double angle){
     pivotPID.SetSetpoint(angle);

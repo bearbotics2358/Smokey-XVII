@@ -64,6 +64,7 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive, &a_NoteHandler)
 
 void Robot::RobotInit() {
     a_NoteHandler.setExtensionPosition();
+    a_NoteHandler.setClimberPosition();
     aprilTagFieldLayout.SetOrigin(frc::Pose3d(units::meter_t(-0.038), units::meter_t(5.55), units::meter_t(1.45), frc::Rotation3d(units::radian_t(0.0), units::radian_t(90.0), units::radian_t(0.0))));
     frc::SmartDashboard::init();
 
@@ -100,7 +101,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
     a_NoteHandler.setShooterAngleToDefault();
-    // a_NoteHandler.setClimberPosition();
+    
     
     // if(a_NoteHandler.beamBroken()){
     //     a_LED.SetNoteOnBoard();
@@ -173,7 +174,7 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     // frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
-    //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
+    frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
     
 }
 
@@ -462,20 +463,22 @@ void Robot::TestPeriodic() {
     // frc::SmartDashboard::PutNumber("ivaluesteer", rotI);
     // frc::SmartDashboard::PutNumber("dvaluesteer", rotD);
 
-     if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
-        a_NoteHandler.armToPose(150.0);
+    //  if(a_DriverXboxController.GetRightTriggerAxis() > 0.25) {
+    //         a_NoteHandler.runExtension(15.0);
+    //     a_NoteHandler.armToPose(150.0);
     //     a_FRModule.steerToAng(0);
     //     a_FLModule.steerToAng(0);
     //     a_BRModule.steerToAng(0);
     //     a_BLModule.steerToAng(0);
-    }
-    else {
-        a_NoteHandler.armToPose(245.0);
+    // }
+    // else {
+    //     a_NoteHandler.runExtension(1.0);
+    //     a_NoteHandler.armToPose(245.0);
     //     a_FRModule.steerToAng(45);
     //     a_FLModule.steerToAng(45);
     //     a_BRModule.steerToAng(45);
     //     a_BLModule.steerToAng(45);
-    }
+    //}
     
     // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
      
@@ -489,7 +492,16 @@ void Robot::TestPeriodic() {
     //     }
     // }
     //frc::SmartDashboard::PutNumber("Current State", a_NoteHandler.currentAmpLoadState);
+    frc::SmartDashboard::PutBoolean("B button state", a_DriverXboxController.GetBButton());
+    a_NoteHandler.climbControl(a_DriverXboxController.GetBButton());
+    if(a_DriverXboxController.GetYButton()){
+        a_NoteHandler.manualClimberDown();
+    }
+    else if(a_DriverXboxController.GetXButton()){
+        a_NoteHandler.manualClimberUp();
+    }
     
+
 }
 
 //void Robot::SetTargetType(LED_STAGE_enum target) {
