@@ -20,7 +20,7 @@ rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints)
 {
     xProfiledPid.SetTolerance(units::meter_t(.1));
     yProfiledPid.SetTolerance(units::meter_t(.1));
-    rotProfiledPid.SetTolerance(units::radian_t(.05));
+    rotProfiledPid.SetTolerance(units::radian_t(.087));
 
     rotProfiledPid.EnableContinuousInput(0_rad, 6.28_rad);
 
