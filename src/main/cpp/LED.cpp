@@ -23,6 +23,7 @@ LED::LED()
 void LED::Init()
 {
 	int i;
+	LED_prevCommand = LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
 
 	/*
 	sport = new SerialPort(baud);
@@ -95,6 +96,40 @@ void LED::Update()
 			}
 		}
 	}
+
+	if(LED_currentCommand != LED_prevCommand){
+		LED_prevCommand = LED_currentCommand;
+		switch (LED_currentCommand)
+		{
+		case RIO_msgs_enum::WHITE:
+			SendWhiteMSG();
+			break;
+
+	    case RIO_msgs_enum::MSG_IDLE:
+			SendIdleMSG();
+			break;
+
+
+        case RIO_msgs_enum::NO_COMMS:
+			SendNoCommsMSG();
+			break;
+
+ 		 case RIO_msgs_enum::NOTE_ON_BOARD:
+			SendNoteOnBoardMSG();
+			break;	
+
+ 		 case RIO_msgs_enum::ANGLE_TO_NOTE:
+			SendAngleToNoteMSG(valAngle);
+			break;	
+
+		 case RIO_msgs_enum::SHOOTER_READY:
+			SendShooterReadyMSG();
+			break;	
+
+		default: 
+			break;
+		}
+	}
 #endif
 }
 
@@ -128,6 +163,13 @@ void LED::ProcessReport()
 // }
 
 void LED::SetWhite() {
+
+	LED_currentCommand = RIO_msgs_enum::WHITE;
+
+}
+
+
+void LED::SendWhiteMSG() {
 	char cmd[10];
 	strncpy(cmd, "0,0\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
@@ -135,7 +177,14 @@ void LED::SetWhite() {
 	
 }
 
-void LED::SetMSGIdle() {
+
+void LED::SetMSGIdle(){
+
+	LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+}
+
+
+void LED::SendIdleMSG() {
 	char cmd[10];
 	strncpy(cmd, "1,0\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
@@ -143,7 +192,13 @@ void LED::SetMSGIdle() {
 
 }
 
-void LED::SetNoComms() {
+void LED::SetNoComms(){
+
+LED_currentCommand = RIO_msgs_enum::NO_COMMS;
+}
+
+
+void LED::SendNoCommsMSG() {
 	int ret = 0;
 
 	printf("in SetNoComms\n");
@@ -158,7 +213,14 @@ void LED::SetNoComms() {
 
 }
 
-void LED::SetNoteOnBoard() {
+
+void LED::SetNoteOnBoard(){
+LED_currentCommand = RIO_msgs_enum::NOTE_ON_BOARD;
+}
+
+
+
+void LED::SendNoteOnBoardMSG() {
 	char cmd[10];
 	strncpy(cmd, "3,0\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
@@ -167,7 +229,15 @@ void LED::SetNoteOnBoard() {
 
 }
 
-void LED::SetAngleToNote(float angle) {
+
+void LED::SetAngleToNote(float inputAngle){
+valAngle = inputAngle;
+LED_currentCommand = RIO_msgs_enum::ANGLE_TO_NOTE;
+}
+
+
+
+void LED::SendAngleToNoteMSG(float angle) {
 	char cmd[10];
 	sprintf(cmd, "4,1,%1.2f\r\n", angle);
 	printf("%s\n", cmd);
@@ -176,7 +246,12 @@ void LED::SetAngleToNote(float angle) {
 
 }
 
-void LED::SetShooterReady() {
+void LED::SetShooterReady(){
+
+LED_currentCommand = RIO_msgs_enum::SHOOTER_READY;
+}
+
+void LED::SendShooterReadyMSG() {
 	char cmd[10];
 	strncpy(cmd, "5,0\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));

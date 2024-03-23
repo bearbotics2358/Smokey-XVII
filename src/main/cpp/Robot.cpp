@@ -103,10 +103,10 @@ void Robot::RobotPeriodic() {
     if(misc::getSeconds() > LED_state_t + 5) {
         LED_state_t = misc::getSeconds();
         if(LED_blink_state) {
-            a_LED.SetNoComms();
+            a_LED.SetNoteOnBoard();
             LED_blink_state = 0;
         } else {
-            a_LED.SetWhite();
+            a_LED.SetShooterReady();
             LED_blink_state = 1;
         }
     }
