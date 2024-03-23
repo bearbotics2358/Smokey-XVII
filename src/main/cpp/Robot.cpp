@@ -87,7 +87,8 @@ void Robot::RobotInit() {
     m_AutoModeSelector.AddOption(eighthNote, eighthNote);
     frc::SmartDashboard::PutData("Auto Modes", &m_AutoModeSelector);
 
-    a_LED.Init();
+    LED_state_t = misc::getSeconds();
+    // a_LED.Init();
     a_LED.SetNoComms();
 
     //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
@@ -98,8 +99,17 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-    // a_LED.Update();
-    a_LED.SetNoComms();
+    a_LED.Update();
+    if(misc::getSeconds() > LED_state_t + 5) {
+        LED_state_t = misc::getSeconds();
+        if(LED_blink_state) {
+            a_LED.SetNoComms();
+            LED_blink_state = 0;
+        } else {
+            a_LED.SetWhite();
+            LED_blink_state = 1;
+        }
+    }
     return;
 
     a_NoteHandler.setShooterAngleToDefault();

@@ -100,6 +100,9 @@ class Robot : public frc::TimedRobot {
 
         //LED_DIO a_LED;
         LED a_LED;
+        double LED_state_t = 0;
+        int LED_blink_state = 0;
+
 
         double state_time;
         double piston_time;

@@ -41,7 +41,7 @@ public:
 
 private:
 	
-	frc::SerialPort m_serial;
+	frc::SerialPort* m_pserial;
 	char rx_buff[BUFF_SIZE];
 	int rx_index = 0;
 	//LED_STAGE_enum target_type = LED_STAGE_enum::WHITE;
