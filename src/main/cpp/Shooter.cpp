@@ -10,7 +10,6 @@ Shooter::Shooter(int rightShooterMotorID, int leftShooterMotorID, int pivotMotor
 rightShooterMotor(rightShooterMotorID),
 leftShooterMotor(leftShooterMotorID),
 pivotMotor(pivotMotorID),
-// pivotEncoder(pivotMotor),
 shooterLimitSwitch(limitSwitchID),
 // .005, .0045, 0.00025
 //0.003, 0.0015, 0.00012
@@ -22,13 +21,17 @@ rightShooterPID(0.0, 0.0, 0.0)
     // ctre::phoenix6::configs::TalonFXConfiguration pivot_config_angle{};
     // pivot_config_angle.Feedback.SensorToMechanismRatio = .62;
     // pivotMotor.GetConfigurator().Apply(pivot_config_angle);
-    // ctre::phoenix6::configs::MotorOutputConfigs pivot_output_config{};
-    // pivot_output_config.Inverted = true;
-    // pivotMotor.GetConfigurator().Apply(pivot_output_config);
-    pivotMotor.SetNeutralMode(1);
-    // ctre::phoenix6::configs::HardwareLimitSwitchConfigs limitConfig{};
-    // limitConfig.ForwardLimitAutosetPositionValue = 0;
-    // pivotMotor.GetConfigurator().Apply(limitConfig);
+
+    // Set to brake mode so the shooter can hold its position
+    pivotMotor.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Brake);
+
+    // Configure the pivotMotor to zero out the encoder when reaching the limit
+    ctre::phoenix6::configs::HardwareLimitSwitchConfigs pivot_limit_config{};
+    pivot_limit_config.ForwardLimitAutosetPositionEnable = true;
+    pivot_limit_config.ReverseLimitAutosetPositionEnable = true;
+    pivot_limit_config.ForwardLimitAutosetPositionValue = 0.0;
+    pivot_limit_config.ReverseLimitAutosetPositionValue = 0.0;
+    pivotMotor.GetConfigurator().Apply(pivot_limit_config);
 
     ctre::phoenix6::configs::Slot0Configs slot0Configs{};
     slot0Configs.kV = .12;
@@ -60,16 +63,20 @@ double Shooter::getSpeed(){
     //return; //(units * 600.0) / FALCON_UNITS_PER_REV;; 
     return units;
 }
-void Shooter::setShooterAngle(){ 
-    if(shooterLimitSwitch.limitSwitchPressed()){
-        if(!shooterAlreadyZeroed){
-            pivotMotor.SetPosition(zeroShooter);
-            shooterAlreadyZeroed = true;
-        }
-    } else{
-        shooterAlreadyZeroed = false;
+
+void Shooter::UpdateSensors() {
+    bool pivot_limit_pressed = shooterLimitSwitch.limitSwitchPressed();
+
+    // Since we're not using the closed-loop controls for the motor, put the SetControl behind the
+    // limit switch check since setting a Duty Cycle of 0 will stop the motor
+    if (pivot_limit_pressed) {
+        // When the limit switch is pressed, stop the motor and zero out the encoder
+        pivotMotor.SetControl(m_pivotDutyCycleRequest.WithOutput(0)
+                              .WithLimitForwardMotion(pivot_limit_pressed)
+                              .WithLimitReverseMotion(pivot_limit_pressed));
     }
 }
+
 void Shooter::stopShooter(){
    rightShooterMotor.StopMotor();
    leftShooterMotor.StopMotor();
