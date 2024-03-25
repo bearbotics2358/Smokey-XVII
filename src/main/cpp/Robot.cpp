@@ -161,10 +161,14 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
-    frc::Pose3d p = (*a_Vision.estimate_position()).estimatedPose;
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBD", p.X().value());
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdf", p.Y().value());
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfd", p.Z().value());
+    std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
+
+    if (pose) {
+        frc::Pose3d p = (*pose).estimatedPose;
+        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
+        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
+        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
+    }
 }
 
 void Robot::DisabledInit() {
