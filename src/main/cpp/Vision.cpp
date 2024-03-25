@@ -31,5 +31,5 @@ bool Vision::detect_april_tag(int april_tag_fiducial_id) {
 }
 
 std::optional<photon::EstimatedRobotPose> Vision::estimate_position() {
-    return estimator.Update();
+    return estimator.Update(camera.GetLatestResult());
 }

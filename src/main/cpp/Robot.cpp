@@ -171,6 +171,8 @@ void Robot::RobotPeriodic() {
     } else {
         frc::SmartDashboard::PutString("HJDSOHIFHISFHHFKJHFKDHKHIOSDHOFHF", "NOOOOOOOOOOOOOOOOOO");
     }
+
+    frc::SmartDashboard::PutBoolean("KSHKDHKJSHDKBSJDBHJSBJHSBFJHKDBJKHVBJHDBVHJDBHJBFHJDBFJHBDJHFBHJDFBJHDF", a_Vision.detect_april_tag(7));
 }
 
 void Robot::DisabledInit() {
