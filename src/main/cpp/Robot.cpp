@@ -168,6 +168,8 @@ void Robot::RobotPeriodic() {
         frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
         frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
         frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
+    } else {
+        frc::SmartDashboard::PutString("HJDSOHIFHISFHHFKJHFKDHKHIOSDHOFHF", "NOOOOOOOOOOOOOOOOOO");
     }
 }
 
