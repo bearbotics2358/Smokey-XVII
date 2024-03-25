@@ -163,16 +163,15 @@ void Robot::RobotPeriodic() {
 
     std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
 
-    if (pose) {
-        frc::Pose3d p = (*pose).estimatedPose;
-        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
-        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
-        frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
-    } else {
-        frc::SmartDashboard::PutString("HJDSOHIFHISFHHFKJHFKDHKHIOSDHOFHF", "NOOOOOOOOOOOOOOOOOO");
-    }
+    frc::Pose3d april_tag_pose = a_Vision.get_april_tag_pose(7);
+    frc::SmartDashboard::PutNumber("DISOJOOJDOIJOIDJOIJDTARGETXXXXXXXXXXXXXXXXXXXXXX", april_tag_pose.X().value());
+    frc::SmartDashboard::PutNumber("DISOJOOJDOIJOIDJOIJDTARGETYYYYYYYYY", april_tag_pose.Y().value());
+    frc::SmartDashboard::PutNumber("DISOJOOJDOIJOIDJOIJDTARGETYYYYYYYYYZZZZZZZZZZ", april_tag_pose.Z().value());
 
-    frc::SmartDashboard::PutBoolean("KSHKDHKJSHDKBSJDBHJSBJHSBFJHKDBJKHVBJHDBVHJDBHJBFHJDBFJHBDJHFBHJDFBJHDF", a_Vision.detect_april_tag(7));
+    frc::Pose3d p = (*pose).estimatedPose;
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
 }
 
 void Robot::DisabledInit() {

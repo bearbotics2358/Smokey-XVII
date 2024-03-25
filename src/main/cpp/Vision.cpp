@@ -1,20 +1,12 @@
 #include <Vision.h>
 #include <misc.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 using namespace photon;
 
-Vision::Vision() {
-    april_tags.SetOrigin(
-        frc::Pose3d(
-            units::meter_t(-0.038),
-            units::meter_t(5.55), 
-            units::meter_t(1.45), 
-            frc::Rotation3d(units::radian_t(0.0), units::radian_t(90.0), units::radian_t(0.0))
-        )
-    );
-}
+Vision::Vision() {}
 
-bool Vision::detect_april_tag(int april_tag_fiducial_id) {
+bool Vision::detect_april_tag(int id) {
     PhotonPipelineResult result = camera.GetLatestResult();
 
     if (!result.HasTargets()) {
@@ -23,13 +15,17 @@ bool Vision::detect_april_tag(int april_tag_fiducial_id) {
 
     std::span<const PhotonTrackedTarget> targets = result.GetTargets();
     for (PhotonTrackedTarget target : targets) {
-        if (target.GetFiducialId() == april_tag_fiducial_id) {
+        if (target.GetFiducialId() == id) {
             return true;
         }
     }
     return false;
 }
 
-std::optional<photon::EstimatedRobotPose> Vision::estimate_position() {
+std::optional<EstimatedRobotPose> Vision::estimate_position() {
     return estimator.Update(camera.GetLatestResult());
+}
+
+frc::Pose3d Vision::get_april_tag_pose(int id) {
+    return *april_tags.GetTagPose(id);
 }
