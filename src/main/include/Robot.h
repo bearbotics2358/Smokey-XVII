@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Autonomous.h"
@@ -20,6 +19,7 @@
 #include "NoteHandler.h"
 #include "ArmAngle.h"
 #include <frc/apriltag/AprilTagFields.h>
+#include <Vision.h>
 
 enum class DriveBackState {
     Inactive,
@@ -132,10 +132,11 @@ class Robot : public frc::TimedRobot {
 
         frc::AprilTagFieldLayout a_AprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
-        enum target_type_enum target_type = target_type_enum::CONE;
+        //enum target_type_enum target_type = target_type_enum::CONE;
 
         ArmAngle a_ArnmAngle;
         
         frc::Timer timer{};	
 
+        Vision a_Vision;
 };

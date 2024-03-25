@@ -160,6 +160,11 @@ void Robot::RobotPeriodic() {
     // }
     frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
+
+    frc::Pose3d p = (*a_Vision.estimate_position()).estimatedPose;
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBD", p.X().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdf", p.Y().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfd", p.Z().value());
 }
 
 void Robot::DisabledInit() {
@@ -349,27 +354,27 @@ void Robot::TeleopPeriodic() {
     //     a_SwerveDrive.zeroPose();
     // }
 
-    if (result.HasTargets()) {
-        photon::PhotonTrackedTarget target = result.GetBestTarget();
-        frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
+    // if (result.HasTargets()) {
+    //     photon::PhotonTrackedTarget target = result.GetBestTarget();
+    //     frc::Transform3d bestCameraToTarget = target.GetBestCameraToTarget();
 
-        double x_vision = bestCameraToTarget.X().value();
-        double y_vision = bestCameraToTarget.Y().value();
+    //     double x_vision = bestCameraToTarget.X().value();
+    //     double y_vision = bestCameraToTarget.Y().value();
 
-        frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
+    //     frc::SmartDashboard::PutNumber("PhotonLib Range", sqrt(x_vision * x_vision + y_vision * y_vision));
 
-        frc::Pose3d tagPose = a_AprilTagFieldLayout.GetTagPose(target.GetFiducialId()).value();
-        frc::Pose2d tagPose2d = frc::Pose2d(tagPose.X(), tagPose.Y(), frc::Rotation2d(tagPose.Rotation().Y()));
+    //     frc::Pose3d tagPose = a_AprilTagFieldLayout.GetTagPose(target.GetFiducialId()).value();
+    //     frc::Pose2d tagPose2d = frc::Pose2d(tagPose.X(), tagPose.Y(), frc::Rotation2d(tagPose.Rotation().Y()));
 
-        frc::Transform2d cameraOffset = frc::Transform2d(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))),  //Fix these values later to represent the real 2d offset
-                                        frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
+    //     frc::Transform2d cameraOffset = frc::Transform2d(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))),  //Fix these values later to represent the real 2d offset
+    //                                     frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), frc::Rotation2d(units::degree_t(0.0))));
 
-        frc::Pose2d robotPose = photon::PhotonUtils::EstimateFieldToRobot(CAMERA_HEIGHT, bestCameraToTarget.Z(), CAMERA_PITCH, 
-                                                                        units::radian_t(target.GetPitch()), frc::Rotation2d(units::degree_t(-target.GetYaw())), 
-                                                                        frc::Rotation2d(units::radian_t(a_Gyro.getAngleClamped())), tagPose2d, 
-                                                                        cameraOffset);
-        units::second_t time = timer.GetFPGATimestamp();
-    }
+    //     frc::Pose2d robotPose = photon::PhotonUtils::EstimateFieldToRobot(CAMERA_HEIGHT, bestCameraToTarget.Z(), CAMERA_PITCH, 
+    //                                                                     units::radian_t(target.GetPitch()), frc::Rotation2d(units::degree_t(-target.GetYaw())), 
+    //                                                                     frc::Rotation2d(units::radian_t(a_Gyro.getAngleClamped())), tagPose2d, 
+    //                                                                     cameraOffset);
+    //     units::second_t time = timer.GetFPGATimestamp();
+    // }
 }
 
 void Robot::TestInit() {
