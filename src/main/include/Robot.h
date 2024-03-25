@@ -22,6 +22,7 @@
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
 #include "LED.h"
+#include <Vision.h>
 
 enum class DriveBackState {
     Inactive,
@@ -136,6 +137,8 @@ class Robot : public frc::TimedRobot {
 
         // Shooter camera
         photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+
+        Vision a_Vision;
 
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
         
