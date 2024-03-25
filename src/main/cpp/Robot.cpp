@@ -178,7 +178,13 @@ void Robot::RobotPeriodic() {
 
     //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
 
-    
+    std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
+
+    frc::Pose3d p = (*pose).estimatedPose;
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
+
 }
 
 void Robot::DisabledInit() {
