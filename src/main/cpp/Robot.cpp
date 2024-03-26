@@ -12,6 +12,7 @@
 #include "Collector.h"
 #include "BeamBreak.h"
 #include "SwerveDrive.h"
+#include "LED.h"
 #include <frc/GenericHID.h>
 #include "LimelightHelpers.h"
 
@@ -104,11 +105,11 @@ void Robot::RobotPeriodic() {
     a_NoteHandler.setShooterAngleToDefault();
 
     
-    // if(a_NoteHandler.beamBroken()){
-    //     a_LED.SetNoteOnBoard();
-    // } else {
-    //     a_LED.SetMSGIdle();
-    // }
+     if(a_NoteHandler.beamBroken()){
+         a_LED.SetNoteOnBoard();
+     } else {
+         a_LED.SetMSGIdle();
+     }
 
     a_NoteHandler.updateDashboard();
 
