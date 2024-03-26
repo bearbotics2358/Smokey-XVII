@@ -10,7 +10,7 @@ rollerMotor(rollerMotorID),
 extensionMotor(extensionMotorID),
 rotationMotor(rotationMotorID),
 //.08 .008
-extendPID(0.3, 0.05, 0.0),
+extendPID(0.3, 0.03, 0.0),
 rotationPID(0.0, 0.0, 0.0),
 a_BeamBreak(AMP_BEAM_BREAK_PORT) ,
 // m_rotationMotorSignal(rotationMotor.GetPosition()),
@@ -27,7 +27,7 @@ a_ArmAngle(1)
     
 }
 void AmpTrap::runRoller(){
-    rollerMotor.Set(-0.25);
+    rollerMotor.Set(-0.32);
 }
 void AmpTrap::stopRoller(){
     rollerMotor.StopMotor();
@@ -37,13 +37,21 @@ bool AmpTrap::extendExtender(double goal){
     double dist = GetExtensionPosition();
     double speed = extendPID.Calculate(dist, goal);
     speed = std::clamp(speed, -1.0, 1.0);
-    extensionMotor.Set(-speed);
-    if(fabs(dist-goal) < .05){
+    
+    frc::SmartDashboard::PutNumber("extension goal", 1000000000000);
+    if(fabs(dist-goal) < .25){
+        frc::SmartDashboard::PutString("a;owieguh;", "oiahg;r");
         extensionMotor.StopMotor();
         return true;
     }
-    return false;
+    else{
+        extensionMotor.Set(-speed);
+        return false;
+    }
     
+}
+void AmpTrap::stopExtension(){
+    extensionMotor.StopMotor();
 }
 
 double AmpTrap::GetExtensionPosition(){
@@ -69,6 +77,9 @@ bool AmpTrap::moveToPosition(double desiredaAngle){
     else{
         return false;
     }
+}
+void AmpTrap::stopArm(){
+    rotationMotor.StopMotor();
 }
 double AmpTrap::GetArmAngle(){
     a_ArmAngle.Update();

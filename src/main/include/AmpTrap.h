@@ -19,6 +19,8 @@ class AmpTrap {
         void update();
         bool beamBroken();
         void setPID(double p, double i, double d);
+        void stopArm();
+        void stopExtension();
     private:
         
         ctre::phoenix6::hardware::TalonFX rollerMotor;

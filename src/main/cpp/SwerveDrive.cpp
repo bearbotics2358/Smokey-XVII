@@ -16,8 +16,14 @@ a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped(
         {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
 xProfiledPid(.5, .1, 0.0, linearConstraints),
 yProfiledPid(.5, .1, 0.0, linearConstraints),
-rotProfiledPid(.5, 0.0, 0.0, rotationalConstraints)
+rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints)
 {
+    xProfiledPid.SetTolerance(units::meter_t(.1));
+    yProfiledPid.SetTolerance(units::meter_t(.1));
+    rotProfiledPid.SetTolerance(units::radian_t(.087));
+
+    rotProfiledPid.EnableContinuousInput(0_rad, 6.28_rad);
+
     turnAnglePid.EnableContinuousInput(0.0, 360.0);
     crabAnglePid.EnableContinuousInput(0.0, 360.0);
 }
@@ -343,12 +349,14 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         xProfiledPid.SetGoal(units::meter_t(xDesired));
         yProfiledPid.SetGoal(units::meter_t(yDesired));
         rotProfiledPid.SetGoal(units::radian_t(rotDesired));
-        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(xDesired)), -.25, .25);
-        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(yDesired)), -.25, .25);
+        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(xDesired)), -.25, .25);
+        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(yDesired)), -.25, .25);
         double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
-
-        swerveUpdate(xSpeed, ySpeed, 0.0, true);
-
+        frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
+        frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
+        frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
+        swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+        //swerveUpdate(0.0, 0.0, -rotSpeed, true);
         return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());     
 }
 void SwerveDrive::updateOdometry(){

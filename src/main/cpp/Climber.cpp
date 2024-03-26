@@ -4,26 +4,46 @@
 Climber::Climber(int climberMotorID, int topLimitSwitchPort)://, int topLimitSwitchPort)://, int topPort, int bottomPort):
 climberMotor(climberMotorID),
 topLimitSwitch(topLimitSwitchPort),
-climberPID(0.04, 0.0, 0.0)
+climberPID(0.05, 0.006, 0.0)
 //m_climberMotorSignal(climberMotor.GetPosition())
 {
+    climberPID.SetTolerance(1.0);
     //m_climberMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
     climberMotor.SetNeutralMode(1);
 }
 void Climber::stopClimber(){
     climberMotor.StopMotor();
 }
-void Climber::extendClimnber(){
-    
-    climberPID.SetSetpoint(10.0);//neeed to change from 0.0
-    double dist = GetClimberPosition();
-    double speed = climberPID.Calculate(dist, 10.0);
-    speed = std::clamp(speed, -.2, .2);
-    climberMotor.Set(-speed);
-    if(climberPID.AtSetpoint() ){
-        climberMotor.StopMotor();
-    }
+bool Climber::extendClimnber(double position){
+        climberPID.SetSetpoint(position);//neeed to change from 0.0
+        double dist = GetClimberPosition();
+        double speed = climberPID.Calculate(dist, position);
+        speed = std::clamp(speed, -1.0, 1.0);
+        /* Code that I believe is equivalent.
+            if(topLimitSwitch.limitSwitchPressed()) {
+                stopClimber();
+            } else if(-speed < 0.0) {
+                climberMotor.Set(-speed);
+            }
+        */
+        if(-speed > 0.0){
+            if(topLimitSwitch.limitSwitchPressed()){
+                stopClimber();
+            }
+            else{
+                climberMotor.Set(-speed);
+            }
+        }
+        else{
+            climberMotor.Set(-speed);
+        }
+        if(fabs(dist - position) < .25){
+            climberMotor.StopMotor();
+            return true;
+        }
+        return false;
 }
+
 void Climber::runClimberUp(){
     if(topLimitSwitch.limitSwitchPressed()){
         climberMotor.StopMotor();
