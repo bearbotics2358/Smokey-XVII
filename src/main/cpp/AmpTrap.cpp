@@ -37,12 +37,18 @@ bool AmpTrap::extendExtender(double goal){
     double dist = GetExtensionPosition();
     double speed = extendPID.Calculate(dist, goal);
     speed = std::clamp(speed, -1.0, 1.0);
-    extensionMotor.Set(-speed);
+    
+    frc::SmartDashboard::PutNumber("extension goal", 1000000000000);
     if(fabs(dist-goal) < .25){
+        frc::SmartDashboard::PutString("a;owieguh;", "oiahg;r");
         extensionMotor.StopMotor();
         return true;
     }
-    return false;
+    else{
+        extensionMotor.Set(-speed);
+        return false;
+    }
+    
 }
 void AmpTrap::stopExtension(){
     extensionMotor.StopMotor();

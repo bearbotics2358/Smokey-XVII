@@ -144,7 +144,8 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 stopCollection();
             }
            
-            a_AmpTrap.moveToPosition(7.5);
+            //a_AmpTrap.moveToPosition(7.5);
+            a_AmpTrap.stopArm();
             a_AmpTrap.extendExtender(.03);
             if(transferButtonState == true){
                 state_time = misc::gettime_d();
@@ -165,58 +166,29 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
         case HOLDING:
             stopShooter();
             moveShooterToAngle(0.0);
-            if(toDefaultPositionButtonState){
-                if(armToPose(5.0)){
-                    state_time = misc::gettime_d();
-                    currentAmpLoadState = TOAMP;
-                }
-            } else if(intoAmpButtonState){
+            if(intoAmpButtonState){
                 if(a_AmpTrap.extendExtender(2.88) && armToPose(125.0)){
-                    //if(misc::gettime_d() > state_time + 2.0) {
                         runArmRoller();
                         state_time = misc::gettime_d();
                         currentAmpLoadState = SCORE;
-                    //}
                 }
-                // if(a_AmpTrap.extendExtender(2.88) && armToPose(140.0)){
-                //     if(misc::gettime_d() > state_time + 2.0) {
-
-                //         runArmRoller();
-                //         if(misc::gettime_d() > state_time + 2.0){
-                //             state_time = misc::gettime_d();
-                //             a_AmpTrap.stopRoller();
-                //             currentAmpLoadState = DONE;
-                //         }
-                //     }
-                //     }
             }
                 break;
-        case TOAMP:
-            stopShooter();
-            moveShooterToAngle(0.0);
-            if(intoAmpButtonState){
-                //
-                if(a_AmpTrap.extendExtender(2.88) && armToPose(150.0)){
-                    if(misc::gettime_d() > state_time + 2.0) {
-                        runArmRoller();
-                        state_time = misc::gettime_d();
-                        currentAmpLoadState = DONE;
-                    }
-                }
-            }
-            break;
         case SCORE:
-            if(misc::gettime_d() > state_time + 1.0){
+            armToPose(125.0);
+            if(misc::gettime_d() > state_time + 0.5){
                             state_time = misc::gettime_d();
                             a_AmpTrap.stopRoller();
                             currentAmpLoadState = AWAYFROMAMP;
             }
             break;
         case AWAYFROMAMP:
+            a_AmpTrap.moveToPosition(245.0);
             if(toDefaultPositionButtonState){
-                a_AmpTrap.moveToPosition(7.5);
-                state_time = misc::gettime_d();
-                currentAmpLoadState = DONE;
+                if(a_AmpTrap.moveToPosition(7.5)){
+                    state_time = misc::gettime_d();
+                    currentAmpLoadState = DONE;
+                }
 
             }
             break;

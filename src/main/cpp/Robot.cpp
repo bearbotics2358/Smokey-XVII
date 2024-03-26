@@ -375,17 +375,20 @@ void Robot::TeleopPeriodic() {
 
 
     
-    // a_NoteHandler.shootToAmp(
-    //     a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
-    //     a_DriverXboxController.GetAButton(), //shoot into amp
-    //     a_DriverXboxController.GetLeftBumper(), //bring to default amp
-    //     a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
-    //     a_DriverXboxController.GetRightBumper(), //shoot note
-    //     a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
-    if(a_DriverXboxController.GetRightTriggerAxis() > .5){
-        a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI/2);
-    }
-    else if (!inDeadzone) {
+    a_NoteHandler.shootToAmp(
+        a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
+        a_DriverXboxController.GetAButton(), //shoot into amp
+        a_DriverXboxController.GetLeftBumper(), //bring to default amp
+        a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
+        a_DriverXboxController.GetRightBumper(), //shoot note
+        a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
+
+
+    // if(a_DriverXboxController.GetRightTriggerAxis() > .5){
+    //     a_SwerveDrive.odometryGoToPose(1.0, 1.0, M_PI/2);
+    // }
+    // else 
+    if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
     }   
     //else if(a_DriverXboxController.GetRightBumper()) //{
