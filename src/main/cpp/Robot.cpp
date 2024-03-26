@@ -28,7 +28,6 @@ a_DriverXboxController(DRIVER_PORT),
 a_OperatorXboxController(OPERATOR_PORT),
 a_Gamepad(4),
 a_NoteHandler(),
-//a_LED(),
 //a_CompressorController(),
 //a_LED(ARDUINO_DIO_PIN),
 // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
@@ -100,8 +99,10 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+    a_LED.Update();
+
     a_NoteHandler.setShooterAngleToDefault();
-    
+
     
     // if(a_NoteHandler.beamBroken()){
     //     a_LED.SetNoteOnBoard();
@@ -174,8 +175,19 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Distance", a_SwerveDrive.getAvgDistance());
     // frc::SmartDashboard::PutNumber("Velocity", a_SwerveDrive.getAvgVelocity());
 
+
     frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
     
+    //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
+
+    std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
+
+    frc::Pose3d p = (*pose).estimatedPose;
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
+    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
+
+
 }
 
 void Robot::DisabledInit() {

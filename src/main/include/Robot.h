@@ -19,9 +19,10 @@
 #include "NoteHandler.h"
 #include "ArmAngle.h"
 #include "Climber.h"
-//#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
 #include "LED.h"
+#include <Vision.h>
 
 enum class DriveBackState {
     Inactive,
@@ -34,7 +35,6 @@ class Robot : public frc::TimedRobot {
         Robot();
         void RobotInit();
         void RobotPeriodic();
-
         void DisabledInit();
         void DisabledPeriodic();
 
@@ -99,7 +99,10 @@ class Robot : public frc::TimedRobot {
 
 
         //LED_DIO a_LED;
-        //LED a_LED;
+
+        LED a_LED;
+
+
 
         double state_time;
         double piston_time;
@@ -134,6 +137,8 @@ class Robot : public frc::TimedRobot {
 
         // Shooter camera
         photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+
+        Vision a_Vision;
 
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
         
