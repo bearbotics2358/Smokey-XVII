@@ -12,10 +12,10 @@ class Shooter{
         void stopShooter();
         bool moveToAngle(double angle);
         double getSpeed();
-        void setShooterAngle();
+        void UpdateSensors();
         double GetShooterAngle();
     private:
-    
+
         frc::PIDController leftShooterPID;
         frc::PIDController rightShooterPID;
         frc::PIDController pivotPID;
@@ -25,10 +25,8 @@ class Shooter{
         ctre::phoenix6::hardware::TalonFX pivotMotor;
 
         ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
-    
-      
-        LimitSwitch shooterLimitSwitch;
+        ctre::phoenix6::controls::DutyCycleOut m_pivotDutyCycleRequest{0.0};
 
-        units::angle::turn_t zeroShooter{units::degree_t{0.0}};
-        bool shooterAlreadyZeroed = false;
+
+        LimitSwitch shooterLimitSwitch;
 };

@@ -20,8 +20,8 @@ double NoteHandler::getShooterAngle() {
     return a_Shooter.GetShooterAngle();
 }
 
-void NoteHandler::setShooterAngleToDefault() {
-    a_Shooter.setShooterAngle();
+void NoteHandler::UpdateSensors() {
+    a_Shooter.UpdateSensors();
 }
 
 void NoteHandler::startShooter(double rpm, double angle) {

@@ -37,10 +37,9 @@ class NoteHandler {
 
         // Shooter Stuff
         double getShooterAngle();
-        void setShooterAngleToDefault();
         void startShooter(double rpm, double angle);
         void stopShooter();
-        
+
         // Collecter Stuff
         void startCollector(double speed);
         void stopCollector();
@@ -61,6 +60,7 @@ class NoteHandler {
         void dispenseNote();
         bool beamBroken();
 
+        void UpdateSensors();
         void updateDashboard();
         bool shootToAmpMode = false;
         // Interpolation
