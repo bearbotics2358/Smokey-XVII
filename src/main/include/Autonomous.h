@@ -57,8 +57,16 @@ enum AutoState3 {
 
 enum AutoState4 {
     kAutoIdle4,
-    kGoToNote4,
-    kShootNote4
+    kShootFirstNote4,
+    kGoToSecondNote4,
+    kGoToSpeaker4,
+    kShootSecondNote4,
+    kGoToThirdNote4,
+    kGoToSpeakerAgain4,
+    kShootThirdNote4,
+    kGoToFourthNote4,
+    kGoToSpeakerThirdTime4,
+    kShootFourthNote4
 };
 
 // states for 5 ball auto
