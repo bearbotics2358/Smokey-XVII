@@ -100,16 +100,16 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
-    a_LED.Update();
+    //a_LED.Update();
 
     a_NoteHandler.UpdateSensors();
 
     
-     if(a_NoteHandler.beamBroken()){
-         a_LED.SetNoteOnBoard();
-     } else {
-         a_LED.SetMSGIdle();
-     }
+    // if(a_NoteHandler.beamBroken()){
+    //      a_LED.SetNoteOnBoard();
+    // } else {
+    //      a_LED.SetMSGIdle();
+    // }
 
     a_NoteHandler.updateDashboard();
 
