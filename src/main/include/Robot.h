@@ -54,14 +54,7 @@ class Robot : public frc::TimedRobot {
         void TestInit();
         void TestPeriodic();
 
-        //void SetTargetType(LED_STAGE_enum target);
-
-
-
     private:
-        double pivotAngle = 1.0;
-        int armStage;
-        bool isHighPistonDone;
         // keeps track of when to call enabled init
         bool a_doEnabledInit { true };
         frc::SendableChooser<std::string> m_AutoModeSelector;
@@ -90,23 +83,12 @@ class Robot : public frc::TimedRobot {
 
         Autonomous a_Autonomous;
         NoteHandler a_NoteHandler;
-        
-        
 
         frc::XboxController a_DriverXboxController;
         frc::XboxController a_OperatorXboxController;
         frc::GenericHID a_Gamepad;
 
-
-        //LED_DIO a_LED;
-
         LED a_LED;
-
-
-
-        double state_time;
-        double piston_time;
-        bool catchBegin = false;
 
         // stuff that autonomous needs
 
@@ -141,7 +123,7 @@ class Robot : public frc::TimedRobot {
         Vision a_Vision;
 
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
-        
+
         // .0025, .001, .0001
         // .0002, .002, .0025
         double rotP = 0.00275;

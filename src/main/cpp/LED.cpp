@@ -45,7 +45,6 @@ void LED::Init()
 	for(i = 0; i < BUFF_SIZE; i++) {
 		rx_buff[i] = 0;
 	}
-	//SetTargetType(LED_STAGE_enum::WHITE);
 }
 
 void LED::Update()
@@ -58,16 +57,16 @@ void LED::Update()
 	// every time called, and every time through loop, get repotr chars if available
 	// and add to rx buffer
 	// when '\r' (or '\t') found, process reading
-	
+
 	// printf("LED: in Update, attempting to receive\n");
 
 	while (m_pserial->GetBytesReceived() > 0) {
 		m_pserial->Read(&rx_buff[rx_index], 1);
 
 		//printf("LED LED LED LED: %c\n", rx_buff[rx_index]);
- 
-		
-		if((rx_buff[rx_index] == '\r') 
+
+
+		if((rx_buff[rx_index] == '\r')
 			 || (rx_buff[rx_index] == '\n')) {
 
 			// process report
@@ -84,7 +83,7 @@ void LED::Update()
 			m_pserial->Flush();
 
 			ProcessReport();
-			
+
 			// printf("LED report: rx_buff\n");
 
 			// reset for next report
@@ -116,17 +115,17 @@ void LED::Update()
 
  		 case RIO_msgs_enum::NOTE_ON_BOARD:
 			SendNoteOnBoardMSG();
-			break;	
+			break;
 
  		 case RIO_msgs_enum::ANGLE_TO_NOTE:
 			SendAngleToNoteMSG(valAngle);
-			break;	
+			break;
 
 		 case RIO_msgs_enum::SHOOTER_READY:
 			SendShooterReadyMSG();
-			break;	
+			break;
 
-		default: 
+		default:
 			break;
 		}
 	}
@@ -140,27 +139,9 @@ void LED::ProcessReport()
 {
 	// parse report
 	// no action needed, no report expected
-	
+
 
 }
-
-// void LED::SetTargetType(LED_STAGE_enum target_type_param)
-// {
-// #ifdef COMP_BOT  // Not available on the practice bot
-// 	char cmd[10];
-// 	strncpy(cmd, "1,1,1\r\n", 8);
-// 	target_type = target_type_param;
-// 	// lazy way to build a message
-// 	cmd[4] = target_type ? '1' : '0';
-// 	m_serial.Write(cmd, strlen(cmd));
-// 	m_serial.Flush();
-// #endif
-// }
-
-// LED_STAGE_enum LED::GetTargetType()
-// {
-// 	return target_type;
-// }
 
 void LED::SetWhite() {
 
@@ -174,7 +155,7 @@ void LED::SendWhiteMSG() {
 	strncpy(cmd, "0,0\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
-	
+
 }
 
 
