@@ -91,6 +91,8 @@ class NoteHandler {
 
         void runExtension(double position);
 
+        bool ampBeamBreak();
+
         bool noteShot = false;
 
         double state_time = 0.0;

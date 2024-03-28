@@ -288,22 +288,23 @@ void Autonomous::PeriodicNoteFour() {
             StopSwerves();
             break;
         case kShootFirstNote4:
-            if(misc::gettime_d() > state_time + 1.0){
+            if(misc::gettime_d() > state_time + 0.5){
                 a_NoteHandler->shootNote(-.25);
-                state_time = misc::gettime_d();
-                nextState = kGoToSecondNote4;
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote4;
+                }
             }
             break;
         case kGoToSecondNote4:
             a_NoteHandler->collectNote(-.4, true);
-            if(misc::gettime_d() > state_time + 1.0){
-                if(a_SwerveDrive->odometryGoToPose(-.3, 0.0, 0.0)){
+                if(a_SwerveDrive->odometryGoToPose(-.3, 0.0, 0.0) || a_NoteHandler->beamBroken()){
                     state_time = misc::gettime_d();
                     nextState = kGoToSpeaker4;
                 }
-            }
             break;
         case kGoToSpeaker4:
+            a_NoteHandler->collectNote(-.4, true);
             if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
                 state_time = misc::gettime_d();
                 nextState = kShootSecondNote4;
@@ -311,21 +312,20 @@ void Autonomous::PeriodicNoteFour() {
             break;
         case kShootSecondNote4:
             a_NoteHandler->shootNote(-.25);
-            if(misc::gettime_d() > state_time + 1.0){
+            if(a_NoteHandler->ampBeamBreak()){
                 state_time = misc::gettime_d();
                 nextState = kGoToThirdNote4;
             }
             break;
         case kGoToThirdNote4:
             a_NoteHandler->collectNote(-.4, true);
-            if(misc::gettime_d() > state_time + 1.0){
-                if(a_SwerveDrive->odometryGoToPose(-.3, -1.455, M_PI/6)){
+                if(a_SwerveDrive->odometryGoToPose(-.3, -1.455, M_PI/8) || a_NoteHandler->beamBroken()){
                     state_time = misc::gettime_d();
                     nextState = kGoToSpeakerAgain4;
                 }
-            }
             break;
         case kGoToSpeakerAgain4:
+            a_NoteHandler->collectNote(-.4, true);
             if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
                 state_time = misc::gettime_d();
                 nextState = kShootThirdNote4;
@@ -333,21 +333,20 @@ void Autonomous::PeriodicNoteFour() {
             break;
         case kShootThirdNote4:
             a_NoteHandler->shootNote(-.25);
-            if(misc::gettime_d() > state_time + 1.0){
+            if(a_NoteHandler->ampBeamBreak()){
                 state_time = misc::gettime_d();
                 nextState = kGoToFourthNote4;
             }
             break;
         case kGoToFourthNote4:
             a_NoteHandler->collectNote(-.4, true);
-            if(misc::gettime_d() > state_time + 1.0){
-                if(a_SwerveDrive->odometryGoToPose(-.3, 1.455, 5.0*M_PI/3)){
+                if(a_SwerveDrive->odometryGoToPose(-.3, 1.455, 15.0*M_PI/8) || a_NoteHandler->beamBroken()){
                     state_time = misc::gettime_d();
                     nextState = kGoToSpeakerThirdTime4;
-                }
             }
             break;
         case kGoToSpeakerThirdTime4:
+            a_NoteHandler->collectNote(-.4, true);
             if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
                 state_time = misc::gettime_d();
                 nextState = kShootFourthNote4;
@@ -355,7 +354,7 @@ void Autonomous::PeriodicNoteFour() {
             break;
         case kShootFourthNote4:
             a_NoteHandler->shootNote(-.25);
-            if(misc::gettime_d() > state_time + 1.0){
+            if(a_NoteHandler->ampBeamBreak()){
                 state_time = misc::gettime_d();
                 nextState = kAutoIdle4;
             }

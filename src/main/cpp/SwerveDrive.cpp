@@ -14,8 +14,8 @@ turnAnglePid(0.014, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01),
 a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
         {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
-xProfiledPid(.5, .1, 0.0, linearConstraints),
-yProfiledPid(.5, .1, 0.0, linearConstraints),
+xProfiledPid(.5, .2, 0.0, linearConstraints),
+yProfiledPid(.5, .2, 0.0, linearConstraints),
 rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints)
 {
     xProfiledPid.SetTolerance(units::meter_t(.1));
@@ -357,7 +357,16 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
         swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
         //swerveUpdate(0.0, 0.0, -rotSpeed, true);
-        return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());     
+        //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
+
+        if(fabs(xPose-xDesired) < .1 && fabs(yPose-yDesired) < .1 && fabs(rotPose-rotDesired) < .087){
+            stop();
+            return true;
+        }
+        else{
+            swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+            return false;
+        }   
 }
 void SwerveDrive::updateOdometry(){
      a_odometry.Update(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 

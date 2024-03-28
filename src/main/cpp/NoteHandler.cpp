@@ -305,6 +305,9 @@ void NoteHandler::setExtensionPosition(){
 void NoteHandler::runExtension(double position){
     a_AmpTrap.extendExtender(position);
 }
+bool NoteHandler::ampBeamBreak(){
+    return a_AmpTrap.beamBroken();
+}
 
 bool NoteHandler::transferToAmp() {
     a_AmpTrap.runRoller();
