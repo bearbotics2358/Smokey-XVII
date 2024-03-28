@@ -73,7 +73,11 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         // the 'bot will not slam on the brakes once the first run is successful
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
+        // This version of odometryGoToPose is kept for backwards compatibility. If all usage is converted to
+        // use the one with the Pose2d parameter, this one can be removed.
         bool odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+
+        bool odometryGoToPose(frc::Pose2d desiredPose);
 
         void updateOdometry();
 
