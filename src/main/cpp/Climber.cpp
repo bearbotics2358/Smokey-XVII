@@ -30,18 +30,15 @@ bool Climber::extendClimnber(double position){
             if(topLimitSwitch.limitSwitchPressed()){
                 stopClimber();
             }
-            else{
-                climberMotor.Set(-speed);
-            }
-        }
-        else{
-            climberMotor.Set(-speed);
         }
         if(fabs(dist - position) < .25){
             climberMotor.StopMotor();
             return true;
         }
-        return false;
+        else{
+            climberMotor.Set(-speed);
+            return false;
+        }
 }
 
 void Climber::runClimberUp(){

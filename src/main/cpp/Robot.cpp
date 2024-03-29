@@ -299,18 +299,18 @@ void Robot::TeleopPeriodic() {
         // }
     
 
-    if(a_DriverXboxController.GetBButton()){
-        a_NoteHandler.manualClimberDown();
-    }
-    else if(a_DriverXboxController.GetXButton()){
-        a_NoteHandler.manualClimberUp();
-    }
-    else if(a_DriverXboxController.GetYButton()){
-        a_NoteHandler.pidClimb();
-    }
-    else{
-        a_NoteHandler.stopClimber();
-    }
+    // if(a_DriverXboxController.GetBButton()){
+    //     a_NoteHandler.manualClimberDown();
+    // }
+    // else if(a_DriverXboxController.GetXButton()){
+    //     a_NoteHandler.manualClimberUp();
+    // }
+    // else if(a_DriverXboxController.GetYButton()){
+    //     a_NoteHandler.pidClimb();
+    // }
+    // else{
+    //     a_NoteHandler.stopClimber();
+    // }
     /* Amp Control*/
     
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
@@ -386,15 +386,23 @@ void Robot::TeleopPeriodic() {
 
 
 
-
+    if(a_DriverXboxController.GetAButton()){
+        a_NoteHandler.runArmRoller(-8);
+    }
+    else if(a_DriverXboxController.GetBButton()){
+        a_NoteHandler.runArmRoller(8);
+    }
+    else{
+        a_NoteHandler.runArmRoller(0);
+    }
     
-    a_NoteHandler.shootToAmp(
-        a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
-        a_DriverXboxController.GetAButton(), //shoot into amp
-        a_DriverXboxController.GetLeftBumper(), //bring to default amp
-        a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
-        a_DriverXboxController.GetRightBumper(), //shoot note
-        a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
+    // a_NoteHandler.shootToAmp(
+    //     a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
+    //     a_DriverXboxController.GetAButton(), //shoot into amp
+    //     a_DriverXboxController.GetLeftBumper(), //bring to default amp
+    //     a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
+    //     a_DriverXboxController.GetRightBumper(), //shoot note
+    //     a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
 
 
     // if(a_DriverXboxController.GetRightTriggerAxis() > .5){
@@ -509,7 +517,7 @@ void Robot::TestPeriodic() {
     // }
     //frc::SmartDashboard::PutNumber("Current State", a_NoteHandler.currentAmpLoadState);
     frc::SmartDashboard::PutBoolean("B button state", a_DriverXboxController.GetBButton());
-    a_NoteHandler.climbControl(a_DriverXboxController.GetBButton());
+    a_NoteHandler.climbControl(a_DriverXboxController.GetBButton(), a_DriverXboxController.GetAButton(), a_DriverXboxController.GetRightBumper());
     if(a_DriverXboxController.GetYButton()){
         a_NoteHandler.manualClimberDown();
     }
