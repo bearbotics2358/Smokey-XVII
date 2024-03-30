@@ -171,7 +171,7 @@ void LED::SetWhite() {
 
 void LED::SendWhiteMSG() {
 	char cmd[10];
-	strncpy(cmd, "0,0\r\n", 8);
+	strncpy(cmd, "(0,0)\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
 	
@@ -186,7 +186,7 @@ void LED::SetMSGIdle(){
 
 void LED::SendIdleMSG() {
 	char cmd[10];
-	strncpy(cmd, "1,0\r\n", 8);
+	strncpy(cmd, "(1,0)\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
 
@@ -203,7 +203,7 @@ void LED::SendNoCommsMSG() {
 
 	printf("in SetNoComms\n");
 	char cmd[10];
-	strncpy(cmd, "2,0\r\n", 8);
+	strncpy(cmd, "(2,0)\r\n", 8);
 	printf("about to Write: %s\n", cmd);
 	ret = m_pserial->Write(cmd, strlen(cmd));
 	printf("written: %d characters\n", ret);
@@ -222,7 +222,7 @@ LED_currentCommand = RIO_msgs_enum::NOTE_ON_BOARD;
 
 void LED::SendNoteOnBoardMSG() {
 	char cmd[10];
-	strncpy(cmd, "3,0\r\n", 8);
+	strncpy(cmd, "(3,0)\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
 
@@ -253,7 +253,7 @@ LED_currentCommand = RIO_msgs_enum::SHOOTER_READY;
 
 void LED::SendShooterReadyMSG() {
 	char cmd[10];
-	strncpy(cmd, "5,0\r\n", 8);
+	strncpy(cmd, "(5,0)\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
 
