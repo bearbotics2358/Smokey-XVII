@@ -248,24 +248,37 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             }
             break;
         case MOVEARM:
+            a_Climber.extendClimnber(18.0);
             a_AmpTrap.extendExtender(15.75);
-            if(a_AmpTrap.moveToPosition(240.0)){
+            if(a_AmpTrap.moveToPosition(200.0)){
                 state_time = misc::gettime_d();
                 currentClimbState = TRAP;
             }
             break;
         case TRAP:
+            a_Climber.extendClimnber(18.0);
             a_AmpTrap.extendExtender(15.75);
-            a_AmpTrap.moveToPosition(240.0);
-            runArmRoller(-60);
+            //a_AmpTrap.moveToPosition(207.0);
+            runArmRoller(-40);
             if(misc::gettime_d() > state_time + 0.50){
                 state_time = misc::gettime_d();
                 currentClimbState = HITNOTE;
             }
             break;
         case HITNOTE:
+            a_Climber.extendClimnber(18.0);
             a_AmpTrap.moveToPosition(163.0);
-            if(misc::gettime_d() > state_time + .5 && a_AmpTrap.moveToPosition(240.0)) {
+            if(misc::gettime_d() > state_time + 1.0 && a_AmpTrap.moveToPosition(240.0)) {
+                state_time = misc::gettime_d();
+                currentClimbState = DONECLIMBING;
+            }
+            break;
+        case TAP:
+            a_Climber.extendClimnber(18.0);
+            frc::SmartDashboard::PutString("Got to tap", "YES");
+            a_AmpTrap.moveToPosition(163.0);
+            if(misc::gettime_d() > state_time + .5 && a_AmpTrap.moveToPosition(175.0)) {
+                frc::SmartDashboard::PutString("Got into if", "YES");
                 state_time = misc::gettime_d();
                 currentClimbState = DONECLIMBING;
             }
@@ -328,7 +341,7 @@ bool NoteHandler::ampBeamBreak(){
 }
 
 bool NoteHandler::transferToAmp() {
-    a_AmpTrap.runRoller(-45);
+    a_AmpTrap.runRoller(-20);
     a_Shooter.setSpeed(750);
     if (a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(55.0)) {
         

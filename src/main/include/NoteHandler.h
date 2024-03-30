@@ -26,6 +26,7 @@ enum ClimbingState { // Encoders
             MOVEARM,
             TRAP,
             HITNOTE,
+            TAP,
             DONECLIMBING,
             RESET
 };

@@ -184,11 +184,14 @@ void Robot::RobotPeriodic() {
     std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
 
     frc::Pose3d p = (*pose).estimatedPose;
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDXXXXXXX", p.X().value());
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDddfdfdfYYYYYYYY", p.Y().value());
-    frc::SmartDashboard::PutNumber("DJSLHLDJOSJDODKJSKBDBSHBSBDdfdfdfdfdfdfdfdZZZZZZZZZ", p.Z().value());
-
-
+    frc::SmartDashboard::PutNumber("Pose Estimator X", p.X().value());
+    frc::SmartDashboard::PutNumber("Pose Estimator Y", p.Y().value());
+    frc::SmartDashboard::PutNumber("Pose Estimator Z", p.Z().value());
+    
+    frc::Pose3d april_tag = a_Vision.get_april_tag_pose(4);
+    frc::SmartDashboard::PutNumber("April Tag X", april_tag.X().value());
+    frc::SmartDashboard::PutNumber("April Tag Y", april_tag.Y().value());
+    frc::SmartDashboard::PutNumber("April Tag Z", april_tag.Z().value());
 }
 
 void Robot::DisabledInit() {
@@ -299,18 +302,18 @@ void Robot::TeleopPeriodic() {
         // }
     
 
-    // if(a_DriverXboxController.GetBButton()){
-    //     a_NoteHandler.manualClimberDown();
-    // }
-    // else if(a_DriverXboxController.GetXButton()){
-    //     a_NoteHandler.manualClimberUp();
-    // }
-    // else if(a_DriverXboxController.GetYButton()){
-    //     a_NoteHandler.pidClimb();
-    // }
-    // else{
-    //     a_NoteHandler.stopClimber();
-    // }
+    if(a_DriverXboxController.GetBButton()){
+        a_NoteHandler.manualClimberDown();
+    }
+    else if(a_DriverXboxController.GetXButton()){
+        a_NoteHandler.manualClimberUp();
+    }
+    else if(a_DriverXboxController.GetYButton()){
+        a_NoteHandler.pidClimb();
+    }
+    else{
+        a_NoteHandler.stopClimber();
+    }
     /* Amp Control*/
     
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
@@ -386,23 +389,23 @@ void Robot::TeleopPeriodic() {
 
 
 
-    if(a_DriverXboxController.GetAButton()){
-        a_NoteHandler.runArmRoller(-8);
-    }
-    else if(a_DriverXboxController.GetBButton()){
-        a_NoteHandler.runArmRoller(8);
-    }
-    else{
-        a_NoteHandler.runArmRoller(0);
-    }
+    // if(a_DriverXboxController.GetAButton()){
+    //     a_NoteHandler.runArmRoller(-8);
+    // }
+    // else if(a_DriverXboxController.GetBButton()){
+    //     a_NoteHandler.runArmRoller(8);
+    // }
+    // else{
+    //     a_NoteHandler.runArmRoller(0);
+    // }
     
-    // a_NoteHandler.shootToAmp(
-    //     a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
-    //     a_DriverXboxController.GetAButton(), //shoot into amp
-    //     a_DriverXboxController.GetLeftBumper(), //bring to default amp
-    //     a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
-    //     a_DriverXboxController.GetRightBumper(), //shoot note
-    //     a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
+    a_NoteHandler.shootToAmp(
+        a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
+        a_DriverXboxController.GetAButton(), //shoot into amp
+        a_DriverXboxController.GetLeftBumper(), //bring to default amp
+        a_OperatorXboxController.GetRightTriggerAxis() > .75, //run shooter
+        a_DriverXboxController.GetRightBumper(), //shoot note
+        a_OperatorXboxController.GetLeftTriggerAxis() > .75);//run collector
 
 
     // if(a_DriverXboxController.GetRightTriggerAxis() > .5){
