@@ -138,7 +138,7 @@ void Robot::RobotPeriodic() {
 
     a_Gyro.Update();
 
-    //a_LED.Update();
+    a_LED.Update();
 
 
     a_SwerveDrive.updateOdometry();
