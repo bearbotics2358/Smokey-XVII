@@ -12,6 +12,7 @@ rotationMotor(rotationMotorID),
 //.08 .008
 extendPID(0.3, 0.03, 0.0),
 rotationPID(0.0, 0.0, 0.0),
+trapPID(.004, 0.0, 0.0001),
 a_BeamBreak(AMP_BEAM_BREAK_PORT) ,
 // m_rotationMotorSignal(rotationMotor.GetPosition()),
 // m_extensionMotorSignal(extensionMotor.GetPosition()),
@@ -76,6 +77,20 @@ bool AmpTrap::moveToPosition(double desiredaAngle){
     rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
     double angle = GetArmAngle();
     double speed = rotationPID.Calculate(angle, desiredaAngle);
+    speed = std::clamp(speed, -.1, .1);
+    if(fabs(angle - desiredaAngle) <= 6.0){
+        rotationMotor.StopMotor();
+        return true;
+    }
+    else{
+        rotationMotor.Set(speed);
+        return false;
+    }
+}
+bool AmpTrap::trapMoveToPosition(double desiredaAngle){
+    rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
+    double angle = GetArmAngle();
+    double speed = trapPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.1, .1);
     if(fabs(angle - desiredaAngle) <= 6.0){
         rotationMotor.StopMotor();

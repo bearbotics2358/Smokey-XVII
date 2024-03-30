@@ -250,7 +250,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
         case MOVEARM:
             a_Climber.extendClimnber(18.0);
             a_AmpTrap.extendExtender(15.75);
-            if(a_AmpTrap.moveToPosition(200.0)){
+            if(a_AmpTrap.trapMoveToPosition(210.0)){//200
                 state_time = misc::gettime_d();
                 currentClimbState = TRAP;
             }
@@ -260,7 +260,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             a_AmpTrap.extendExtender(15.75);
             //a_AmpTrap.moveToPosition(207.0);
             runArmRoller(-40);
-            if(misc::gettime_d() > state_time + 0.50){
+            if(misc::gettime_d() > state_time + 0.40){//.5
                 state_time = misc::gettime_d();
                 currentClimbState = HITNOTE;
             }

@@ -15,6 +15,7 @@ class AmpTrap {
         double GetExtensionPosition(); 
         void setPosition();
         bool moveToPosition(double desiredaAngle);
+        bool trapMoveToPosition(double desiredaAngle);
         double GetArmAngle();
         void update();
         bool beamBroken();
@@ -32,6 +33,7 @@ class AmpTrap {
 
         frc::PIDController extendPID;
         frc::PIDController rotationPID;
+        frc::PIDController trapPID;
 
         BeamBreak a_BeamBreak;
         ArmAngle a_ArmAngle;
