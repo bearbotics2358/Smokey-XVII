@@ -12,11 +12,16 @@ brModule(brModule),
 a_gyro(gyro),
 turnAnglePid(0.014, 0.0, 0.0),
 crabAnglePid(1.5, 0.0, 0.01),
-a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), 
-        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}},
+a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), getModulePositions()},
 xProfiledPid(.5, .2, 0.0, linearConstraints),
 yProfiledPid(.5, .2, 0.0, linearConstraints),
-rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints)
+rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints),
+poseEstimator{
+    a_kinematics, 
+    frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))),
+    getModulePositions(),
+    frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::radian_t(0.0))
+}
 {
     xProfiledPid.SetTolerance(units::meter_t(.1));
     yProfiledPid.SetTolerance(units::meter_t(.1));
@@ -369,8 +374,17 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         }   
 }
 void SwerveDrive::updateOdometry(){
-     a_odometry.Update(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
-        {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()});
+     a_odometry.Update(getGyroAngle(), getModulePositions());
+   
+    std::optional<photon::EstimatedRobotPose> pose = vision.estimate_position();
+    if (pose) {
+        frc::Pose2d p = (*pose).estimatedPose.ToPose2d();
+        units::second_t t = (*pose).timestamp;
+        poseEstimator.AddVisionMeasurement(p, t);
+        poseEstimator.UpdateWithTime(t, getGyroAngle(), getModulePositions());
+    } else {
+        poseEstimator.Update(getGyroAngle(), getModulePositions());
+    }
 }
 frc::Pose2d SwerveDrive::getPose(){
     return a_odometry.GetPose();
@@ -385,7 +399,29 @@ double SwerveDrive::getRotPose(){
     return getPose().Rotation().Degrees().value();
 }
 void SwerveDrive::zeroPose(frc::Pose2d pose){
-    a_odometry.ResetPosition(frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped())), 
-    {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()}, 
-    pose);
+    a_odometry.ResetPosition(getGyroAngle(), getModulePositions(), pose);
+}
+
+frc::Pose2d SwerveDrive::getPoseEstimatorPose(){
+    return poseEstimator.GetEstimatedPosition();
+}
+
+double SwerveDrive::getPoseEstimatorX(){
+    return getPoseEstimatorPose().X().value();
+}
+
+double SwerveDrive::getPoseEstimatorY(){
+    return getPoseEstimatorPose().Y().value();
+}
+
+double SwerveDrive::getPoseEstimatorRot(){
+    return getPoseEstimatorPose().Rotation().Degrees().value();
+}
+
+frc::Rotation2d SwerveDrive::getGyroAngle() {
+    return frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped()));
+}
+
+wpi::array<frc::SwerveModulePosition, 4U> SwerveDrive::getModulePositions() {
+    return {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()};
 }

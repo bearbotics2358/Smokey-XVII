@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Prefs.h>
 #include <frc/apriltag/AprilTagFields.h>
 #include "photon/PhotonCamera.h"

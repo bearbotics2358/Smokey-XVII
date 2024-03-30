@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Vision.h>
 #include <misc.h>
 #include <frc/smartdashboard/SmartDashboard.h>
