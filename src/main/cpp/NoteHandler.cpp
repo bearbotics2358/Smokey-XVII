@@ -119,11 +119,10 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton) {
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton, bool hooksUp, bool finishClimb) {
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
-            a_AmpTrap.stopRoller();
             if (shooterButtonState) {
                 double rpm = 3500;
                 double angle = 40.0;
@@ -133,6 +132,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 stopShooter();
                 moveShooterToAngle(0.0);
             }
+
             if (collectorButton) {
                 collectNote(-0.4, true);
             } 
@@ -145,12 +145,20 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
            
             //a_AmpTrap.moveToPosition(7.5);
+        
+            a_AmpTrap.stopRoller();
             a_AmpTrap.stopArm();
             a_AmpTrap.extendExtender(.03);
+            
             if(transferButtonState == true){
                 state_time = misc::gettime_d();
                 currentAmpLoadState = LOADING;
             }
+            else if (hooksUp){
+                state_time = misc::gettime_d();
+                currentAmpLoadState = CLIMBTRAP;
+            }
+            
             break;
 
         case LOADING:
@@ -203,9 +211,12 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 currentAmpLoadState = IDLE;
             }
             break;
+        case CLIMBTRAP:
+            climbControl(hooksUp, finishClimb);
+            break;
     }
 }
-void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool resetButton){
+void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
     frc::SmartDashboard::PutNumber("Current Climb State", currentClimbState);
     switch(currentClimbState){
         case CLIMBIDLE:
@@ -216,7 +227,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             }
             break;
         case BRINGCLIMBERSUP:
-            if(a_Climber.extendClimnber(4.0)){
+            if(a_Climber.extendClimnber(2.5)){
                 printf("in BRINGCLIMBERSUP\n");
                 if(finishClimbButton){
                     state_time = misc::gettime_d();
@@ -225,15 +236,17 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             }
             break;
         case TRANSFERNOTE:
-            if(transferToAmp()){
-                state_time = misc::gettime_d();
-                currentClimbState = EXTENSION;
+            if(a_Climber.extendClimnber(4.0)){
+                if(transferToAmp()){
+                    state_time = misc::gettime_d();
+                    currentClimbState = EXTENSION;
+                }
             }
             break;
         case EXTENSION:
             // 2.88 in what units?
             if(moveShooterToAngle(1.0)){
-                if(a_AmpTrap.extendExtender(15.75)){
+                if(a_AmpTrap.extendExtender(10.0)){
                     state_time = misc::gettime_d();
                     currentClimbState = CLIMB;
                 }
@@ -241,7 +254,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             break;
         case CLIMB:
             // Climnber???
-            a_AmpTrap.extendExtender(15.75);
+            a_AmpTrap.extendExtender(10.0);
             if(a_Climber.extendClimnber(18.0)){
                 state_time = misc::gettime_d();
                 currentClimbState = MOVEARM;
@@ -249,15 +262,15 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             break;
         case MOVEARM:
             a_Climber.extendClimnber(18.0);
-            a_AmpTrap.extendExtender(15.75);
-            if(a_AmpTrap.trapMoveToPosition(210.0)){//200
+            a_AmpTrap.extendExtender(10.0);
+            if(a_AmpTrap.trapMoveToPosition(217.0)){//200
                 state_time = misc::gettime_d();
                 currentClimbState = TRAP;
             }
             break;
         case TRAP:
             a_Climber.extendClimnber(18.0);
-            a_AmpTrap.extendExtender(15.75);
+            a_AmpTrap.extendExtender(10.0);
             //a_AmpTrap.moveToPosition(207.0);
             runArmRoller(-40);
             if(misc::gettime_d() > state_time + 0.40){//.5
@@ -267,10 +280,10 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             break;
         case HITNOTE:
             a_Climber.extendClimnber(18.0);
-            a_AmpTrap.moveToPosition(163.0);
+            a_AmpTrap.moveToPosition(155.0);
             if(misc::gettime_d() > state_time + 1.0 && a_AmpTrap.moveToPosition(240.0)) {
                 state_time = misc::gettime_d();
-                currentClimbState = DONECLIMBING;
+                currentClimbState = TAP;
             }
             break;
         case TAP:
@@ -289,10 +302,6 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton, bool re
             a_AmpTrap.stopArm();
             a_AmpTrap.stopExtension();
             a_Climber.stopClimber();
-            if(resetButton){
-                state_time = misc::gettime_d();
-                currentClimbState = RESET;
-            }
             break;
         case RESET:
             if(a_Climber.extendClimnber(4.0)){
@@ -341,8 +350,8 @@ bool NoteHandler::ampBeamBreak(){
 }
 
 bool NoteHandler::transferToAmp() {
-    a_AmpTrap.runRoller(-20);
-    a_Shooter.setSpeed(750);
+    a_AmpTrap.runRoller(-15);
+    a_Shooter.setSpeed(700);
     if (a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(55.0)) {
         
         shootNote(-.2);

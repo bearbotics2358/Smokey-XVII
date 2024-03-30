@@ -4,7 +4,7 @@
 Climber::Climber(int climberMotorID, int topLimitSwitchPort)://, int topLimitSwitchPort)://, int topPort, int bottomPort):
 climberMotor(climberMotorID),
 topLimitSwitch(topLimitSwitchPort),
-climberPID(0.05, 0.006, 0.0)
+climberPID(0.08, 0.008, 0.0)
 //m_climberMotorSignal(climberMotor.GetPosition())
 {
     climberPID.SetTolerance(1.0);

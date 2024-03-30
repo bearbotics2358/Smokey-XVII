@@ -415,7 +415,7 @@ double SwerveDrive::getPoseEstimatorY(){
 }
 
 double SwerveDrive::getPoseEstimatorRot(){
-    return getPoseEstimatorPose().Rotation().Degrees().value();
+    return getPoseEstimatorPose().Rotation().Radians().value();
 }
 
 frc::Rotation2d SwerveDrive::getGyroAngle() {
@@ -424,4 +424,48 @@ frc::Rotation2d SwerveDrive::getGyroAngle() {
 
 wpi::array<frc::SwerveModulePosition, 4U> SwerveDrive::getModulePositions() {
     return {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()};
+}
+bool SwerveDrive::poseEstimatorGoToPose(double xDesired, double yDesired, double rotDesired){
+        double xPose = getPoseEstimatorX();
+        double yPose = getPoseEstimatorY();
+        double rotPose = getPoseEstimatorRot();
+
+        xProfiledPid.SetGoal(units::meter_t(xDesired));
+        yProfiledPid.SetGoal(units::meter_t(yDesired));
+        rotProfiledPid.SetGoal(units::radian_t(rotDesired));
+
+        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(xDesired)), -.25, .25);
+        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(yDesired)), -.25, .25);
+        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
+        frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
+        frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
+        frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
+        swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+        //swerveUpdate(0.0, 0.0, -rotSpeed, true);
+        //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
+
+        if(fabs(xPose-xDesired) < .1 && fabs(yPose-yDesired) < .1 && fabs(rotPose-rotDesired) < .087){
+            stop();
+            return true;
+        }
+        else{
+            swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+            return false;
+        }   
+}
+bool SwerveDrive::alignWithAMP(bool redAlliance){
+    if(!redAlliance){
+        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+    }
+    else{
+        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+    }
+}
+bool SwerveDrive::alignWithStage(bool redAlliance){
+    if(!redAlliance){
+        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+    }
+    else{
+        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+    }
 }

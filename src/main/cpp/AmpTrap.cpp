@@ -9,8 +9,8 @@ AmpTrap::AmpTrap(int rollerMotorID, int rotationMotorID, int extensionMotorID):
 rollerMotor(rollerMotorID),
 extensionMotor(extensionMotorID),
 rotationMotor(rotationMotorID),
-//.08 .008
-extendPID(0.3, 0.03, 0.0),
+// .3 .03 0.0
+extendPID(0.3, 0.03, 0.00),
 rotationPID(0.0, 0.0, 0.0),
 trapPID(.004, 0.0, 0.0001),
 a_BeamBreak(AMP_BEAM_BREAK_PORT) ,
@@ -24,7 +24,7 @@ a_ArmAngle(1)
 
     ctre::phoenix6::configs::Slot0Configs slot0Configs{};
     slot0Configs.kV = .12;
-    slot0Configs.kP = 0.0; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kP = 0.01; // An error of 1 rps results in 0.11 V output
     slot0Configs.kI = 0.0; // no output for integrated error
     slot0Configs.kD = 0.0; // no output for error derivative
     rollerMotor.GetConfigurator().Apply(slot0Configs);

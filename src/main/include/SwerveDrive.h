@@ -76,6 +76,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
         bool odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+        bool poseEstimatorGoToPose(double xDesired, double yDesired, double rotDesired);
 
         void updateOdometry();
 
@@ -93,6 +94,9 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         frc::Rotation2d getGyroAngle();
         wpi::array<frc::SwerveModulePosition, 4U> getModulePositions();
+
+        bool alignWithAMP(bool redAlliance);
+        bool alignWithStage(bool redAlliance);
 
     private:
         // called by both crabUpdate and swerveUpdata
