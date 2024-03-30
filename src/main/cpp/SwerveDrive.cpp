@@ -346,32 +346,40 @@ float SwerveDrive::crabCalcZ(float angle, float gyroDegrees) {
 float SwerveDrive::turnCalcZ(float angle, float gyroDegrees) {
     return std::clamp(turnAnglePid.Calculate(gyroDegrees, angle), -0.2, 0.2);
 }
-bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired){
+
+bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotDesired) {
+    odometryGoToPose(frc::Pose2d(units::meter_t(xDesired), units::meter_t(yDesired), frc::Rotation2d(units::radian_t(rotDesired))));
+}
+
+bool SwerveDrive::odometryGoToPose(frc::Pose2d desired) {
         double xPose = a_odometry.GetPose().X().value();
         double yPose = a_odometry.GetPose().Y().value();
         double rotPose = a_odometry.GetPose().Rotation().Radians().value();
 
-        xProfiledPid.SetGoal(units::meter_t(xDesired));
-        yProfiledPid.SetGoal(units::meter_t(yDesired));
-        rotProfiledPid.SetGoal(units::radian_t(rotDesired));
-        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(xDesired)), -.25, .25);
-        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(yDesired)), -.25, .25);
-        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
+        xProfiledPid.SetGoal(desired.X());
+        yProfiledPid.SetGoal(desired.Y());
+        rotProfiledPid.SetGoal(desired.Rotation().Radians());
+        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), desired.X()), -.25, .25);
+        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), desired.Y()), -.25, .25);
+        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), desired.Rotation().Radians()), -.25, .25);
         frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
         frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
         frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
         swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
         //swerveUpdate(0.0, 0.0, -rotSpeed, true);
-        //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
+        //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());
 
-        if(fabs(xPose-xDesired) < .1 && fabs(yPose-yDesired) < .1 && fabs(rotPose-rotDesired) < .087){
+        if (fabs(xPose - desired.X().value()) < .1
+            && fabs(yPose - desired.Y().value()) < .1
+            && fabs(rotPose - desired.Rotation().Radians().value()) < .087) {
+
             stop();
             return true;
         }
         else{
             swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
             return false;
-        }   
+        }
 }
 void SwerveDrive::updateOdometry(){
      a_odometry.Update(getGyroAngle(), getModulePositions());
