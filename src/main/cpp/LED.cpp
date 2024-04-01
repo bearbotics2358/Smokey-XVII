@@ -23,7 +23,8 @@ LED::LED()
 void LED::Init()
 {
 	int i;
-	LED_prevCommand = LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+	LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
+	LED_prevCommand = RIO_msgs_enum::WHITE;
 
 	/*
 	sport = new SerialPort(baud);
@@ -171,7 +172,7 @@ void LED::SetWhite() {
 
 void LED::SendWhiteMSG() {
 	char cmd[10];
-	strncpy(cmd, "0,0\r\n", 8);
+	strncpy(cmd, "(0,0)\r\n", 8);
 	m_pserial->Write(cmd, strlen(cmd));
 	m_pserial->Flush();
 	

@@ -5,6 +5,7 @@
 #include "misc.h"
 #include "Gyro.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/DriverStation.h>
 #include <iostream>
 #include <stdio.h>
 #include <frc/interfaces/Gyro.h>
@@ -93,6 +94,8 @@ void Robot::RobotInit() {
     // a_LED.SetAngleToNote(0.3);
 
     //a_LED.SetTargetType(LED_STAGE_enum::WHITE);
+
+    commsStatus = frc::DriverStation::IsDSAttached();
     //InterpolationValues value = {22.5, 3500};
     a_NoteHandler.insertToInterpolatingMap(2.546859, {22.5, 4000});
     a_NoteHandler.insertToInterpolatingMap(4.212965, {9.5, 4000});
@@ -105,14 +108,19 @@ void Robot::RobotPeriodic() {
     a_NoteHandler.UpdateSensors();
 
     
-    // if(a_NoteHandler.beamBroken()){
-    //      a_LED.SetNoteOnBoard();
-    // } else {
-    //      a_LED.SetMSGIdle();
-    // }
+
+    
+
+    if(!frc::DriverStation::IsDSAttached()){
+         a_LED.SetNoComms();
+    }
+    else if(a_NoteHandler.beamBroken()){
+         a_LED.SetNoteOnBoard();
+     } else {
+         a_LED.SetMSGIdle();
+     }
 
     a_NoteHandler.updateDashboard();
-
 
     // photon::PhotonPipelineResult result = a_camera.GetLatestResult();
     // double Note_Offset = LimelightHelpers::getTX("limelight-notes");
@@ -131,7 +139,7 @@ void Robot::RobotPeriodic() {
 
     a_Gyro.Update();
 
-    //a_LED.Update();
+    a_LED.Update();
 
 
     a_SwerveDrive.updateOdometry();

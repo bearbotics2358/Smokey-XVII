@@ -23,6 +23,7 @@
 #include <frc/apriltag/AprilTagFields.h>
 #include "LED.h"
 #include <Vision.h>
+#include <frc/DriverStation.h>
 
 enum class DriveBackState {
     Inactive,
@@ -101,6 +102,9 @@ class Robot : public frc::TimedRobot {
         //LED_DIO a_LED;
 
         //LED a_LED;
+
+
+        bool commsStatus;
 
 
 
