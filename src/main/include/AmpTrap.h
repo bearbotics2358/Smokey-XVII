@@ -8,13 +8,14 @@
 class AmpTrap {
     public:
         AmpTrap(int rollerMotorID, int rotationMotorID, int extensionMotorID); 
-        void runRoller();
+        void runRoller(double rps);
         void stopRoller();
         bool extendExtender(double goal);  
         double extensionPosition();      
         double GetExtensionPosition(); 
         void setPosition();
         bool moveToPosition(double desiredaAngle);
+        bool trapMoveToPosition(double desiredaAngle);
         double GetArmAngle();
         void update();
         bool beamBroken();
@@ -32,8 +33,11 @@ class AmpTrap {
 
         frc::PIDController extendPID;
         frc::PIDController rotationPID;
+        frc::PIDController trapPID;
 
         BeamBreak a_BeamBreak;
         ArmAngle a_ArmAngle;
+
+        ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
         
 };

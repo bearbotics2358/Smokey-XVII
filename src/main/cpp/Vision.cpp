@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Vision.h>
 #include <misc.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -26,6 +28,6 @@ std::optional<EstimatedRobotPose> Vision::estimate_position() {
     return estimator.Update(camera.GetLatestResult());
 }
 
-frc::Pose3d Vision::get_april_tag_pose(int id) {
-    return *april_tags.GetTagPose(id);
+frc::Pose3d Vision::get_april_tag_pose() {
+    return *april_tags.GetTagPose(camera.GetLatestResult().GetBestTarget().GetFiducialId());
 }

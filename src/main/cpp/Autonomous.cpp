@@ -88,7 +88,7 @@ void Autonomous::PeriodicAuto(const std::string periodicAutoMode) {
 
 
 // s----------------------------------AUTONOMOUS ROUTINES---------------------------------------- //
-
+//DO NOTHING
 void Autonomous::DoNothing() {
     a_AutoState0 = kAutoIdle0;
 }
@@ -105,7 +105,7 @@ void Autonomous::PeriodicDoNothing() {
     a_AutoState0 = nextState;
 }
 
-//BLUE LEFT RED LEFT
+//RIGHT 2 NOTE
 void Autonomous::NoteOne() {
     a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
     a_Gyro->Zero(0.0);
@@ -160,7 +160,7 @@ void Autonomous::PeriodicNoteOne() {
     a_AutoState1 = nextState;
 }
 
-//BLUE CENTER RED CENTER
+//CENTER TWO NOTE
 void Autonomous::NoteTwo() {
     a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(1.3), units::meter_t(0.0), units::degree_t(0.0)));
     a_Gyro->Zero(0.0);
@@ -216,7 +216,7 @@ void Autonomous::PeriodicNoteTwo() {
     a_AutoState2 = nextState;
 }
 
-//BLUE RIGHT RED RIGHT
+//LEFT 2 NOTE
 void Autonomous::NoteThree() 
 {
    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
@@ -271,11 +271,11 @@ void Autonomous::PeriodicNoteThree() {
     }
     a_AutoState3 = nextState;
 }
-//RED LEFT
+//4 Note Center
 void Autonomous::NoteFour(){
-    //a_SwerveDrive->zeroPose();
-    a_Gyro->Zero(300.0);
-    a_AutoState4 = kGoToNote4;
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(1.3), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState4 = kShootFirstNote4;   
     state_time = misc::gettime_d();
 }
 
@@ -287,46 +287,167 @@ void Autonomous::PeriodicNoteFour() {
         case kAutoIdle4:
             StopSwerves();
             break;
-        case kGoToNote4:
-            a_SwerveDrive -> odometryGoToPose(8.23, -1.68, 0.0);
-            nextState = kShootNote4;
+        case kShootFirstNote4:
+            if(misc::gettime_d() > state_time + 0.5){
+                a_NoteHandler->shootNote(-.25);
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote4;
+                }
+            }
             break;
-        case kShootNote4:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle4;
+        case kGoToSecondNote4:
+            a_NoteHandler->collectNote(-.4, true);
+                if(a_SwerveDrive->odometryGoToPose(-.2, 0.0, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeaker4;
+                }
+            break;
+        case kGoToSpeaker4:
+            a_NoteHandler->collectNote(-.4, true);
+            if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
+                state_time = misc::gettime_d();
+                nextState = kShootSecondNote4;
+            }
+            break;
+        case kShootSecondNote4:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToThirdNote4;
+            }
+            break;
+        case kGoToThirdNote4:
+            a_NoteHandler->collectNote(-.4, true);
+                if(a_SwerveDrive->odometryGoToPose(-.2, -1.455, M_PI/8) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerAgain4;
+                }
+            break;
+        case kGoToSpeakerAgain4:
+            a_NoteHandler->collectNote(-.4, true);
+            if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
+                state_time = misc::gettime_d();
+                nextState = kShootThirdNote4;
+            }
+            break;
+        case kShootThirdNote4:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToFourthNote4;
+            }
+            break;
+        case kGoToFourthNote4:
+            a_NoteHandler->collectNote(-.4, true);
+                if(a_SwerveDrive->odometryGoToPose(-.2, 1.455, 15.0*M_PI/8) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerThirdTime4;
+            }
+            break;
+        case kGoToSpeakerThirdTime4:
+            a_NoteHandler->collectNote(-.4, true);
+            if(a_SwerveDrive->odometryGoToPose(1.3, 0.0, 0.0)){
+                state_time = misc::gettime_d();
+                nextState = kShootFourthNote4;
+            }
+            break;
+        case kShootFourthNote4:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle4;
+            }
             break;
     }
     a_AutoState4 = nextState;
  }
+ //RED RIGHT 3 NOTE
  void Autonomous::NoteFive() 
 {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState5 = kRotateToShoot5;
     state_time = misc::gettime_d();
-    a_AutoState5 = kGoToNote5;
 }
     
 void Autonomous::PeriodicNoteFive() {
-
+    
     AutoState5 nextState = a_AutoState5;
-
+    frc::SmartDashboard::PutNumber("Auto State", nextState);
     switch (a_AutoState5) {
         case kAutoIdle5:
             StopSwerves();
             break;
-        case kGoToNote5:
-            a_SwerveDrive -> odometryGoToPose(8.23, -0.2, 0.0);
-            nextState = kShootNote5;
+        case kRotateToShoot5:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, 5*(M_PI/3)) || (a_SwerveDrive->getAvgVelocity() < .25)){
+                state_time = misc::gettime_d();
+                nextState = kShootFirstNote5;
+            }
             break;
-        case kShootNote5:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle5;
+        case kShootFirstNote5:
+            if(misc::gettime_d() > state_time + 0.5){
+                a_NoteHandler->shootNote(-.25);
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote5;
+                }
+            }
             break;
-        }
+        case kGoToSecondNote5:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-1.602, 0.665, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+
+                    nextState = kGoToSpeaker5;
+                }
+            }
+            break;
+        case kGoToSpeaker5:
+            if(a_SwerveDrive->odometryGoToPose(0.83, 0.0, 5*(M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootSecondNote5;
+            }
+            break;
+        case kShootSecondNote5:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToThirdNote5;
+            }
+            break;   
+        case kGoToThirdNote5:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-6.976, 1.122, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerAgain5;
+                }
+            }
+            break;
+        case kGoToSpeakerAgain5:
+            if(a_SwerveDrive->odometryGoToPose(0.83, 0.0, 5*(M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootThirdNote5;
+            }
+            break;
+        case kShootThirdNote5:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle5;
+            }
+            break;
+    }
     a_AutoState5 = nextState;
 }
-
+//BLUE LEFT 3 NOTE
 void Autonomous::NoteSix(){
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState6 = kRotateToShoot6;   
     state_time = misc::gettime_d();
-    a_AutoState6 = kGoToNote6;
 }
 
 void Autonomous::PeriodicNoteSix() {
@@ -336,23 +457,75 @@ void Autonomous::PeriodicNoteSix() {
         case kAutoIdle6:
             StopSwerves();
             break;
-        case kGoToNote6:
-            a_SwerveDrive -> odometryGoToPose(8.23, 1.48, 0.0);
-            nextState = kShootNote6;
+        case kRotateToShoot6:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, M_PI/3)){
+                state_time = misc::gettime_d();
+                nextState = kShootFirstNote6;
+            }
             break;
-        case kShootNote6:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle6;
+        case kShootFirstNote6:
+            if(misc::gettime_d() > state_time + 0.5){
+                a_NoteHandler->shootNote(-.25);
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote6;
+                }
+            }
+            break;
+        case kGoToSecondNote6:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-1.602, -0.665, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeaker6;
+                }
+            }
+            break;
+        case kGoToSpeaker6:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, M_PI/3)){
+                state_time = misc::gettime_d();
+                nextState = kShootSecondNote6;
+            }
+            break;
+        case kShootSecondNote6:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToThirdNote6;
+            }
+            break;   
+         case kGoToThirdNote6:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-6.977, -1.122, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerAgain6;
+                }
+            }
+            break;
+        case kGoToSpeakerAgain6:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, (M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootThirdNote6;
+            }
+            break;
+        case kShootThirdNote6:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle6;
+            }
             break;
     }
     a_AutoState6 = nextState;
 }
-
+// RED LEFT 3 NOTE
 void Autonomous::NoteSeven() 
 {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState7 = kRotateToShoot7;   
     state_time = misc::gettime_d();
-    a_AutoState7 = kGoToNote7;
-    drivestart = 0.0;
 }
 
 void Autonomous::PeriodicNoteSeven() {
@@ -362,22 +535,75 @@ void Autonomous::PeriodicNoteSeven() {
         case kAutoIdle7:
             StopSwerves();
             break;
-        case kGoToNote7:
-            a_SwerveDrive -> odometryGoToPose(8.23, 2.16, 0.0);
-            nextState = kShootNote7;
+        case kRotateToShoot7:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, M_PI/3)){
+                state_time = misc::gettime_d();
+                nextState = kShootFirstNote7;
+            }
             break;
-        case kShootNote7:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle7;
+        case kShootFirstNote7:
+            if(misc::gettime_d() > state_time + 0.5){
+                a_NoteHandler->shootNote(-.25);
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote7;
+                }
+            }
+            break;
+        case kGoToSecondNote7:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-1.602, -0.665, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeaker7;
+                }
+            }
+            break;
+        case kGoToSpeaker7:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, M_PI/3)){
+                state_time = misc::gettime_d();
+                nextState = kShootSecondNote7;
+            }
+            break;
+        case kShootSecondNote7:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToThirdNote7;
+            }
+            break;   
+         case kGoToThirdNote7:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-6.977, -4.017, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerAgain7;
+                }
+            }
+            break;
+        case kGoToSpeakerAgain7:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, (M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootThirdNote7;
+            }
+            break;
+        case kShootThirdNote7:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle7;
+            }
             break;
     }
     a_AutoState7 = nextState;
 }
-
+//BLUE RIGHT 3 Note
 void Autonomous::NoteEight() 
 {
+    a_SwerveDrive->zeroPose(frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::degree_t(0.0)));
+    a_Gyro->Zero(0.0);
+    a_AutoState8 = kRotateToShoot8;
     state_time = misc::gettime_d();
-    a_AutoState8 = kGoToNote8;
 }
 
 void Autonomous::PeriodicNoteEight() {
@@ -387,13 +613,64 @@ void Autonomous::PeriodicNoteEight() {
         case kAutoIdle8:
             StopSwerves();
             break;
-        case kGoToNote8:
-            a_SwerveDrive -> odometryGoToPose(8.23, 3.84, 0.0);
-            nextState = kShootNote8;
+        case kRotateToShoot8:
+            if(a_SwerveDrive->odometryGoToPose(0.5, 0.0, 5*(M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootFirstNote8;
+            }
             break;
-        case kShootNote8:
-            a_NoteHandler->indexToShoot();
-            nextState = kAutoIdle8;
+        case kShootFirstNote8:
+            if(misc::gettime_d() > state_time + 0.5){
+                a_NoteHandler->shootNote(-.25);
+                if(a_NoteHandler->ampBeamBreak()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSecondNote8;
+                }
+            }
+            break;
+        case kGoToSecondNote8:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-1.602, 0.665, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeaker8;
+                }
+            }
+            break;
+        case kGoToSpeaker8:
+            if(a_SwerveDrive->odometryGoToPose(0.83, 0.0, 5*(M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootSecondNote8;
+            }
+            break;
+        case kShootSecondNote8:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kGoToThirdNote8;
+            }
+            break;   
+        case kGoToThirdNote8:
+            a_NoteHandler->collectNote(-.4, true);
+            if(misc::gettime_d() > state_time + 1.0){
+                if(a_SwerveDrive->odometryGoToPose(-6.976, 4.017, 0.0) || a_NoteHandler->beamBroken()){
+                    state_time = misc::gettime_d();
+                    nextState = kGoToSpeakerAgain8;
+                }
+            }
+            break;
+        case kGoToSpeakerAgain8:
+            if(a_SwerveDrive->odometryGoToPose(0.83, 0.0, 5*(M_PI/3))){
+                state_time = misc::gettime_d();
+                nextState = kShootThirdNote8;
+            }
+            break;
+        case kShootThirdNote8:
+            a_NoteHandler->shootNote(-.25);
+            if(a_NoteHandler->ampBeamBreak()){
+                state_time = misc::gettime_d();
+                nextState = kAutoIdle8;
+            }
             break;
     }
     a_AutoState8 = nextState;

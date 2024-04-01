@@ -9,9 +9,10 @@ AmpTrap::AmpTrap(int rollerMotorID, int rotationMotorID, int extensionMotorID):
 rollerMotor(rollerMotorID),
 extensionMotor(extensionMotorID),
 rotationMotor(rotationMotorID),
-//.08 .008
-extendPID(0.3, 0.03, 0.0),
+// .3 .03 0.0
+extendPID(0.3, 0.03, 0.00),
 rotationPID(0.0, 0.0, 0.0),
+trapPID(.004, 0.0, 0.0001),
 a_BeamBreak(AMP_BEAM_BREAK_PORT) ,
 // m_rotationMotorSignal(rotationMotor.GetPosition()),
 // m_extensionMotorSignal(extensionMotor.GetPosition()),
@@ -21,13 +22,21 @@ a_ArmAngle(1)
     rotationPID.SetTolerance(3.0);
     rotationMotor.SetNeutralMode(1);
 
+    ctre::phoenix6::configs::Slot0Configs slot0Configs{};
+    slot0Configs.kV = .12;
+    slot0Configs.kP = 0.01; // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = 0.0; // no output for integrated error
+    slot0Configs.kD = 0.0; // no output for error derivative
+    rollerMotor.GetConfigurator().Apply(slot0Configs);
+    ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
 
     // m_rotationMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
     // m_extensionMotorSignal.SetUpdateFrequency(units::frequency::hertz_t(10.0));
     
 }
-void AmpTrap::runRoller(){
-    rollerMotor.Set(-0.32);
+void AmpTrap::runRoller(double rps){
+    rollerMotor.SetControl(m_request.WithVelocity(units::angular_velocity::turns_per_second_t{rps} ));
+    //rollerMotor.Set(-0.35);
 }
 void AmpTrap::stopRoller(){
     rollerMotor.StopMotor();
@@ -69,12 +78,26 @@ bool AmpTrap::moveToPosition(double desiredaAngle){
     double angle = GetArmAngle();
     double speed = rotationPID.Calculate(angle, desiredaAngle);
     speed = std::clamp(speed, -.1, .1);
-    rotationMotor.Set(speed);
     if(fabs(angle - desiredaAngle) <= 6.0){
         rotationMotor.StopMotor();
         return true;
     }
     else{
+        rotationMotor.Set(speed);
+        return false;
+    }
+}
+bool AmpTrap::trapMoveToPosition(double desiredaAngle){
+    rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
+    double angle = GetArmAngle();
+    double speed = trapPID.Calculate(angle, desiredaAngle);
+    speed = std::clamp(speed, -.1, .1);
+    if(fabs(angle - desiredaAngle) <= 6.0){
+        rotationMotor.StopMotor();
+        return true;
+    }
+    else{
+        rotationMotor.Set(speed);
         return false;
     }
 }

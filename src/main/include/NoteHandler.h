@@ -15,6 +15,7 @@ enum AmpLoadState { // Encoders
             TOAMP,
             AWAYFROMAMP,
             DONE,
+            CLIMBTRAP
 };
 enum ClimbingState { // Encoders
             CLIMBIDLE = 0,
@@ -26,7 +27,9 @@ enum ClimbingState { // Encoders
             MOVEARM,
             TRAP,
             HITNOTE,
+            TAP,
             DONECLIMBING,
+            RESET
 };
 
 class NoteHandler {
@@ -71,12 +74,12 @@ class NoteHandler {
 
         void setRotPID(double p, double i, double d);
 
-        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton);
-        void climbControl(bool climbButton);
+        void shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton, bool hooksUp, bool finishClimb);
+        void climbControl(bool climbButton, bool finishClimbButton);
 
         void feedToAmp(double speed);
 
-        void runArmRoller();
+        void runArmRoller(double rps);
 
         bool moveShooterToAngle(double angle);
 
@@ -90,6 +93,8 @@ class NoteHandler {
         void setExtensionPosition();
 
         void runExtension(double position);
+
+        bool ampBeamBreak();
 
         bool noteShot = false;
 

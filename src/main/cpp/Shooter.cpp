@@ -65,16 +65,24 @@ double Shooter::getSpeed(){
 }
 
 void Shooter::UpdateSensors() {
-    bool pivot_limit_pressed = shooterLimitSwitch.limitSwitchPressed();
-
-    // Since we're not using the closed-loop controls for the motor, put the SetControl behind the
-    // limit switch check since setting a Duty Cycle of 0 will stop the motor
-    if (pivot_limit_pressed) {
-        // When the limit switch is pressed, stop the motor and zero out the encoder
-        pivotMotor.SetControl(m_pivotDutyCycleRequest.WithOutput(0)
-                              .WithLimitForwardMotion(pivot_limit_pressed)
-                              .WithLimitReverseMotion(pivot_limit_pressed));
+    if(shooterLimitSwitch.limitSwitchPressed()){
+        if(!shooterAlreadyZeroed){
+            pivotMotor.SetPosition(zeroShooter);
+            shooterAlreadyZeroed = true;
+        }
+    } else{
+        shooterAlreadyZeroed = false;
     }
+    // bool pivot_limit_pressed = shooterLimitSwitch.limitSwitchPressed();
+
+    // // Since we're not using the closed-loop controls for the motor, put the SetControl behind the
+    // // limit switch check since setting a Duty Cycle of 0 will stop the motor
+    // if (pivot_limit_pressed) {
+    //     // When the limit switch is pressed, stop the motor and zero out the encoder
+    //     pivotMotor.SetControl(m_pivotDutyCycleRequest.WithOutput(0)
+    //                           .WithLimitForwardMotion(pivot_limit_pressed)
+    //                           .WithLimitReverseMotion(pivot_limit_pressed));
+    // }
 }
 
 void Shooter::stopShooter(){

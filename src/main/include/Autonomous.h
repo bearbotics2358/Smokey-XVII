@@ -23,7 +23,7 @@ const std::string seventhNote = "Note 7";
 const std::string eighthNote = "Note 8";
 
 
-enum AutoState0 { // Encoders
+enum AutoState0 { // Do Nothing
     kAutoIdle0
 
 };
@@ -57,32 +57,65 @@ enum AutoState3 {
 
 enum AutoState4 {
     kAutoIdle4,
-    kGoToNote4,
-    kShootNote4
+    kShootFirstNote4,
+    kGoToSecondNote4,
+    kGoToSpeaker4,
+    kShootSecondNote4,
+    kGoToThirdNote4,
+    kGoToSpeakerAgain4,
+    kShootThirdNote4,
+    kGoToFourthNote4,
+    kGoToSpeakerThirdTime4,
+    kShootFourthNote4
 };
 
 // states for 5 ball auto
 enum AutoState5 {
     kAutoIdle5,
-    kGoToNote5,
-    kShootNote5
+    kRotateToShoot5,
+    kShootFirstNote5,
+    kGoToSecondNote5,
+    kGoToSpeaker5,
+    kShootSecondNote5,
+    kGoToThirdNote5,
+    kGoToSpeakerAgain5,
+    kShootThirdNote5
 };
 
 enum AutoState6 {
     kAutoIdle6,
-    kGoToNote6,
-    kShootNote6
+    kRotateToShoot6,
+    kShootFirstNote6,
+    kGoToSecondNote6,
+    kGoToSpeaker6,
+    kShootSecondNote6,
+    kGoToThirdNote6,
+    kGoToSpeakerAgain6,
+    kShootThirdNote6
 };
+
  enum AutoState7{
     kAutoIdle7,
-    kGoToNote7,
-    kShootNote7
+    kRotateToShoot7,
+    kShootFirstNote7,
+    kGoToSecondNote7,
+    kGoToSpeaker7,
+    kShootSecondNote7,
+    kGoToThirdNote7,
+    kGoToSpeakerAgain7,
+    kShootThirdNote7
 };
 
   enum AutoState8{
     kAutoIdle8,
-    kGoToNote8,
-    kShootNote8
+    kRotateToShoot8,
+    kShootFirstNote8,
+    kGoToSecondNote8,
+    kGoToSpeaker8,
+    kShootSecondNote8,
+    kGoToThirdNote8,
+    kGoToSpeakerAgain8,
+    kShootThirdNote8
 
   };
 

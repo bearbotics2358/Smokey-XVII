@@ -16,6 +16,9 @@ class Shooter{
         double GetShooterAngle();
     private:
 
+        units::angle::turn_t zeroShooter{0.0};
+        bool shooterAlreadyZeroed = false;
+        
         frc::PIDController leftShooterPID;
         frc::PIDController rightShooterPID;
         frc::PIDController pivotPID;

@@ -11,6 +11,8 @@
 #include <units/velocity.h>
 #include <units/angular_acceleration.h>
 #include <units/angular_velocity.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <Vision.h>
 
 class SwerveDrive // Class to handle the kinematics of Swerve Drive
 {
@@ -74,6 +76,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         void goToTheDon(float speed, float direction, float distance, bool fieldOriented = true, bool stop_on_completion = true);
 
         bool odometryGoToPose(double xDesired, double yDesired, double rotDesired);
+        bool poseEstimatorGoToPose(double xDesired, double yDesired, double rotDesired);
 
         void updateOdometry();
 
@@ -82,6 +85,18 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         double getYPose();
         double getRotPose();
         void zeroPose(frc::Pose2d pose);
+
+        // pose estimator
+        frc::Pose2d getPoseEstimatorPose();
+        double getPoseEstimatorX();
+        double getPoseEstimatorY();
+        double getPoseEstimatorRot();
+
+        frc::Rotation2d getGyroAngle();
+        wpi::array<frc::SwerveModulePosition, 4U> getModulePositions();
+
+        bool alignWithAMP(bool redAlliance);
+        bool alignWithStage(bool redAlliance);
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -137,7 +152,6 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
 
         frc::Rotation2d Rotation2d;
         frc::SwerveDriveOdometry<4> a_odometry;
-
         
         frc::TrapezoidProfile<units::meters>::Constraints linearConstraints{units::meters_per_second_t(1.0), units::meters_per_second_squared_t(1.0)};
         frc::ProfiledPIDController<units::meters> xProfiledPid;
@@ -146,4 +160,7 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         frc::TrapezoidProfile<units::radian>::Constraints rotationalConstraints{units::radians_per_second_t(2.0), units::radians_per_second_squared_t(2.0)};
         frc::ProfiledPIDController<units::radian> rotProfiledPid;
 
+        // Pose Estimator
+        frc::SwerveDrivePoseEstimator<4> poseEstimator;
+        Vision vision;
 };

@@ -119,11 +119,11 @@ bool NoteHandler::armToPose(double angle){
 void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
-void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton) {
+void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton, bool hooksUp, bool finishClimb) {
+    frc::SmartDashboard::PutNumber("Current Amp State", currentAmpLoadState);
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
-            a_AmpTrap.stopRoller();
             if (shooterButtonState) {
                 double rpm = 3500;
                 double angle = 40.0;
@@ -133,6 +133,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 stopShooter();
                 moveShooterToAngle(0.0);
             }
+
             if (collectorButton) {
                 collectNote(-0.4, true);
             } 
@@ -145,12 +146,20 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
            
             //a_AmpTrap.moveToPosition(7.5);
+        
+            a_AmpTrap.stopRoller();
             a_AmpTrap.stopArm();
             a_AmpTrap.extendExtender(.03);
+            
             if(transferButtonState == true){
                 state_time = misc::gettime_d();
                 currentAmpLoadState = LOADING;
             }
+            else if (hooksUp){
+                state_time = misc::gettime_d();
+                currentAmpLoadState = CLIMBTRAP;
+            }
+            
             break;
 
         case LOADING:
@@ -167,15 +176,15 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             stopShooter();
             moveShooterToAngle(0.0);
             if(intoAmpButtonState){
-                if(a_AmpTrap.extendExtender(2.88) && armToPose(125.0)){
-                        runArmRoller();
+                if(a_AmpTrap.extendExtender(3.0) && armToPose(135.0)){
+                        runArmRoller(-45);
                         state_time = misc::gettime_d();
                         currentAmpLoadState = SCORE;
                 }
             }
                 break;
         case SCORE:
-            armToPose(125.0);
+            armToPose(135.0);
             if(misc::gettime_d() > state_time + 0.5){
                             state_time = misc::gettime_d();
                             a_AmpTrap.stopRoller();
@@ -183,13 +192,15 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
             break;
         case AWAYFROMAMP:
-            a_AmpTrap.moveToPosition(245.0);
+            
             if(toDefaultPositionButtonState){
                 if(a_AmpTrap.moveToPosition(7.5)){
                     state_time = misc::gettime_d();
                     currentAmpLoadState = DONE;
                 }
-
+            }
+            else{
+                a_AmpTrap.moveToPosition(245.0);
             }
             break;
         case DONE:
@@ -201,9 +212,12 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
                 currentAmpLoadState = IDLE;
             }
             break;
+        case CLIMBTRAP:
+            climbControl(hooksUp, finishClimb);
+            break;
     }
 }
-void NoteHandler::climbControl(bool climbButton){
+void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
     frc::SmartDashboard::PutNumber("Current Climb State", currentClimbState);
     switch(currentClimbState){
         case CLIMBIDLE:
@@ -214,52 +228,71 @@ void NoteHandler::climbControl(bool climbButton){
             }
             break;
         case BRINGCLIMBERSUP:
-            if(a_Climber.extendClimnber(4.0)){
+            if(a_Climber.extendClimnber(2.5)){
                 printf("in BRINGCLIMBERSUP\n");
-                state_time = misc::gettime_d();
-                currentClimbState = TRANSFERNOTE;
+                if(finishClimbButton){
+                    state_time = misc::gettime_d();
+                    currentClimbState = TRANSFERNOTE;
+                }
             }
             break;
         case TRANSFERNOTE:
-            if(transferToAmp()){
-                state_time = misc::gettime_d();
-                currentClimbState = EXTENSION;
+            if(a_Climber.extendClimnber(4.0)){
+                if(transferToAmp()){
+                    state_time = misc::gettime_d();
+                    currentClimbState = EXTENSION;
+                }
             }
             break;
         case EXTENSION:
             // 2.88 in what units?
-            if(a_AmpTrap.extendExtender(15.75)){
-                state_time = misc::gettime_d();
-                currentClimbState = CLIMB;
+            if(moveShooterToAngle(1.0)){
+                if(a_AmpTrap.extendExtender(15.4)){
+                    state_time = misc::gettime_d();
+                    currentClimbState = CLIMB;
+                }
             }
             break;
         case CLIMB:
             // Climnber???
-            a_AmpTrap.extendExtender(15.75);
+            a_AmpTrap.extendExtender(15.4);
             if(a_Climber.extendClimnber(18.0)){
                 state_time = misc::gettime_d();
                 currentClimbState = MOVEARM;
             }
             break;
         case MOVEARM:
-            a_AmpTrap.extendExtender(15.75);
-            if(a_AmpTrap.moveToPosition(240.0)){
+            a_Climber.extendClimnber(18.0);
+            a_AmpTrap.extendExtender(15.4);
+            if(a_AmpTrap.trapMoveToPosition(217.0)){//200
                 state_time = misc::gettime_d();
                 currentClimbState = TRAP;
             }
             break;
         case TRAP:
-            a_AmpTrap.extendExtender(15.75);
-            a_AmpTrap.moveToPosition(240.0);
-            runArmRoller();
-            if(misc::gettime_d() > state_time + 0.5){
+            a_Climber.extendClimnber(18.0);
+            a_AmpTrap.extendExtender(15.4);
+            //a_AmpTrap.moveToPosition(207.0);
+            runArmRoller(-40);
+            if(misc::gettime_d() > state_time + 0.40){//.5
                 state_time = misc::gettime_d();
                 currentClimbState = HITNOTE;
             }
             break;
         case HITNOTE:
-            a_AmpTrap.moveToPosition(163.0);
+            a_Climber.extendClimnber(18.0);
+            a_AmpTrap.moveToPosition(155.0);
             if(misc::gettime_d() > state_time + 1.0 && a_AmpTrap.moveToPosition(240.0)) {
+                state_time = misc::gettime_d();
+                currentClimbState = TAP;
+            }
+            break;
+        case TAP:
+            a_Climber.extendClimnber(18.0);
+            frc::SmartDashboard::PutString("Got to tap", "YES");
+            a_AmpTrap.moveToPosition(163.0);
+            if(misc::gettime_d() > state_time + .5 && a_AmpTrap.moveToPosition(175.0)) {
+                frc::SmartDashboard::PutString("Got into if", "YES");
                 state_time = misc::gettime_d();
                 currentClimbState = DONECLIMBING;
             }
@@ -271,10 +304,20 @@ void NoteHandler::climbControl(bool climbButton){
             a_AmpTrap.stopExtension();
             a_Climber.stopClimber();
             break;
+        case RESET:
+            if(a_Climber.extendClimnber(4.0)){
+                if(a_AmpTrap.extendExtender(1.0)){
+                    a_AmpTrap.stopRoller();
+                    stopAll();
+                    a_AmpTrap.stopArm();
+                    a_AmpTrap.stopExtension();
+                    a_Climber.stopClimber();
+                }
+            }
     }
 }
-void NoteHandler::runArmRoller(){
-    a_AmpTrap.runRoller();
+void NoteHandler::runArmRoller(double rps){
+    a_AmpTrap.runRoller(rps);
 }
 double NoteHandler::getClimberPosition(){
     return a_Climber.GetClimberPosition();
@@ -303,11 +346,14 @@ void NoteHandler::setExtensionPosition(){
 void NoteHandler::runExtension(double position){
     a_AmpTrap.extendExtender(position);
 }
+bool NoteHandler::ampBeamBreak(){
+    return a_AmpTrap.beamBroken();
+}
 
 bool NoteHandler::transferToAmp() {
-    a_AmpTrap.runRoller();
-    a_Shooter.setSpeed(750);
-    if (a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(54.0)) {
+    a_AmpTrap.runRoller(-15);
+    a_Shooter.setSpeed(700);
+    if (a_AmpTrap.moveToPosition(245.0) && a_Shooter.moveToAngle(55.0)) {
         
         shootNote(-.2);
         if (a_AmpTrap.beamBroken()) {
