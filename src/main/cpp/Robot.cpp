@@ -188,10 +188,14 @@ void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Pose Estimator Y", p.Y().value());
     frc::SmartDashboard::PutNumber("Pose Estimator Z", p.Z().value());
     
-    frc::Pose3d april_tag = a_Vision.get_april_tag_pose(4);
+    frc::Pose3d april_tag = a_Vision.get_april_tag_pose();
     frc::SmartDashboard::PutNumber("April Tag X", april_tag.X().value());
     frc::SmartDashboard::PutNumber("April Tag Y", april_tag.Y().value());
     frc::SmartDashboard::PutNumber("April Tag Z", april_tag.Z().value());
+
+    frc::Pose2d pose_estimator_pose = a_SwerveDrive.getPoseEstimatorPose();
+    frc::SmartDashboard::PutNumber("pose_estimator_pose X", pose_estimator_pose.X().value());
+    frc::SmartDashboard::PutNumber("pose_estimator_pose Y", pose_estimator_pose.Y().value());
 }
 
 void Robot::DisabledInit() {

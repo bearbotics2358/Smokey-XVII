@@ -120,6 +120,7 @@ void NoteHandler::setRotPID(double p, double i, double d){
     a_AmpTrap.setPID(p, i, d);
 }
 void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, bool toDefaultPositionButtonState, bool shooterButtonState, bool driverShootNote, bool collectorButton, bool hooksUp, bool finishClimb) {
+    frc::SmartDashboard::PutNumber("Current Amp State", currentAmpLoadState);
     switch(currentAmpLoadState){
         case IDLE:
             released = false;
@@ -175,7 +176,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             stopShooter();
             moveShooterToAngle(0.0);
             if(intoAmpButtonState){
-                if(a_AmpTrap.extendExtender(3.75) && armToPose(145.0)){
+                if(a_AmpTrap.extendExtender(3.0) && armToPose(135.0)){
                         runArmRoller(-45);
                         state_time = misc::gettime_d();
                         currentAmpLoadState = SCORE;
@@ -183,7 +184,7 @@ void NoteHandler::shootToAmp(bool transferButtonState, bool intoAmpButtonState, 
             }
                 break;
         case SCORE:
-            armToPose(125.0);
+            armToPose(135.0);
             if(misc::gettime_d() > state_time + 0.5){
                             state_time = misc::gettime_d();
                             a_AmpTrap.stopRoller();
@@ -246,7 +247,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
         case EXTENSION:
             // 2.88 in what units?
             if(moveShooterToAngle(1.0)){
-                if(a_AmpTrap.extendExtender(10.0)){
+                if(a_AmpTrap.extendExtender(15.4)){
                     state_time = misc::gettime_d();
                     currentClimbState = CLIMB;
                 }
@@ -254,7 +255,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
             break;
         case CLIMB:
             // Climnber???
-            a_AmpTrap.extendExtender(10.0);
+            a_AmpTrap.extendExtender(15.4);
             if(a_Climber.extendClimnber(18.0)){
                 state_time = misc::gettime_d();
                 currentClimbState = MOVEARM;
@@ -262,7 +263,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
             break;
         case MOVEARM:
             a_Climber.extendClimnber(18.0);
-            a_AmpTrap.extendExtender(10.0);
+            a_AmpTrap.extendExtender(15.4);
             if(a_AmpTrap.trapMoveToPosition(217.0)){//200
                 state_time = misc::gettime_d();
                 currentClimbState = TRAP;
@@ -270,7 +271,7 @@ void NoteHandler::climbControl(bool climbButton, bool finishClimbButton){
             break;
         case TRAP:
             a_Climber.extendClimnber(18.0);
-            a_AmpTrap.extendExtender(10.0);
+            a_AmpTrap.extendExtender(15.4);
             //a_AmpTrap.moveToPosition(207.0);
             runArmRoller(-40);
             if(misc::gettime_d() > state_time + 0.40){//.5

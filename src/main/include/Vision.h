@@ -11,7 +11,7 @@ class Vision {
         bool detect_april_tag(int id);
         std::optional<photon::EstimatedRobotPose>  estimate_position();
 
-        frc::Pose3d get_april_tag_pose(int id);
+        frc::Pose3d get_april_tag_pose();
     private:
         // For all the vision stuff.
         frc::AprilTagFieldLayout april_tags = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
