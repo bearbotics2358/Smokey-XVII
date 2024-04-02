@@ -22,5 +22,8 @@ class Climber {
         
         frc::PIDController climberPID;
         LimitSwitch topLimitSwitch; 
+
+        units::angle::turn_t zeroClimber{0.0};
+        bool climberAlreadyZeroed = false;
         
 };

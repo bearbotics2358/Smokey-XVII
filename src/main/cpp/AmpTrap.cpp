@@ -17,7 +17,8 @@ a_BeamBreak(AMP_BEAM_BREAK_PORT) ,
 // m_rotationMotorSignal(rotationMotor.GetPosition()),
 // m_extensionMotorSignal(extensionMotor.GetPosition()),
 
-a_ArmAngle(1)
+a_ArmAngle(1),
+extensionLimitSwitch(7)
 {
     rotationPID.SetTolerance(3.0);
     rotationMotor.SetNeutralMode(1);
@@ -71,7 +72,14 @@ double AmpTrap::GetExtensionPosition(){
 
 }
 void AmpTrap::setPosition(){
-    extensionMotor.SetPosition(units::angle::turn_t{0.0});
+    if(extensionLimitSwitch.limitSwitchPressed()){
+        if(!extensionAlreadyZeroed){
+            extensionMotor.SetPosition(zeroExtension);
+            extensionAlreadyZeroed = true;
+        }
+    } else{
+        extensionAlreadyZeroed = false;
+    }
 }
 bool AmpTrap::moveToPosition(double desiredaAngle){
     rotationPID.SetSetpoint(desiredaAngle);//neeed to change from 0.0
