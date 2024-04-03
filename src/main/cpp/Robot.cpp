@@ -400,12 +400,15 @@ void Robot::TeleopPeriodic() {
     a_NoteHandler.shootToAmp(
         a_DriverXboxController.GetRightTriggerAxis() > .75, //transfer to amp
         a_DriverXboxController.GetAButton(), //shoot into amp
-        a_DriverXboxController.GetLeftBumper(), //bring to default amp
+        a_Gamepad.GetRawButton(4), //bring to default amp
         a_Gamepad.GetRawButton(3), //run shooter
         a_DriverXboxController.GetRightBumper(), //shoot note
         a_Gamepad.GetRawButton(1),//run collector
         a_DriverXboxController.GetBButton(),// hooks up
-        a_DriverXboxController.GetXButton());//finishclimb
+        a_DriverXboxController.GetXButton(),//finishclimb
+        a_Gamepad.GetRawButton(11),// eject from collector
+        a_Gamepad.GetRawButton(5) // eject from amp
+        );
                                             // eject from amp
                                             //eject from collector
 
