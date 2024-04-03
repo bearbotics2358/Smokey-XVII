@@ -73,7 +73,12 @@ double Climber::GetClimberPosition(){
 }
 void Climber::setPosition(){
     if(topLimitSwitch.limitSwitchPressed()){
-        climberMotor.SetPosition(units::angle::turn_t{0.0});
+        if(!climberAlreadyZeroed){
+            climberMotor.SetPosition(zeroClimber);
+            climberAlreadyZeroed = true;
+        }
+    } else{
+        climberAlreadyZeroed = false;
     }
 }
 

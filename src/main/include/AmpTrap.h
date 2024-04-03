@@ -3,6 +3,7 @@
 #include <frc/controller/PIDController.h>
 #include "ArmAngle.h"
 #include "BeamBreak.h"
+#include "LimitSwitch.h"
 
 
 class AmpTrap {
@@ -39,5 +40,10 @@ class AmpTrap {
         ArmAngle a_ArmAngle;
 
         ctre::phoenix6::controls::VelocityVoltage m_request = ctre::phoenix6::controls::VelocityVoltage{0_tps}.WithSlot(0);
+
+        units::angle::turn_t zeroExtension{0.0};
+        bool extensionAlreadyZeroed = false;
+
+        LimitSwitch extensionLimitSwitch;
         
 };
