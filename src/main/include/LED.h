@@ -14,7 +14,7 @@
 //   WHITE = 0,
 //   LED_IDLE,
 //   NO_COMMS,
-//   NOTE_COLLECTED  
+//   NOTE_COLLECTED
 // };
 
 class LED
@@ -24,9 +24,7 @@ public:
 	LED();
 	virtual ~LED() = default;
 
-
-
-	void Init();
+	void Reset();
 	void Update();
 
 	void SetWhite();
@@ -37,25 +35,27 @@ public:
 	void SetShooterReady();
 
 	void ProcessReport();
-	//enum LED_STAGE_enum GetTargetRangeIndicator();
-	//void SetTargetType(LED_STAGE_enum target_type_param);
-	//LED_STAGE_enum GetTargetType();
 
 private:
-	
-	frc::SerialPort* m_pserial;
+
+	// Constant for how often to send the serial command for the LEDs. These are sent at a slower
+	// rate than RobotPeriodic (20ms) to avoid spamming buffers since the LEDs do not need to be
+	// updated that frequently.
+	static constexpr double kUpdatePeriodSeconds = 1.0;
+	double m_lastUpdateTimeSeconds = 0.0;
+
+	std::unique_ptr<frc::SerialPort> m_pserial;
 	char rx_buff[BUFF_SIZE];
 	int rx_index = 0;
 	float valAngle  = 0;
-	//LED_STAGE_enum target_type = LED_STAGE_enum::WHITE;
 	RIO_msgs_enum LED_prevCommand = RIO_msgs_enum::MSG_IDLE;
 	RIO_msgs_enum LED_currentCommand = RIO_msgs_enum::MSG_IDLE;
-	void SendWhiteMSG();
-	void SendIdleMSG();
-	void SendNoCommsMSG();
-	void SendNoteOnBoardMSG();
-	void SendAngleToNoteMSG(float angle);
-	void SendShooterReadyMSG();
+	bool SendWhiteMSG();
+	bool SendIdleMSG();
+	bool SendNoCommsMSG();
+	bool SendNoteOnBoardMSG();
+	bool SendAngleToNoteMSG(float angle);
+	bool SendShooterReadyMSG();
 } ;
 
 #endif
