@@ -31,6 +31,10 @@ class Gyro {
         double getAngleClamped() const;
         void Zero(double offsetAngle = 0); // takes offsetAngle, defaults to zero if none provided. CCW is +
 
+        // 2024 Crescendo function to return a simple boolean if the robot is aligned with 1 of the 3 angles
+        // to hang on the chain for the stage
+        bool IsAlignedWithChain();
+
     private:
         double angle[3];
         double angleBias[3];
