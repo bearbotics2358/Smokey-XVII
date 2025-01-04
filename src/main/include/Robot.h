@@ -81,7 +81,7 @@ class Robot : public frc::TimedRobot {
         double xlast = 0.0;
         double ylast = 0.0;
         double zlast = 0.0;
-        double a = 1.0;
+        double somethingImportant = 1.0;
         double xnew = 0;
         double ynew = 0;
         double znew = 0;
@@ -90,18 +90,18 @@ class Robot : public frc::TimedRobot {
         double dvaluesteer = 0.0;
 
         Autonomous a_Autonomous;
-        NoteHandler a_NoteHandler;
+        // NoteHandler a_NoteHandler;
 
 
 
         frc::XboxController a_DriverXboxController;
         frc::XboxController a_OperatorXboxController;
-        frc::GenericHID a_Gamepad;
+        // frc::GenericHID a_Gamepad;
 
 
         //LED_DIO a_LED;
 
-        LED a_LED;
+        // LED a_LED;
 
 
         bool commsStatus;
@@ -140,9 +140,9 @@ class Robot : public frc::TimedRobot {
         frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
         // Shooter camera
-        photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+        // photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
 
-        Vision a_Vision;
+        // Vision a_Vision;
 
         frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 

@@ -87,16 +87,16 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         void zeroPose(frc::Pose2d pose);
 
         // pose estimator
-        frc::Pose2d getPoseEstimatorPose();
-        double getPoseEstimatorX();
-        double getPoseEstimatorY();
-        double getPoseEstimatorRot();
+        // frc::Pose2d getPoseEstimatorPose();
+        // double getPoseEstimatorX();
+        // double getPoseEstimatorY();
+        // double getPoseEstimatorRot();
 
         frc::Rotation2d getGyroAngle();
         wpi::array<frc::SwerveModulePosition, 4U> getModulePositions();
 
-        bool alignWithAMP(bool redAlliance);
-        bool alignWithStage(bool redAlliance);
+        // bool alignWithAMP(bool redAlliance);
+        // bool alignWithStage(bool redAlliance);
 
     private:
         // called by both crabUpdate and swerveUpdata
@@ -133,8 +133,8 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         float blLastPos { 0.0 };
         float brLastPos { 0.0 };
 
-        constexpr static float DRIVE_LENGTH = 13.0026;
-        constexpr static float DRIVE_WIDTH = 29.4878;
+        constexpr static float DRIVE_LENGTH = 29.5;
+        constexpr static float DRIVE_WIDTH = 29.5;
 
         // for goToPosition, when the distance to the target position is within this amount, say that we are done (assuming angle is also close enough)
         constexpr static float GO_TO_DIST_DONE = 0.2;
@@ -161,6 +161,6 @@ class SwerveDrive // Class to handle the kinematics of Swerve Drive
         frc::ProfiledPIDController<units::radian> rotProfiledPid;
 
         // Pose Estimator
-        frc::SwerveDrivePoseEstimator<4> poseEstimator;
-        Vision vision;
+        // frc::SwerveDrivePoseEstimator<4> poseEstimator;
+        // Vision vision;
 };

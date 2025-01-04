@@ -15,13 +15,13 @@ crabAnglePid(1.5, 0.0, 0.01),
 a_odometry{a_kinematics, frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))), getModulePositions()},
 xProfiledPid(.5, .2, 0.0, linearConstraints),
 yProfiledPid(.5, .2, 0.0, linearConstraints),
-rotProfiledPid(.5, 0.1, 0.0, rotationalConstraints),
-poseEstimator{
-    a_kinematics, 
-    frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))),
-    getModulePositions(),
-    frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::radian_t(0.0))
-}
+rotProfiledPid(.5, .1, 0.0, rotationalConstraints)
+// poseEstimator{
+//     a_kinematics, 
+//     frc::Rotation2d(units::radian_t(a_gyro.getAngleClamped()*((2*M_PI)/360.0))),
+//     getModulePositions(),
+//     frc::Pose2d(units::meter_t(0.0), units::meter_t(0.0), units::radian_t(0.0))
+// }
 {
     xProfiledPid.SetTolerance(units::meter_t(.1));
     yProfiledPid.SetTolerance(units::meter_t(.1));
@@ -360,7 +360,7 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
         frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
         frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
         frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
-        swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+        swerveUpdate(ySpeed, xSpeed, rotSpeed, true);
         //swerveUpdate(0.0, 0.0, -rotSpeed, true);
         //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
 
@@ -369,22 +369,22 @@ bool SwerveDrive::odometryGoToPose(double xDesired, double yDesired, double rotD
             return true;
         }
         else{
-            swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+            swerveUpdate(ySpeed, xSpeed, rotSpeed, true);
             return false;
         }   
 }
 void SwerveDrive::updateOdometry(){
-     a_odometry.Update(getGyroAngle(), getModulePositions());
+    a_odometry.Update(getGyroAngle(), getModulePositions());
    
-    std::optional<photon::EstimatedRobotPose> pose = vision.estimate_position();
-    if (pose) {
-        frc::Pose2d p = (*pose).estimatedPose.ToPose2d();
-        units::second_t t = (*pose).timestamp;
-        poseEstimator.AddVisionMeasurement(p, t);
-        poseEstimator.UpdateWithTime(t, getGyroAngle(), getModulePositions());
-    } else {
-        poseEstimator.Update(getGyroAngle(), getModulePositions());
-    }
+    // std::optional<photon::EstimatedRobotPose> pose = vision.estimate_position();
+    // if (pose) {
+    //     frc::Pose2d p = (*pose).estimatedPose.ToPose2d();
+    //     units::second_t t = (*pose).timestamp;
+    //     poseEstimator.AddVisionMeasurement(p, t);
+    //     poseEstimator.UpdateWithTime(t, getGyroAngle(), getModulePositions());
+    // } else {
+    //     poseEstimator.Update(getGyroAngle(), getModulePositions());
+    // }
 }
 frc::Pose2d SwerveDrive::getPose(){
     return a_odometry.GetPose();
@@ -402,21 +402,21 @@ void SwerveDrive::zeroPose(frc::Pose2d pose){
     a_odometry.ResetPosition(getGyroAngle(), getModulePositions(), pose);
 }
 
-frc::Pose2d SwerveDrive::getPoseEstimatorPose(){
-    return poseEstimator.GetEstimatedPosition();
-}
+// frc::Pose2d SwerveDrive::getPoseEstimatorPose(){
+//     return poseEstimator.GetEstimatedPosition();
+// }
 
-double SwerveDrive::getPoseEstimatorX(){
-    return getPoseEstimatorPose().X().value();
-}
+// double SwerveDrive::getPoseEstimatorX(){
+//     return getPoseEstimatorPose().X().value();
+// }
 
-double SwerveDrive::getPoseEstimatorY(){
-    return getPoseEstimatorPose().Y().value();
-}
+// double SwerveDrive::getPoseEstimatorY(){
+//     return getPoseEstimatorPose().Y().value();
+// }
 
-double SwerveDrive::getPoseEstimatorRot(){
-    return getPoseEstimatorPose().Rotation().Radians().value();
-}
+// double SwerveDrive::getPoseEstimatorRot(){
+//     return getPoseEstimatorPose().Rotation().Radians().value();
+// }
 
 frc::Rotation2d SwerveDrive::getGyroAngle() {
     return frc::Rotation2d(units::degree_t(a_gyro.getAngleClamped()));
@@ -425,47 +425,47 @@ frc::Rotation2d SwerveDrive::getGyroAngle() {
 wpi::array<frc::SwerveModulePosition, 4U> SwerveDrive::getModulePositions() {
     return {flModule.GetPosition(), frModule.GetPosition(), blModule.GetPosition(), brModule.GetPosition()};
 }
-bool SwerveDrive::poseEstimatorGoToPose(double xDesired, double yDesired, double rotDesired){
-        double xPose = getPoseEstimatorX();
-        double yPose = getPoseEstimatorY();
-        double rotPose = getPoseEstimatorRot();
+// bool SwerveDrive::poseEstimatorGoToPose(double xDesired, double yDesired, double rotDesired){
+//         double xPose = getPoseEstimatorX();
+//         double yPose = getPoseEstimatorY();
+//         double rotPose = getPoseEstimatorRot();
 
-        xProfiledPid.SetGoal(units::meter_t(xDesired));
-        yProfiledPid.SetGoal(units::meter_t(yDesired));
-        rotProfiledPid.SetGoal(units::radian_t(rotDesired));
+//         xProfiledPid.SetGoal(units::meter_t(xDesired));
+//         yProfiledPid.SetGoal(units::meter_t(yDesired));
+//         rotProfiledPid.SetGoal(units::radian_t(rotDesired));
 
-        double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(xDesired)), -.25, .25);
-        double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(yDesired)), -.25, .25);
-        double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
-        frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
-        frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
-        frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
-        swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
-        //swerveUpdate(0.0, 0.0, -rotSpeed, true);
-        //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
+//         double xSpeed = std::clamp (xProfiledPid.Calculate(units::meter_t(xPose), units::meter_t(xDesired)), -.25, .25);
+//         double ySpeed = std::clamp (yProfiledPid.Calculate(units::meter_t(yPose), units::meter_t(yDesired)), -.25, .25);
+//         double rotSpeed = std::clamp (rotProfiledPid.Calculate(units::radian_t(rotPose), units::radian_t(rotDesired)), -.25, .25);
+//         frc::SmartDashboard::PutNumber("xSpeed", xSpeed);
+//         frc::SmartDashboard::PutNumber("ySpeed", ySpeed);
+//         frc::SmartDashboard::PutNumber("rotSpeed", rotSpeed);
+//         swerveUpdate(ySpeed, xSpeed, rotSpeed, true);
+//         //swerveUpdate(0.0, 0.0, -rotSpeed, true);
+//         //return (xProfiledPid.AtGoal() && yProfiledPid.AtGoal() && rotProfiledPid.AtGoal());  
 
-        if(fabs(xPose-xDesired) < .1 && fabs(yPose-yDesired) < .1 && fabs(rotPose-rotDesired) < .087){
-            stop();
-            return true;
-        }
-        else{
-            swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
-            return false;
-        }   
-}
-bool SwerveDrive::alignWithAMP(bool redAlliance){
-    if(!redAlliance){
-        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
-    }
-    else{
-        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
-    }
-}
-bool SwerveDrive::alignWithStage(bool redAlliance){
-    if(!redAlliance){
-        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
-    }
-    else{
-        return poseEstimatorGoToPose(0.0, 0.0, 0.0);
-    }
-}
+//         if(fabs(xPose-xDesired) < .1 && fabs(yPose-yDesired) < .1 && fabs(rotPose-rotDesired) < .087){
+//             stop();
+//             return true;
+//         }
+//         else{
+//             swerveUpdate(ySpeed, xSpeed, -rotSpeed, true);
+//             return false;
+//         }   
+// }
+// bool SwerveDrive::alignWithAMP(bool redAlliance){
+//     if(!redAlliance){
+//         return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+//     }
+//     else{
+//         return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+//     }
+// }
+// bool SwerveDrive::alignWithStage(bool redAlliance){
+//     if(!redAlliance){
+//         return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+//     }
+//     else{
+//         return poseEstimatorGoToPose(0.0, 0.0, 0.0);
+//     }
+// }

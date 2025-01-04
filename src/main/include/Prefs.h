@@ -72,9 +72,9 @@ m = number engraved on module
 */
 
 #ifdef COMP_BOT  // The comp bot and the practice bot have some different IDs for various components
-#define FL_ID 6
-#define FR_ID 1
-#define BL_ID 7
+#define FL_ID 1
+#define FR_ID 2
+#define BL_ID 3
 #define BR_ID 5
 #else
 #define FL_ID 1
@@ -111,11 +111,11 @@ m = number engraved on module
 #define BR_SWERVE_ABS_ENC_MIN_VOLTS 0.010986
 #define BR_SWERVE_ABS_ENC_MAX_VOLTS 4.963378
 
-#define CANCODER_OFFSET_1 332.25
-#define CANCODER_OFFSET_2 115.3
-#define CANCODER_OFFSET_3 71.45
-#define CANCODER_OFFSET_4 508.6 - 180 - 180
-#define CANCODER_OFFSET_5 176.1 - 33.27 -180
+#define CANCODER_OFFSET_1 715.01
+#define CANCODER_OFFSET_2 63.471
+#define CANCODER_OFFSET_3 -197.93 + 180
+#define CANCODER_OFFSET_4 508.6 - 360
+#define CANCODER_OFFSET_5 -216.17
 #define CANCODER_OFFSET_6 35.77
 #define CANCODER_OFFSET_7 99.22
 #define CANCODER_OFFSET_8 246.2
