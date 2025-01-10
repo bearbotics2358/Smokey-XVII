@@ -24,6 +24,7 @@
 #include "LED.h"
 #include <Vision.h>
 #include <frc/DriverStation.h>
+#include <frc/Joystick.h>
 
 enum class DriveBackState {
     Inactive,
@@ -32,123 +33,125 @@ enum class DriveBackState {
 };
 
 class Robot : public frc::TimedRobot {
-    public:
-        Robot();
-        void RobotInit();
-        void RobotPeriodic();
-        void DisabledInit();
-        void DisabledPeriodic();
+public:
+    Robot();
+    void RobotInit();
+    void RobotPeriodic();
+    void DisabledInit();
+    void DisabledPeriodic();
 
-        // called whenever the robot transitions from disabled to either autonomous, teleop, or test
-        // this means it is basically called whenever the robot is enabled
-        // is not called when the robot moves between autonomous, teleop, or test
-        void EnabledInit();
-        // called during autonomous, teleop, and test periodic
-        void EnabledPeriodic();
+    // called whenever the robot transitions from disabled to either autonomous, teleop, or test
+    // this means it is basically called whenever the robot is enabled
+    // is not called when the robot moves between autonomous, teleop, or test
+    void EnabledInit();
+    // called during autonomous, teleop, and test periodic
+    void EnabledPeriodic();
 
-        void AutonomousInit();
-        void AutonomousPeriodic();
-        void DecidePath();
-        void TeleopInit();
-        void TeleopPeriodic();
+    void AutonomousInit();
+    void AutonomousPeriodic();
+    void DecidePath();
+    void TeleopInit();
+    void TeleopPeriodic();
 
-        void TestInit();
-        void TestPeriodic();
+    void TestInit();
+    void TestPeriodic();
 
-        //void SetTargetType(LED_STAGE_enum target);
-
-
-
-    private:
-        double pivotAngle = 1.0;
-        int armStage;
-        bool isHighPistonDone;
-        // keeps track of when to call enabled init
-        bool a_doEnabledInit { true };
-        frc::SendableChooser<std::string> m_AutoModeSelector;
-
-        Gyro a_Gyro;
-
-        SwerveModule a_FLModule;
-        SwerveModule a_FRModule;
-        SwerveModule a_BLModule;
-        SwerveModule a_BRModule;
-        SwerveDrive a_SwerveDrive;
-
-
-        // speed multiplier for driver controls for the swerve
-        bool a_slowSpeed { false };
-        double xlast = 0.0;
-        double ylast = 0.0;
-        double zlast = 0.0;
-        double somethingImportant = 1.0;
-        double xnew = 0;
-        double ynew = 0;
-        double znew = 0;
-        double pvaluesteer = 1.8;
-        double ivaluesteer = 0.3;
-        double dvaluesteer = 0.0;
-
-        Autonomous a_Autonomous;
-        // NoteHandler a_NoteHandler;
+    //void SetTargetType(LED_STAGE_enum target);
 
 
 
-        frc::XboxController a_DriverXboxController;
-        frc::XboxController a_OperatorXboxController;
-        // frc::GenericHID a_Gamepad;
+private:
+    double pivotAngle = 1.0;
+    int armStage;
+    bool isHighPistonDone;
+    // keeps track of when to call enabled init
+    bool a_doEnabledInit{ true };
+    frc::SendableChooser<std::string> m_AutoModeSelector;
+
+    Gyro a_Gyro;
+
+    SwerveModule a_FLModule;
+    SwerveModule a_FRModule;
+    SwerveModule a_BLModule;
+    SwerveModule a_BRModule;
+    SwerveDrive a_SwerveDrive;
 
 
-        //LED_DIO a_LED;
+    // speed multiplier for driver controls for the swerve
+    bool a_slowSpeed{ false };
+    double xlast = 0.0;
+    double ylast = 0.0;
+    double zlast = 0.0;
+    double somethingImportant = 1.0;
+    double xnew = 0;
+    double ynew = 0;
+    double znew = 0;
+    double pvaluesteer = 1.8;
+    double ivaluesteer = 0.3;
+    double dvaluesteer = 0.0;
 
-        // LED a_LED;
-
-
-        bool commsStatus;
+    Autonomous a_Autonomous;
+    // NoteHandler a_NoteHandler;
 
 
 
-        double state_time;
-        double piston_time;
-        bool catchBegin = false;
+    frc::XboxController a_DriverXboxController;
+    frc::XboxController a_OperatorXboxController;
+    // frc::GenericHID a_Gamepad;
 
-        // stuff that autonomous needs
 
-        double pvaluedrive;
-        double pChange;
-        double iChange;
-        double dChange;
+    //LED_DIO a_LED;
 
-        units::meter_t newXComponent;
+    // LED a_LED;
 
-        //--------------photonvision-------------//
-        const units::meter_t CAMERA_HEIGHT = 24_in;
-        const units::meter_t TARGET_HEIGHT = 5_ft;
 
-        // Angle between horizontal and the camera.
-        const units::radian_t CAMERA_PITCH = 0_deg;
+    bool commsStatus;
 
-        // How far from the target we want to be
-        const units::meter_t GOAL_RANGE_METERS = 3_ft;
 
-        // PID constants should be tuned per robot
-        const double LINEAR_P = 0.1;
-        const double LINEAR_D = 0.0;
-        frc::PIDController forwardController{LINEAR_P, 0.0, LINEAR_D};
-        const double ANGULAR_P = 0.1;
-        const double ANGULAR_D = 0.0;
-        frc::PIDController turnController{ANGULAR_P, 0.0, ANGULAR_D};
 
-        // Shooter camera
-        // photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+    double state_time;
+    double piston_time;
+    bool catchBegin = false;
 
-        // Vision a_Vision;
+    // stuff that autonomous needs
 
-        frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
+    double pvaluedrive;
+    double pChange;
+    double iChange;
+    double dChange;
 
-        // .0025, .001, .0001
-        // .0002, .002, .0025
-        double rotP = 0.00275;
-        double rotI = 0.00;
-        double rotD = 0.0001;
+    units::meter_t newXComponent;
+
+    //--------------photonvision-------------//
+    const units::meter_t CAMERA_HEIGHT = 24_in;
+    const units::meter_t TARGET_HEIGHT = 5_ft;
+
+    // Angle between horizontal and the camera.
+    const units::radian_t CAMERA_PITCH = 0_deg;
+
+    // How far from the target we want to be
+    const units::meter_t GOAL_RANGE_METERS = 3_ft;
+
+    // PID constants should be tuned per robot
+    const double LINEAR_P = 0.1;
+    const double LINEAR_D = 0.0;
+    frc::PIDController forwardController{ LINEAR_P, 0.0, LINEAR_D };
+    const double ANGULAR_P = 0.1;
+    const double ANGULAR_D = 0.0;
+    frc::PIDController turnController{ ANGULAR_P, 0.0, ANGULAR_D };
+
+    // Shooter camera
+    // photon::PhotonCamera a_camera{SHOOTER_CAMERA_NAME};
+
+    // Vision a_Vision;
+
+    frc::AprilTagFieldLayout aprilTagFieldLayout = frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
+
+    // .0025, .001, .0001
+    // .0002, .002, .0025
+    double rotP = 0.00275;
+    double rotI = 0.00;
+    double rotD = 0.0001;
+
+    frc::Joystick a_Joystick;
 };

@@ -142,7 +142,7 @@ static double CANCODER_OFFSETS[] = {
     CANCODER_OFFSET_7,
     CANCODER_OFFSET_8,
     CANCODER_OFFSET_ARM
-    };
+};
 
 // @todo Measure this offset and update to the actual value
 static const double ARM_ANGLE_OFFSET_DEGREES = -50.9;
@@ -157,6 +157,7 @@ static const double ARM_ANGLE_OFFSET_DEGREES = -50.9;
 #define JOYSTICK_DEADZONE 0.15
 
 #define DRIVER_PORT 5
+#define JOYSTICK_PORT 3
 
 
 /* ============ GEAR RATIOS ======== */

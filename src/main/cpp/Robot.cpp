@@ -17,28 +17,28 @@
 #include <frc/GenericHID.h>
 #include "LimelightHelpers.h"
 
-
 /*~~ hi :) ~~ */
-Robot::Robot():
-a_Gyro(GYRO_ID),
-a_FLModule(misc::GetFLDrive(), misc::GetFLSteer(), misc::GetFLCANCoder()),
-a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
-a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
-// Swapped Steer and Drive Placement for the Robot with the Square Frame
-a_BRModule(misc::GetBRSteer(), misc::GetBRDrive(), misc::GetBRCANCoder()), 
-a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
-a_DriverXboxController(DRIVER_PORT),
-a_OperatorXboxController(OPERATOR_PORT),
-// a_Gamepad(4),
-//a_NoteHandler(),
-//a_CompressorController(),
-//a_LED(ARDUINO_DIO_PIN),
-// a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
-a_Autonomous(&a_Gyro, &a_SwerveDrive)
-// NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
-//  handler("169.254.179.144", "1185", "data"),
-//  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
-//  a_canHandler(CanHandler::layout2022()),
+Robot::Robot() :
+    a_Gyro(GYRO_ID),
+    a_FLModule(misc::GetFLDrive(), misc::GetFLSteer(), misc::GetFLCANCoder()),
+    a_FRModule(misc::GetFRDrive(), misc::GetFRSteer(), misc::GetFRCANCoder()),
+    a_BLModule(misc::GetBLDrive(), misc::GetBLSteer(), misc::GetBLCANCoder()),
+    // Swapped Steer and Drive Placement for the Robot with the Square Frame
+    a_BRModule(misc::GetBRSteer(), misc::GetBRDrive(), misc::GetBRCANCoder()),
+    a_SwerveDrive(a_FLModule, a_FRModule, a_BLModule, a_BRModule, a_Gyro),
+    a_DriverXboxController(DRIVER_PORT),
+    a_OperatorXboxController(OPERATOR_PORT),
+    // a_Gamepad(4),
+    //a_NoteHandler(),
+    //a_CompressorController(),
+    //a_LED(ARDUINO_DIO_PIN),
+    // a_Shooter(SHOOTER_RIGHT_MOTOR_ID, SHOOTER_LEFT_MOTOR_ID, PIVOT_MOTOR_ID, LIMIT_SWITCH),
+    a_Autonomous(&a_Gyro, &a_SwerveDrive),
+    a_Joystick(JOYSTICK_PORT)
+    // NEEDED A PORT, THIS IS PROBABLY WRONG, PLEASE FIX IT LATER
+    //  handler("169.254.179.144", "1185", "data"),
+    //  handler("raspberrypi.local", 1883, "PI/CV/SHOOT/DATA"),
+    //  a_canHandler(CanHandler::layout2022()),
 {
     /*if (!handler.ready()) {
         // do something if handler failed to connect
@@ -51,7 +51,7 @@ a_Autonomous(&a_Gyro, &a_SwerveDrive)
 
     a_FRModule.setDrivePID(pvaluedrive, 0, 0);
 
-   a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
+    a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     a_BLModule.setDrivePID(pvaluedrive, 0, 0);
     a_BLModule.setSteerPID(1.6, ivaluesteer, dvaluesteer);
@@ -76,7 +76,7 @@ void Robot::RobotInit() {
     a_Gyro.Init();
     a_Gyro.Zero();
 
-    
+
     m_AutoModeSelector.SetDefaultOption(firstNote, firstNote);
     // m_AutoModeSelector.AddOption(RobotDoNothing, RobotDoNothing);
     m_AutoModeSelector.AddOption(firstNote, firstNote);
@@ -107,7 +107,7 @@ void Robot::RobotPeriodic() {
     // a_NoteHandler.UpdateSensors();
     // a_NoteHandler.setExtensionPosition();
     // a_NoteHandler.setClimberPosition();
-    
+
 
     // if(!frc::DriverStation::IsDSAttached()){
     //      a_LED.SetNoComms();
@@ -184,7 +184,7 @@ void Robot::RobotPeriodic() {
 
 
     // frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
-    
+
     //frc::SmartDashboard::PutNumber("Climb Position", a_NoteHandler.getClimberPosition());
 
     // std::optional<photon::EstimatedRobotPose> pose = a_Vision.estimate_position();
@@ -193,7 +193,7 @@ void Robot::RobotPeriodic() {
     // frc::SmartDashboard::PutNumber("Pose Estimator X", p.X().value());
     // frc::SmartDashboard::PutNumber("Pose Estimator Y", p.Y().value());
     // frc::SmartDashboard::PutNumber("Pose Estimator Z", p.Z().value());
-    
+
     // frc::Pose3d april_tag = a_Vision.get_april_tag_pose();
     // frc::SmartDashboard::PutNumber("April Tag X", april_tag.X().value());
     // frc::SmartDashboard::PutNumber("April Tag Y", april_tag.Y().value());
@@ -208,12 +208,12 @@ void Robot::DisabledInit() {
     a_doEnabledInit = true;
     a_SwerveDrive.resetDrive();
 }
-void Robot::EnabledInit(){}
+void Robot::EnabledInit() {}
 
 void Robot::EnabledPeriodic() {
-  //  a_CompressorController.update();
+    //  a_CompressorController.update();
 }
-void Robot::DisabledPeriodic(){}
+void Robot::DisabledPeriodic() {}
 
 
 void Robot::AutonomousInit() {
@@ -224,11 +224,11 @@ void Robot::AutonomousInit() {
     }
 
     a_SwerveDrive.unsetHoldAngle();
-    
+
     std::string SelectedRoute = m_AutoModeSelector.GetSelected(); //assigns value frm smart dashboard to a string variable
 
     a_Autonomous.StartAuto(SelectedRoute); //starts auto from selected route
-    
+
 }
 
 void Robot::AutonomousPeriodic() {
@@ -240,10 +240,10 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-   // SetTargetType(target_type_enum::CONE);
+    // SetTargetType(target_type_enum::CONE);
 
-    //a_Gyro.setYaw(180 + a_Gyro.getYaw());
-    // a_NoteHandler.stopAll();
+     //a_Gyro.setYaw(180 + a_Gyro.getYaw());
+     // a_NoteHandler.stopAll();
 
     if (a_doEnabledInit) {
         EnabledInit();
@@ -259,11 +259,21 @@ void Robot::TeleopInit() {
 
 // main loop
 void Robot::TeleopPeriodic() {
+    float xJoystick = a_Joystick.GetX();
+    float yJoystick = a_Joystick.GetY();
+    float zJoystick = a_Joystick.GetZ();
+
+    // Joystick Stuff
+    frc::SmartDashboard::PutNumber("Joystick X", xJoystick);
+    frc::SmartDashboard::PutNumber("Joystick Y", yJoystick);
+    frc::SmartDashboard::PutNumber("Joystick Z", zJoystick);
+
     /* =-=-=-=-=-=-=-=-=-=-= Swerve Controls =-=-=-=-=-=-=-=-=-=-= */
 
     if (a_DriverXboxController.GetLeftTriggerAxis() > .5) {
         a_slowSpeed = true;
-    } else  {
+    }
+    else {
         a_slowSpeed = false;
     }
 
@@ -288,13 +298,17 @@ void Robot::TeleopPeriodic() {
 
     bool inDeadzone = (sqrt(x * x + y * y) < JOYSTICK_DEADZONE) && (fabs(z) < JOYSTICK_DEADZONE); // Checks joystick deadzones
 
-    x = (1-somethingImportant)*xlast + somethingImportant*x;
-    y = (1-somethingImportant)*ylast + somethingImportant*y;
-    z = (1-somethingImportant)*zlast + somethingImportant*z;
+    x = (1 - somethingImportant) * xlast + somethingImportant * x;
+    y = (1 - somethingImportant) * ylast + somethingImportant * y;
+    z = (1 - somethingImportant) * zlast + somethingImportant * z;
     // scale by multiplier for slow mode, do this after deadzone check
     x *= multiplier;
     y *= multiplier;
     z *= multiplier;
+
+    xJoystick *= multiplier;
+    yJoystick *= multiplier;
+    zJoystick *= multiplier;
 
     // turn field oriented mode off if the trigger is pressed for more than 0.25 (GetRightTriggerAxis ranges from 0 to 1)
     bool fieldOreo = true;
@@ -315,7 +329,8 @@ void Robot::TeleopPeriodic() {
     // else 
     if (!inDeadzone) {
         a_SwerveDrive.swerveUpdate(x, y, z, fieldOreo);
-    }   
+        // a_SwerveDrive.swerveUpdate(xJoystick, yJoystick, zJoystick, fieldOreo);
+    }
     else {
         a_SwerveDrive.stop();
     }
@@ -323,7 +338,7 @@ void Robot::TeleopPeriodic() {
 
 void Robot::TestInit() {
     TeleopInit();
-    
+
 }
 
 
@@ -359,12 +374,12 @@ void Robot::TestPeriodic() {
     // else if(a_DriverXboxController.GetYButtonPressed()){
     //     rotD-=.0001;
     // }
-    
-    
+
+
     // a_FLModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
 
     // a_FRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
-    
+
     // a_BLModule.setSteerPID(1.6, ivaluesteer, dvaluesteer);
 
     // a_BRModule.setSteerPID(pvaluesteer, ivaluesteer, dvaluesteer);
@@ -389,9 +404,9 @@ void Robot::TestPeriodic() {
     //     a_BRModule.steerToAng(45);
     //     a_BLModule.steerToAng(45);
     //}
-    
+
     // a_NoteHandler.shootToAmp(a_DriverXboxController.GetRightTriggerAxis() > .75);
-     
+
     // if(a_DriverXboxController.GetAButton()){
     //     if(a_NoteHandler.armToPose(154.0)){
     //         //frc::SmartDashboard::PutString("through if?", "YES");
@@ -409,7 +424,7 @@ void Robot::TestPeriodic() {
     // else if(a_DriverXboxController.GetXButton()){
     //     a_NoteHandler.manualClimberUp();
     // }
-    
+
 
 }
 
@@ -418,7 +433,7 @@ void Robot::TestPeriodic() {
     // if(target_type == target_type_enum::CONE) {
     //     // Set target type to CONE
     //    a_LED.SetTargetType(target_type_enum::CONE);
-        
+
     // } else if(target_type == target_type_enum::CUBE) {
         // Set target type to CUBE
        // a_LED.SetTargetType(target_type_enum::CUBE);
